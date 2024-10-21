@@ -31,4 +31,5 @@ impl BitmapRenderer {
 pub struct BitmapBuffer {
     pub active_frame: Bitmap<char>,
     pub following_frame: Bitmap<char>,
+    // eventually add bool bitmap for changes
 }
