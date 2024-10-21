@@ -43,7 +43,9 @@ impl BitmapRenderer {
             for x in 0..bitmap.resolution.x {
                 print!("{}", bitmap.map[y][x]);
             }
-            print!("\n");
+            if y + 1 != bitmap.resolution.y {
+                print!("\n");
+            }
         }
     }
 }
@@ -80,11 +82,13 @@ fn main() {
         WindowCreator::open_new_window(WINDOW_RESOLUTION);
         return;
     }
-    
-    println!("Hello world");
-    loop {}
-    // let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    // BitmapRenderer::print_bitmap(&bitmap);
-    // WindowCreator::open_new_window(WINDOW_RESOLUTION);
-    // println!("{}", env::current_exe().unwrap().to_string_lossy());
+
+    // pre-startup
+    let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
+    BitmapRenderer::print_bitmap(&bitmap);
+
+    // main loop
+    loop {
+        
+    }
 }
