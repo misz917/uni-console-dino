@@ -50,22 +50,45 @@ impl BitmapRenderer {
     }
 }
 
-struct WindowCreator;
-impl WindowCreator {
-    fn open_new_window(resolution: XY<usize>) {
-        let output = Command::new("gnome-terminal")
-        .args(&[
-            "--geometry", &format!("{}x{}", resolution.x, resolution.y),
-            "--", "bash", "-c", &format!("{} -ready", env::current_exe().unwrap().to_string_lossy())
-        ])
-        .output()
-        .expect("Failure");
+trait Terminal {
+    fn open(&self, resolution: XY<usize>);
+    fn prepare(&self);
+}
 
+struct GnomeTerminal;
+impl Terminal for GnomeTerminal {
+    fn open(&self, resolution: XY<usize>) {
+        let output = Command::new("gnome-terminal")
+            .args(&[
+                "--geometry", &format!("{}x{}", resolution.x, resolution.y),
+                "--", "bash", "-c", &format!("{} -ready", env::current_exe().unwrap().to_string_lossy())
+            ])
+            .output()
+            .expect("Failed to open");
+
+        TerminalResultHandler::handle(output);
+    }
+
+    fn prepare(&self) {
+        println!("HELLO");
+    }
+}
+
+struct TerminalResultHandler;
+impl TerminalResultHandler {
+    fn handle(output: std::process::Output) {
         if output.status.success() {
             println!("Terminal opened successfully.");
         } else {
             eprintln!("Failed to open terminal.");
         }
+    }
+}
+
+struct WindowCreator;
+impl WindowCreator {
+    fn open_new_window<T: Terminal>(terminal: T, resolution: XY<usize>) {
+        terminal.open(resolution);
     }
 }
 
@@ -79,11 +102,12 @@ fn main() {
     }
     
     if !ready {
-        WindowCreator::open_new_window(WINDOW_RESOLUTION);
+        WindowCreator::open_new_window(GnomeTerminal, WINDOW_RESOLUTION);
         return;
     }
 
     // pre-startup
+    GnomeTerminal.prepare();
     let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
     BitmapRenderer::print_bitmap(&bitmap);
 
