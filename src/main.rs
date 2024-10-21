@@ -3,18 +3,12 @@ use std::env;
 pub mod window;
 pub mod utils;
 pub mod bitmap;
+pub mod asset_server;
 
 pub use crate::{utils::XY, bitmap::{Bitmap, BitmapRenderer}};
 
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 45);
 //160x90 but x axis is 2 times denser
-
-struct BitmapBuffer {
-    active_frame: Bitmap<char>,
-    following_frame: Bitmap<char>,
-}
-
-struct AssetServer;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
