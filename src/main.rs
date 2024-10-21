@@ -1,16 +1,7 @@
-use std::{env, fs::read, process::Command};
-
-#[derive(Clone, Copy, Debug)]
-struct XY<T> {
-    x: T,
-    y: T,
-}
-
-impl<T> XY<T> {
-    const fn new(x: T, y: T) -> Self {
-        XY { x, y }
-    }
-}
+use std::env;
+pub mod window;
+pub mod utils;
+pub use crate::utils::XY;
 
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 45);
 //160x90 but x axis is 2 times denser
@@ -50,48 +41,6 @@ impl BitmapRenderer {
     }
 }
 
-trait Terminal {
-    fn open(&self, resolution: XY<usize>);
-    fn prepare(&self);
-}
-
-struct GnomeTerminal;
-impl Terminal for GnomeTerminal {
-    fn open(&self, resolution: XY<usize>) {
-        let output = Command::new("gnome-terminal")
-            .args(&[
-                "--geometry", &format!("{}x{}", resolution.x, resolution.y),
-                "--", "bash", "-c", &format!("{} -ready", env::current_exe().unwrap().to_string_lossy())
-            ])
-            .output()
-            .expect("Failed to open");
-
-        TerminalResultHandler::handle(output);
-    }
-
-    fn prepare(&self) {
-        println!("HELLO");
-    }
-}
-
-struct TerminalResultHandler;
-impl TerminalResultHandler {
-    fn handle(output: std::process::Output) {
-        if output.status.success() {
-            println!("Terminal opened successfully.");
-        } else {
-            eprintln!("Failed to open terminal.");
-        }
-    }
-}
-
-struct WindowCreator;
-impl WindowCreator {
-    fn open_new_window<T: Terminal>(terminal: T, resolution: XY<usize>) {
-        terminal.open(resolution);
-    }
-}
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut ready: bool = false;
@@ -102,12 +51,11 @@ fn main() {
     }
     
     if !ready {
-        WindowCreator::open_new_window(GnomeTerminal, WINDOW_RESOLUTION);
+        window::WindowCreator::open_new_window(window::GnomeTerminal, WINDOW_RESOLUTION);
         return;
     }
 
     // pre-startup
-    GnomeTerminal.prepare();
     let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
     BitmapRenderer::print_bitmap(&bitmap);
 
