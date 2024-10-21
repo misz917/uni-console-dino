@@ -1,3 +1,5 @@
+use std::process::Command;
+
 #[derive(Clone, Copy, Debug)]
 struct XY<T> {
     x: T,
@@ -10,7 +12,7 @@ impl<T> XY<T> {
     }
 }
 
-const WINDOW_RESOLUTION: XY<usize> = XY::new(80, 45);
+const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 45); //160x90 but x axis is 2 times denser
 
 struct Bitmap<T> {
     resolution: XY<usize>,
@@ -26,14 +28,20 @@ impl<T: Clone> Bitmap<T> {
     }
 }
 
-struct ScreenBuffer {
-    active_frame: Vec<Vec<char>>,
-    following_frame: Vec<Vec<char>>,
+struct BitmapBuffer {
+    active_frame: Bitmap<char>,
+    following_frame: Bitmap<char>,
 }
 
 struct AssetServer;
 
 struct BitmapRenderer;
+
+impl BitmapRenderer {
+    fn print_bitmap(bitmap: &Bitmap<char>) {
+        
+    }
+}
 
 fn main() {
     println!("Hello world!");
