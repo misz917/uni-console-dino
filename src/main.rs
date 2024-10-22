@@ -1,19 +1,19 @@
-use core::time;
 use std::{env, process::exit, thread::sleep, time::{Duration, SystemTime}};
 
 pub mod asset_server;
 pub mod bitmap;
 pub mod utils;
 pub mod window;
+pub mod screen;
 
-pub use crate::{
+use crate::{
     bitmap::{Bitmap, BitmapRenderer},
     utils::{ANSI, XY},
 };
 
 const WINDOW_BORDER_WIDTH: usize = 1;
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 6.0;
+const FPS_LIMIT: f32 = 60.0;
 
 fn prepare() {
     print!("{}[H", ANSI); // move to 0,0
@@ -44,13 +44,10 @@ fn main() {
 
 
     let sleep_duration = 1.0 / FPS_LIMIT;
-    let mut i = 0;
     loop {
         let time = SystemTime::now();
 
         // loop contents
-        println!("{} ", i);
-        i+=1;
 
         if let Ok(elapsed) = time.elapsed() {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
