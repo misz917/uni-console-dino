@@ -1,14 +1,14 @@
-use std::io::{self, Write};
 use crate::utils::{ANSI, XY};
+use std::io::{self, Write};
 
 pub struct TerminalScreen;
 impl TerminalScreen {
-        // fixes a problem that shouldn't exist
-        fn flush_buffer() {
-            io::stdout().flush().unwrap();
-        }
+    // fixes a problem that shouldn't exist
+    pub fn flush_buffer() {
+        io::stdout().flush().unwrap();
+    }
 
-        fn clear_screen() {
-            print!("{}[J", ANSI);
-        }
+    pub fn clear_screen() {
+        print!("{}[J", ANSI);
+    }
 }

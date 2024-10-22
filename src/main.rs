@@ -1,10 +1,15 @@
-use std::{env, process::exit, thread::sleep, time::{Duration, SystemTime}};
+use std::{
+    env,
+    process::exit,
+    thread::sleep,
+    time::{Duration, SystemTime},
+};
 
 pub mod asset_server;
 pub mod bitmap;
+pub mod screen;
 pub mod utils;
 pub mod window;
-pub mod screen;
 
 use crate::{
     bitmap::{Bitmap, BitmapRenderer},
@@ -32,7 +37,11 @@ fn separate_window_creation() {
         }
     }
     if !ready {
-        window::WindowCreator::open_new_window(window::GnomeTerminal, WINDOW_RESOLUTION, WINDOW_BORDER_WIDTH);
+        window::WindowCreator::open_new_window(
+            window::GnomeTerminal,
+            WINDOW_RESOLUTION,
+            WINDOW_BORDER_WIDTH,
+        );
         exit(0);
     }
 }
@@ -41,13 +50,11 @@ fn main() {
     separate_window_creation();
     let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
     BitmapRenderer::print_bitmap(&bitmap, 1);
-
+    screen::TerminalScreen::flush_buffer();
 
     let sleep_duration = 1.0 / FPS_LIMIT;
     loop {
         let time = SystemTime::now();
-
-        // loop contents
 
         if let Ok(elapsed) = time.elapsed() {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
