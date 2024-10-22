@@ -1,4 +1,6 @@
-pub use crate::utils::XY;
+use std::{thread::sleep, time::Duration};
+
+pub use crate::utils::{ANSI, XY};
 
 pub struct Bitmap<T> {
     pub resolution: XY<usize>,
@@ -16,13 +18,12 @@ impl<T: Clone> Bitmap<T> {
 
 pub struct BitmapRenderer;
 impl BitmapRenderer {
-    pub fn print_bitmap(bitmap: &Bitmap<char>) {
+    pub fn print_bitmap(bitmap: &Bitmap<char>, border_width: usize) {
         for y in 0..bitmap.resolution.y {
+            print!("{}[{};{}f", ANSI, 2 + y, 2);
             for x in 0..bitmap.resolution.x {
-                print!("{}", bitmap.map[y][x]);
-            }
-            if y + 1 != bitmap.resolution.y {
-                print!("\n");
+                // print!("{}", bitmap.map[y][x]);
+                print!("{}", x % 2);
             }
         }
     }

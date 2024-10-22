@@ -1,3 +1,5 @@
+pub const ANSI: &str = "\x1B";
+
 #[derive(Clone, Copy, Debug)]
 pub struct XY<T> {
     pub x: T,

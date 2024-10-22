@@ -1,5 +1,5 @@
-use std::{env, process::Command};
 pub use crate::utils::XY;
+use std::{env, process::Command};
 
 pub trait Terminal {
     fn open(&self, resolution: XY<usize>);
@@ -10,8 +10,12 @@ impl Terminal for GnomeTerminal {
     fn open(&self, resolution: XY<usize>) {
         let output = Command::new("gnome-terminal")
             .args(&[
-                "--geometry", &format!("{}x{}", resolution.x, resolution.y),
-                "--", "bash", "-c", &format!("{} -ready", env::current_exe().unwrap().to_string_lossy())
+                "--geometry",
+                &format!("{}x{}", resolution.x, resolution.y),
+                "--",
+                "bash",
+                "-c",
+                &format!("{} -ready", env::current_exe().unwrap().to_string_lossy()),
             ])
             .output()
             .expect("Failed to open");
