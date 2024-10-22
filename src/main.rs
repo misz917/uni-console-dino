@@ -13,19 +13,19 @@ pub use crate::{
 };
 
 const WINDOW_BORDER_WIDTH: usize = 1;
-const WINDOW_RESOLUTION: XY<usize> = XY::new(180, 50);
-// const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 45);
+const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 
 const RESET: &str = "\x1B[0m";
 const RED: &str = "\x1B[31m";
 const GREEN: &str = "\x1B[32m";
 const BLUE: &str = "\x1B[34m";
+const IDK: &str = "\x1B[5;10f";
 
 fn prepare() {
     print!("{}[H", ANSI); // move to 0,0
     print!("{}[1m", ANSI); // enable bold mode
     print!("{}[48;2;{};{};{}m", ANSI, 255, 0, 100); // set background color rgb
-    print!("{}[38;2;{};{};{}m", ANSI, 255, 255, 255); // set foreground color rgb
+    print!("{}[38;2;{};{};{}m", ANSI, 127, 127, 127); // set foreground color rgb
     print!("{}[?25l", ANSI); // make cursor invisible
 }
 
@@ -44,9 +44,10 @@ fn main() {
     }
 
     // pre-startup
-    prepare();
-    let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    BitmapRenderer::print_bitmap(&bitmap, 1);
+    // prepare();
+    // let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
+    // BitmapRenderer::print_bitmap(&bitmap, 1);
+    println!("{}", IDK);
 
     // main loop
     loop {}
