@@ -5,8 +5,6 @@ pub mod bitmap;
 pub mod utils;
 pub mod window;
 
-use window::{GnomeTerminal, Terminal};
-
 pub use crate::{
     bitmap::{Bitmap, BitmapRenderer},
     utils::{ANSI, XY},
@@ -14,12 +12,6 @@ pub use crate::{
 
 const WINDOW_BORDER_WIDTH: usize = 1;
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-
-const RESET: &str = "\x1B[0m";
-const RED: &str = "\x1B[31m";
-const GREEN: &str = "\x1B[32m";
-const BLUE: &str = "\x1B[34m";
-const IDK: &str = "\x1B[5;10f";
 
 fn prepare() {
     print!("{}[H", ANSI); // move to 0,0
@@ -39,16 +31,17 @@ fn main() {
     }
 
     if !ready {
-        window::WindowCreator::open_new_window(window::GnomeTerminal, WINDOW_RESOLUTION);
+        window::WindowCreator::open_new_window(window::GnomeTerminal, WINDOW_RESOLUTION, WINDOW_BORDER_WIDTH);
         return;
     }
 
-    // pre-startup
+    // ----Startup----
     // prepare();
-    // let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    // BitmapRenderer::print_bitmap(&bitmap, 1);
-    println!("{}", IDK);
+    let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
+    BitmapRenderer::print_bitmap(&bitmap, 1);
 
-    // main loop
-    loop {}
+    // ----Main loop----
+    loop {
+        
+    }
 }
