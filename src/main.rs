@@ -16,7 +16,7 @@ use crate::{
     utils::{ANSI, XY},
 };
 
-const WINDOW_BORDER_WIDTH: usize = 1;
+const WINDOW_BORDER_WIDTH: XY<usize> = XY::new(2, 2);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 60.0;
 
@@ -49,7 +49,7 @@ fn separate_window_creation() {
 fn main() {
     separate_window_creation();
     let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    BitmapRenderer::print_bitmap(&bitmap, 1);
+    BitmapRenderer::print_bitmap(&bitmap, WINDOW_BORDER_WIDTH);
     screen::TerminalScreen::flush_buffer();
 
     let sleep_duration = 1.0 / FPS_LIMIT;

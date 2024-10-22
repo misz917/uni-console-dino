@@ -1,17 +1,21 @@
-use std::{env, process::Command};
 use crate::utils::XY;
+use std::{env, process::Command};
 
 pub trait Terminal {
-    fn open(&self, resolution: XY<usize>, border_width: usize);
+    fn open(&self, resolution: XY<usize>, border_width: XY<usize>);
 }
 
 pub struct GnomeTerminal;
 impl Terminal for GnomeTerminal {
-    fn open(&self, resolution: XY<usize>, border_width: usize) {
+    fn open(&self, resolution: XY<usize>, border_width: XY<usize>) {
         let output = Command::new("gnome-terminal")
             .args(&[
                 "--geometry",
-                &format!("{}x{}", resolution.x + border_width * 2, resolution.y + border_width * 2),
+                &format!(
+                    "{}x{}",
+                    resolution.x + border_width.x,
+                    resolution.y + border_width.y,
+                ),
                 "--",
                 "bash",
                 "-c",
@@ -37,7 +41,11 @@ impl TerminalResultHandler {
 
 pub struct WindowCreator;
 impl WindowCreator {
-    pub fn open_new_window<T: Terminal>(terminal: T, resolution: XY<usize>, border_width: usize) {
+    pub fn open_new_window<T: Terminal>(
+        terminal: T,
+        resolution: XY<usize>,
+        border_width: XY<usize>,
+    ) {
         terminal.open(resolution, border_width);
     }
 }
