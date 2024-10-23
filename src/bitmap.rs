@@ -35,13 +35,32 @@ impl BitmapRenderer {
 pub struct BitmapBuffer {
     pub active_frame: Bitmap<char>,
     pub following_frame: Bitmap<char>,
-    // eventually add bool bitmap for changes
+    pub changed_pixels: Bitmap<bool>,
+    pub resolution: XY<usize>,
 }
 impl BitmapBuffer {
     pub fn new(default_frame: Bitmap<char>) -> Self {
+        let resolution = default_frame.resolution;
         BitmapBuffer {
             active_frame: default_frame.clone(),
             following_frame: default_frame.clone(),
+            changed_pixels: Bitmap::new(resolution, false),
+            resolution,
+        }
+    }
+
+    pub fn update(&mut self) {
+        for col in 0..self.resolution.y {
+            for row in 0..self.resolution.x {
+                let new = self.following_frame.map[col][row];
+                let old = self.active_frame.map[col][row];
+                if old != new {
+                    self.active_frame.map[col][row] = new;
+                    self.changed_pixels.map[col][row] = true;
+                } else {
+                    self.changed_pixels.map[col][row] = false;
+                }
+            }
         }
     }
 }
