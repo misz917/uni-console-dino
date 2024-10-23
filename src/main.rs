@@ -7,15 +7,15 @@ use std::{
 
 pub mod asset_server;
 pub mod bitmap;
+pub mod frame_assembler;
 pub mod screen;
 pub mod utils;
 pub mod window;
-pub mod frame_assembler;
 
 use crate::{
     bitmap::{Bitmap, BitmapBuffer},
-    utils::{ANSI, XY},
     screen::TerminalScreen,
+    utils::{ANSI, XY},
 };
 
 const BORDER_WIDTH: XY<usize> = XY::new(2, 2);

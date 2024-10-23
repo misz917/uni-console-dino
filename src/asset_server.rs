@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs, process::exit};
+use std::{collections::HashMap, fs, ops::Index, process::exit};
 
 use crate::{
     bitmap::Bitmap,
@@ -26,26 +26,19 @@ impl AssetServer {
 
 pub struct SpriteFileReader;
 impl SpriteFileReader {
-    pub fn read(file_path: &str) -> &Bitmap<char> {
+    pub fn read(file_path: &str) -> Bitmap<char> {
         let contents = fs::read_to_string(file_path).expect("Could not read file");
-
-        // let resolution = Self::parse_header(parts[0]);
-        // let header: String = split_contents.split('x').collect();
-        // let dimensions: XY<usize> = XY::new(header, y)
-        // todo!()
-        // Self::parse_file_contents(&contents)
-        let mut output_bitmap: Bitmap<char>;
-        // Self::parse_file_contents(&contents, &mut output_bitmap);
-        todo!()
+        Self::parse_file_contents(&contents)
     }
 
-    fn parse_file_contents(contents: &String, output_bitmap: &mut Bitmap<char>) {
+    fn parse_file_contents(contents: &String) -> Bitmap<char> {
         let parts: Vec<&str> = contents.split(';').collect();
         if parts.len() != 2 {
             exit(2);
         }
         let resolution = Self::parse_header(parts[0]);
-        Self::parse_tail(parts[1], &resolution, output_bitmap);
+        let map = Self::parse_tail(parts[1], &resolution);
+        Bitmap { resolution, map }
     }
 
     fn parse_header(header: &str) -> XY<usize> {
@@ -56,9 +49,17 @@ impl SpriteFileReader {
         }
     }
 
-    // returns an incomplete bitmap (without resolution)
-    fn parse_tail(tail: &str, resolution: &XY<usize>, output_bitmap: &mut Bitmap<char>) {
-        for i in 0..tail.len() {}
-        todo!()
+    fn parse_tail(tail: &str, resolution: &XY<usize>) -> Vec<Vec<char>> {
+        let mut output_array: Vec<Vec<char>> = vec![vec![' '; resolution.y]; resolution.x];
+        for (y, line) in tail.split_whitespace().enumerate() {
+            for x in 0..resolution.x {
+                if x < line.len() {
+                    output_array[x][y] = line.chars().nth(x).unwrap();
+                } else {
+                    output_array[x][y] = ' ';
+                }
+            }
+        }
+        output_array
     }
 }
