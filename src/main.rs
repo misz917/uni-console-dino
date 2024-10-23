@@ -45,7 +45,8 @@ fn main() {
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
     let path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/dino_sprite.txt";
     let sprite = crate::asset_server::SpriteFileReader::read(&path);
-    BitmapRenderer::print_bitmap(&sprite, &BORDER_WIDTH);
+    // BitmapRenderer::print_bitmap(&sprite, &BORDER_WIDTH);
+    
 
     loop {
         let time = SystemTime::now();

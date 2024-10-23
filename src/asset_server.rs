@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs, process::exit};
+use std::{collections::HashMap, fs};
 
 use crate::{
     bitmap::Bitmap,
@@ -51,6 +51,7 @@ impl SpriteFileReader {
         }
     }
 
+    // no idea how it works but it does
     fn parse_tail(tail: &str, resolution: &XY<usize>) -> Vec<Vec<char>> {
         let mut output_array: Vec<Vec<char>> = vec![vec![' '; resolution.y]; resolution.x];
         for (col, line) in tail.split_whitespace().enumerate() {
