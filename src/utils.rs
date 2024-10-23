@@ -1,3 +1,5 @@
+use crate::bitmap::Bitmap;
+
 pub const ANSI: &str = "\x1B";
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -10,4 +12,9 @@ impl<T> XY<T> {
     pub const fn new(x: T, y: T) -> Self {
         XY { x, y }
     }
+}
+
+pub struct Sprite {
+    pub dimensions: XY<usize>,
+    pub bitmap: Bitmap<char>,
 }
