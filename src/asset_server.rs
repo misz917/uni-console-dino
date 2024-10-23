@@ -44,10 +44,10 @@ impl SpriteFileReader {
     }
 
     fn parse_header(header: &str) -> XY<usize> {
-        let numbers: Vec<&str> = header.split('x').collect();
+        let numbers: Vec<&str> = header.split(':').collect();
         XY {
             x: numbers[0].parse::<usize>().unwrap(),
-            y: numbers[0].parse::<usize>().unwrap(),
+            y: numbers[1].parse::<usize>().unwrap(),
         }
     }
 
