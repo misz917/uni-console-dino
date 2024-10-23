@@ -1,6 +1,6 @@
-use std::ops::Add;
+use std::{ops::Add, thread::sleep, time::Duration};
 
-use crate::bitmap::Bitmap;
+use crate::{bitmap::Bitmap, terminal_screen::TerminalScreen};
 
 pub const ANSI: &str = "\x1B";
 
@@ -29,4 +29,15 @@ where
 pub struct Sprite {
     pub dimensions: XY<usize>,
     pub bitmap: Bitmap<char>,
+}
+
+pub struct ErrorDisplayer;
+impl ErrorDisplayer {
+    pub fn error(message: &str) {
+        print!("{}[H{}", ANSI, message);
+        TerminalScreen::flush_terminal_buffer();
+        loop {
+            sleep(Duration::from_secs(1));
+        }
+    }
 }

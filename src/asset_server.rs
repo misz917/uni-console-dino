@@ -2,7 +2,7 @@ use std::{collections::HashMap, fs, process::exit};
 
 use crate::{
     bitmap::Bitmap,
-    utils::{Sprite, XY},
+    utils::{self, Sprite, XY},
 };
 
 pub struct AssetServer {
@@ -26,14 +26,17 @@ impl AssetServer {
 pub struct SpriteFileReader;
 impl SpriteFileReader {
     pub fn read(file_path: &str) -> Bitmap<char> {
-        let contents = fs::read_to_string(file_path).expect("Could not read file");
-        Self::parse_file_contents(&contents)
+        let contents = fs::read_to_string(file_path);
+        if let Err(_) = contents {
+            utils::ErrorDisplayer::error("File not found");
+        }
+        Self::parse_file_contents(&contents.unwrap())
     }
 
     fn parse_file_contents(contents: &String) -> Bitmap<char> {
         let parts: Vec<&str> = contents.split(';').collect();
         if parts.len() != 2 {
-            exit(2);
+            utils::ErrorDisplayer::error("Sprite file format error");
         }
         let resolution = Self::parse_header(parts[0]);
         let map = Self::parse_tail(parts[1], &resolution);

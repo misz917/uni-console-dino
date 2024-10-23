@@ -33,7 +33,7 @@ impl TerminalScreen {
     }
 
     // fixes a problem where terminal doesn't print out a number of characters
-    fn flush_terminal_buffer() {
+    pub fn flush_terminal_buffer() {
         io::stdout().flush().unwrap();
     }
 

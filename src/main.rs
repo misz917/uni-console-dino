@@ -14,9 +14,9 @@ use crate::{
     utils::XY,
 };
 
-const BORDER_WIDTH: XY<usize> = XY::new(2, 2);
+const BORDER_WIDTH: XY<usize> = XY::new(2, 2); // buggy
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 30.0;
+const FPS_LIMIT: f32 = 30.0; // buggy above ~46
 
 fn separate_window_creation() {
     let args: Vec<String> = env::args().collect();
@@ -40,12 +40,13 @@ fn main() {
     separate_window_creation();
     let sleep_duration = 1.0 / FPS_LIMIT;
 
-    let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
+    // let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
+    let sprite = crate::asset_server::SpriteFileReader::read("assets/dino_sprite.txt");
 
     loop {
         let time = SystemTime::now();
 
-        screen.display_frame();
+        // screen.display_frame();
 
         if let Ok(elapsed) = time.elapsed() {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
