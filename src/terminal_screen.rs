@@ -1,6 +1,6 @@
 use crate::{
     bitmap::{Bitmap, BitmapBuffer, BitmapRenderer},
-    utils::{ANSI, XY},
+    utils::{ESC, XY},
 };
 use std::io::{self, Write};
 
@@ -38,14 +38,14 @@ impl TerminalScreen {
     }
 
     fn move_cursor_home() {
-        print!("{}[H", ANSI);
+        print!("{}[H", ESC);
     }
 
     pub fn prepare() {
-        print!("{}[H", ANSI); // move to 0,0
-        print!("{}[1m", ANSI); // enable bold mode
-        print!("{}[48;2;{};{};{}m", ANSI, 255, 0, 100); // set background color rgb
-        print!("{}[38;2;{};{};{}m", ANSI, 127, 127, 127); // set foreground color rgb
-        print!("{}[?25l", ANSI); // make cursor invisible
+        print!("{}[H", ESC); // move to 0,0
+        print!("{}[1m", ESC); // enable bold mode
+        print!("{}[48;2;{};{};{}m", ESC, 255, 0, 100); // set background color rgb
+        print!("{}[38;2;{};{};{}m", ESC, 127, 127, 127); // set foreground color rgb
+        print!("{}[?25l", ESC); // make cursor invisible
     }
 }

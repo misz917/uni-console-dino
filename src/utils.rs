@@ -2,7 +2,7 @@ use std::{ops::Add, thread::sleep, time::Duration};
 
 use crate::{bitmap::Bitmap, terminal_screen::TerminalScreen};
 
-pub const ANSI: &str = "\x1B";
+pub const ESC: &str = "\x1B";
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct XY<T> {
@@ -34,7 +34,7 @@ pub struct Sprite {
 pub struct ErrorDisplayer;
 impl ErrorDisplayer {
     pub fn error(message: &str) {
-        print!("{}[H{}", ANSI, message);
+        print!("{}[H{}", ESC, message);
         TerminalScreen::flush_terminal_buffer();
         loop {
             sleep(Duration::from_secs(1));

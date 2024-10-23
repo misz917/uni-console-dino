@@ -1,6 +1,6 @@
 use std::process::exit;
 
-use crate::utils::{ANSI, XY};
+use crate::utils::{ESC, XY};
 
 #[derive(Clone)]
 pub struct Bitmap<T> {
@@ -24,7 +24,7 @@ impl BitmapRenderer {
             for x in 0..bitmap.resolution.x {
                 print!(
                     "{}[{};{}f{}",
-                    ANSI,
+                    ESC,
                     y + border_width.y,
                     x + border_width.x,
                     bitmap.map[y][x]
