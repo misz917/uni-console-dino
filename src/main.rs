@@ -12,6 +12,9 @@ pub mod screen;
 pub mod utils;
 pub mod window;
 
+use frame_assembler::FrameAssembler;
+use utils::Sprite;
+
 use crate::{
     bitmap::{Bitmap, BitmapBuffer},
     screen::TerminalScreen,
@@ -53,10 +56,21 @@ fn main() {
     let sleep_duration = 1.0 / FPS_LIMIT;
 
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
+
+    // screen.display_frame();
+    let sprite_bitmap = Bitmap::new(XY::new(8, 8), '*');
+    let sprite = Sprite {
+        dimensions: XY::new(),
+        bitmap: todo!(),
+    }
+    let mut bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
+    let position = XY::new(10, 10);
+    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut bitmap, &position);
+
     loop {
         let time = SystemTime::now();
 
-        screen.display_frame();
+        // screen.display_frame();
 
         if let Ok(elapsed) = time.elapsed() {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
