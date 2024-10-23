@@ -17,9 +17,10 @@ impl TerminalScreen {
     }
     pub fn display(&mut self) {
         Self::move_cursor_home();
-        BitmapRenderer::print_bitmap(&self.bitmap_buffer.active_frame, &self.border_width);
+        let bitmap_to_display = self.bitmap_buffer.get_active_frame();
+        BitmapRenderer::print_bitmap(bitmap_to_display, &self.border_width);
         Self::flush_terminal_buffer();
-        self.bitmap_buffer.update();
+        // self.bitmap_buffer.update(); // should be done while adding a new frame
     }
 
     // fixes a problem where terminal doesn't print out a number of characters

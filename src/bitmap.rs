@@ -36,10 +36,10 @@ impl BitmapRenderer {
 
 #[derive(Clone)]
 pub struct BitmapBuffer {
-    pub active_frame: Bitmap<char>,
-    pub following_frame: Bitmap<char>,
-    pub changed_pixels: Bitmap<bool>,
-    pub resolution: XY<usize>,
+    active_frame: Bitmap<char>,
+    following_frame: Bitmap<char>,
+    changed_pixels: Bitmap<bool>,
+    resolution: XY<usize>,
 }
 impl BitmapBuffer {
     pub fn new(default_frame: &Bitmap<char>) -> Self {
@@ -67,10 +67,14 @@ impl BitmapBuffer {
         }
     }
 
-    pub fn new_frame(&mut self, new_frame: &Bitmap<char>) {
+    pub fn new_following_frame(&mut self, new_frame: &Bitmap<char>) {
         if new_frame.resolution != self.resolution {
             exit(1);
         }
         self.following_frame = new_frame.clone();
+    }
+
+    pub fn get_active_frame(&self) -> &Bitmap<char> {
+        &self.active_frame
     }
 }
