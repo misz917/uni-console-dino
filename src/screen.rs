@@ -9,9 +9,9 @@ pub struct TerminalScreen {
     border_width: XY<usize>,
 }
 impl TerminalScreen {
-    pub fn new(bitmap_buffer: BitmapBuffer, border_width: XY<usize>) -> Self {
+    pub fn new(bitmap_buffer: &BitmapBuffer, border_width: XY<usize>) -> Self {
         TerminalScreen {
-            bitmap_buffer,
+            bitmap_buffer: bitmap_buffer.clone(),
             border_width,
         }
     }

@@ -1,3 +1,5 @@
+use std::{clone, process::exit};
+
 use crate::utils::{ANSI, XY};
 
 #[derive(Clone)]
@@ -32,6 +34,7 @@ impl BitmapRenderer {
     }
 }
 
+#[derive(Clone)]
 pub struct BitmapBuffer {
     pub active_frame: Bitmap<char>,
     pub following_frame: Bitmap<char>,
@@ -39,7 +42,7 @@ pub struct BitmapBuffer {
     pub resolution: XY<usize>,
 }
 impl BitmapBuffer {
-    pub fn new(default_frame: Bitmap<char>) -> Self {
+    pub fn new(default_frame: &Bitmap<char>) -> Self {
         let resolution = default_frame.resolution;
         BitmapBuffer {
             active_frame: default_frame.clone(),
@@ -62,5 +65,12 @@ impl BitmapBuffer {
                 }
             }
         }
+    }
+
+    pub fn new_frame(&mut self, new_frame: &Bitmap<char>) {
+        if new_frame.resolution != self.resolution {
+            exit(1);
+        }
+        self.following_frame = new_frame.clone();
     }
 }

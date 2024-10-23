@@ -51,8 +51,8 @@ fn main() {
     separate_window_creation();
 
     let default_bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    let bitmap_buffer = BitmapBuffer::new(default_bitmap);
-    let mut screen: screen::TerminalScreen = TerminalScreen::new(bitmap_buffer, WINDOW_BORDER_WIDTH);
+    let bitmap_buffer = BitmapBuffer::new(&default_bitmap);
+    let mut screen: screen::TerminalScreen = TerminalScreen::new(&bitmap_buffer, WINDOW_BORDER_WIDTH);
 
     let sleep_duration = 1.0 / FPS_LIMIT;
     loop {
