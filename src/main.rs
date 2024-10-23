@@ -9,7 +9,8 @@ pub mod terminal_screen;
 pub mod utils;
 pub mod window;
 
-use bitmap::BitmapRenderer;
+use bitmap::{Bitmap, BitmapRenderer};
+use frame_assembler::FrameAssembler;
 
 use crate::{
     terminal_screen::TerminalScreen,
@@ -42,11 +43,22 @@ fn main() {
     separate_window_creation();
     let sleep_duration = 1.0 / FPS_LIMIT;
 
-    let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
-    let path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/dino_sprite.txt";
-    let sprite = crate::asset_server::SpriteFileReader::read(&path);
-    // BitmapRenderer::print_bitmap(&sprite, &BORDER_WIDTH);
+    // cursed stuff
+    let binding = env::current_exe().unwrap();
+    let binding = binding.parent().unwrap().parent().unwrap().parent().unwrap();
+    let path = binding.to_string_lossy() + "/src/assets/dino_sprite.txt";
+
+
+    // let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
+
     
+    let sprite_bitmap = crate::asset_server::SpriteFileReader::read(&path);
+    let sprite = utils::Sprite::from_bitmap(&sprite_bitmap);
+    let mut bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
+    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut bitmap, &XY::new(5, 10));
+    BitmapRenderer::print_bitmap(&bitmap, &BORDER_WIDTH);
+    TerminalScreen::flush_terminal_buffer();
+
 
     loop {
         let time = SystemTime::now();

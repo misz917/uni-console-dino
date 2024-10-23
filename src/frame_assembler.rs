@@ -7,12 +7,9 @@ pub struct FrameAssembler;
 impl FrameAssembler {
     // places a sprite on a bitmap by upper left corner of the sprite
     pub fn write_sprite_to_bitmap(sprite: &Sprite, bitmap: &mut Bitmap<char>, position: &XY<i32>) {
-        for col in 0..sprite.bitmap.resolution.x {
-            for row in 0..sprite.bitmap.resolution.y {
-                if Self::is_within_bounds(position, (col, row), &bitmap.resolution) {
-                    bitmap.map[col + position.x as usize][row + position.y as usize] =
-                        sprite.bitmap.map[col][row];
-                }
+        for x in 0..sprite.bitmap.resolution.x {
+            for y in 0..sprite.bitmap.resolution.y {
+                bitmap.map[x + position.x as usize][y + position.y as usize] = sprite.bitmap.map[x][y];
             }
         }
     }
