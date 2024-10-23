@@ -10,6 +10,7 @@ pub mod bitmap;
 pub mod screen;
 pub mod utils;
 pub mod window;
+pub mod frame_assembler;
 
 use crate::{
     bitmap::{Bitmap, BitmapBuffer},
