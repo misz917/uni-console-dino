@@ -1,5 +1,5 @@
 use crate::{
-    bitmap::{BitmapBuffer, BitmapRenderer},
+    bitmap::{Bitmap, BitmapBuffer, BitmapRenderer},
     utils::{ANSI, XY},
 };
 use std::io::{self, Write};
@@ -15,6 +15,15 @@ impl TerminalScreen {
             border_width,
         }
     }
+
+    pub fn new_default(resolution: XY<usize>, border_width: XY<usize>) -> Self {
+        let bitmap = Bitmap::new(resolution, '#');
+        TerminalScreen {
+            bitmap_buffer: BitmapBuffer::new(&bitmap),
+            border_width,
+        }
+    }
+
     pub fn display(&mut self) {
         Self::move_cursor_home();
         let bitmap_to_display = self.bitmap_buffer.get_active_frame();

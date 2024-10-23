@@ -17,7 +17,7 @@ use crate::{
     screen::TerminalScreen,
 };
 
-const WINDOW_BORDER_WIDTH: XY<usize> = XY::new(2, 2);
+const BORDER_WIDTH: XY<usize> = XY::new(2, 2);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 30.0;
 
@@ -41,7 +41,7 @@ fn separate_window_creation() {
         window::WindowCreator::open_new_window(
             window::GnomeTerminal,
             WINDOW_RESOLUTION,
-            WINDOW_BORDER_WIDTH,
+            BORDER_WIDTH,
         );
         exit(0);
     }
@@ -50,9 +50,7 @@ fn separate_window_creation() {
 fn main() {
     separate_window_creation();
 
-    let default_bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    let bitmap_buffer = BitmapBuffer::new(&default_bitmap);
-    let mut screen: screen::TerminalScreen = TerminalScreen::new(&bitmap_buffer, WINDOW_BORDER_WIDTH);
+    let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
 
     let sleep_duration = 1.0 / FPS_LIMIT;
     loop {
