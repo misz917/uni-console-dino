@@ -1,5 +1,5 @@
 use crate::{
-    bitmap::{Bitmap, BitmapBuffer, BitmapRenderer},
+    bitmap::{Bitmap, BitmapBuffer, BufferPrinter},
     utils::{ESC, XY},
 };
 use std::io::{self, Write};
@@ -26,8 +26,7 @@ impl TerminalScreen {
 
     pub fn display_frame(&mut self) {
         Self::move_cursor_home();
-        let bitmap_to_display = self.bitmap_buffer.get_active_frame();
-        BitmapRenderer::print_bitmap(bitmap_to_display, &self.border_width);
+        BufferPrinter::print_bitmap(&self.bitmap_buffer, &self.border_width);
         Self::flush_terminal_buffer();
         // self.bitmap_buffer.update(); // should be done while adding a new frame
     }

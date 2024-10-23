@@ -17,12 +17,12 @@ impl<T: Clone> Bitmap<T> {
     }
 }
 
-pub struct BitmapRenderer;
-impl BitmapRenderer {
-    pub fn print_bitmap(bitmap: &Bitmap<char>, border_width: &XY<usize>) {
-        for y in 0..bitmap.resolution.y {
-            for x in 0..bitmap.resolution.x {
-                if bitmap.map[y][x] == '$' {
+pub struct BufferPrinter;
+impl BufferPrinter {
+    pub fn print_bitmap(bitmap_buffer: &BitmapBuffer, border_width: &XY<usize>) {
+        for y in 0..bitmap_buffer.resolution.y {
+            for x in 0..bitmap_buffer.resolution.x {
+                if bitmap_buffer.get_active_frame().map[y][x] == '$' || !bitmap_buffer.changed_pixels.map[y][x] {
                     continue;
                 }
                 print!(
@@ -30,7 +30,7 @@ impl BitmapRenderer {
                     ESC,
                     y + border_width.y,
                     x + border_width.x,
-                    bitmap.map[y][x]
+                    bitmap_buffer.active_frame.map[y][x]
                 );
             }
         }
@@ -39,10 +39,10 @@ impl BitmapRenderer {
 
 #[derive(Clone)]
 pub struct BitmapBuffer {
-    active_frame: Bitmap<char>,
-    following_frame: Bitmap<char>,
-    changed_pixels: Bitmap<bool>,
-    resolution: XY<usize>,
+    pub active_frame: Bitmap<char>,
+    pub following_frame: Bitmap<char>,
+    pub changed_pixels: Bitmap<bool>,
+    pub resolution: XY<usize>,
 }
 impl BitmapBuffer {
     pub fn new(default_frame: &Bitmap<char>) -> Self {
