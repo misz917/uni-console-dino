@@ -49,14 +49,13 @@ fn separate_window_creation() {
 
 fn main() {
     separate_window_creation();
+    let sleep_duration = 1.0 / FPS_LIMIT;
 
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
-
-    let sleep_duration = 1.0 / FPS_LIMIT;
     loop {
         let time = SystemTime::now();
 
-        screen.display();
+        screen.display_frame();
 
         if let Ok(elapsed) = time.elapsed() {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);

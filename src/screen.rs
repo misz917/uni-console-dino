@@ -24,7 +24,7 @@ impl TerminalScreen {
         }
     }
 
-    pub fn display(&mut self) {
+    pub fn display_frame(&mut self) {
         Self::move_cursor_home();
         let bitmap_to_display = self.bitmap_buffer.get_active_frame();
         BitmapRenderer::print_bitmap(bitmap_to_display, &self.border_width);
