@@ -27,7 +27,6 @@ where
 }
 
 pub struct Sprite {
-    pub dimensions: XY<usize>,
     pub bitmap: Bitmap<char>,
 }
 
