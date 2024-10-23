@@ -15,7 +15,7 @@ use bitmap::BitmapBuffer;
 use screen::TerminalScreen;
 
 use crate::{
-    bitmap::{Bitmap, BitmapRenderer},
+    bitmap::Bitmap,
     utils::{ANSI, XY},
 };
 
@@ -51,9 +51,7 @@ fn separate_window_creation() {
 
 fn main() {
     separate_window_creation();
-    // let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    // BitmapRenderer::print_bitmap(&bitmap, &WINDOW_BORDER_WIDTH);
-    // screen::TerminalScreen::flush_terminal_buffer();
+
     let default_bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
     let bitmap_buffer = BitmapBuffer::new(default_bitmap);
     let screen: screen::TerminalScreen = TerminalScreen::new(bitmap_buffer, WINDOW_BORDER_WIDTH);
