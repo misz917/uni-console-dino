@@ -9,6 +9,8 @@ pub mod terminal_screen;
 pub mod utils;
 pub mod window;
 
+use bitmap::BitmapRenderer;
+
 use crate::{
     terminal_screen::TerminalScreen,
     utils::XY,
@@ -32,7 +34,7 @@ fn separate_window_creation() {
             WINDOW_RESOLUTION,
             BORDER_WIDTH,
         );
-        exit(0);
+        exit(0); // this exit is not an error
     }
 }
 
@@ -40,8 +42,10 @@ fn main() {
     separate_window_creation();
     let sleep_duration = 1.0 / FPS_LIMIT;
 
-    // let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
-    let sprite = crate::asset_server::SpriteFileReader::read("assets/dino_sprite.txt");
+    let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
+    let path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/dino_sprite.txt";
+    let sprite = crate::asset_server::SpriteFileReader::read(&path);
+    BitmapRenderer::print_bitmap(&sprite, &BORDER_WIDTH);
 
     loop {
         let time = SystemTime::now();
