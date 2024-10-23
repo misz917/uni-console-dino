@@ -53,12 +53,12 @@ impl SpriteFileReader {
 
     fn parse_tail(tail: &str, resolution: &XY<usize>) -> Vec<Vec<char>> {
         let mut output_array: Vec<Vec<char>> = vec![vec![' '; resolution.y]; resolution.x];
-        for (y, line) in tail.split_whitespace().enumerate() {
-            for x in 0..resolution.x {
-                if x < line.len() {
-                    output_array[x][y] = line.chars().nth(x).unwrap();
+        for (col, line) in tail.split_whitespace().enumerate() {
+            for row in 0..resolution.x {
+                if row < line.len() {
+                    output_array[col][row] = line.chars().nth(row).unwrap();
                 } else {
-                    output_array[x][y] = ' ';
+                    output_array[col][row] = ' ';
                 }
             }
         }
