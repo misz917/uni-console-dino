@@ -1,5 +1,6 @@
 use crate::utils::{ANSI, XY};
 
+#[derive(Clone)]
 pub struct Bitmap<T> {
     pub resolution: XY<usize>,
     pub map: Vec<Vec<T>>,
@@ -35,4 +36,12 @@ pub struct BitmapBuffer {
     pub active_frame: Bitmap<char>,
     pub following_frame: Bitmap<char>,
     // eventually add bool bitmap for changes
+}
+impl BitmapBuffer {
+    pub fn new(default_frame: Bitmap<char>) -> Self {
+        BitmapBuffer {
+            active_frame: default_frame.clone(),
+            following_frame: default_frame.clone(),
+        }
+    }
 }

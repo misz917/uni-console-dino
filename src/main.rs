@@ -11,6 +11,7 @@ pub mod screen;
 pub mod utils;
 pub mod window;
 
+use bitmap::BitmapBuffer;
 use screen::TerminalScreen;
 
 use crate::{
@@ -20,7 +21,7 @@ use crate::{
 
 const WINDOW_BORDER_WIDTH: XY<usize> = XY::new(2, 2);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 60.0;
+const FPS_LIMIT: f32 = 40.0;
 
 fn prepare() {
     print!("{}[H", ANSI); // move to 0,0
@@ -53,13 +54,15 @@ fn main() {
     // let bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
     // BitmapRenderer::print_bitmap(&bitmap, &WINDOW_BORDER_WIDTH);
     // screen::TerminalScreen::flush_terminal_buffer();
-    // let screen: screen::TerminalScreen = TerminalScreen::
+    let default_bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
+    let bitmap_buffer = BitmapBuffer::new(default_bitmap);
+    let screen: screen::TerminalScreen = TerminalScreen::new(bitmap_buffer, WINDOW_BORDER_WIDTH);
 
     let sleep_duration = 1.0 / FPS_LIMIT;
     loop {
         let time = SystemTime::now();
 
-        // BitmapRenderer::print_bitmap(&bitmap, border_width);
+        screen.print_screen();
 
         if let Ok(elapsed) = time.elapsed() {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
