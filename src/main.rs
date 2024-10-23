@@ -55,8 +55,9 @@ fn main() {
     let sprite_bitmap = crate::asset_server::SpriteFileReader::read(&path);
     let sprite = utils::Sprite::from_bitmap(&sprite_bitmap);
     let mut bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut bitmap, &XY::new(5, 10));
-    BitmapRenderer::print_bitmap(&bitmap, &BORDER_WIDTH);
+
+    // FrameAssembler::write_sprite_to_bitmap(&sprite, &mut bitmap, &XY::new(5, 10));
+    BitmapRenderer::print_bitmap(&sprite_bitmap, &BORDER_WIDTH);
     TerminalScreen::flush_terminal_buffer();
 
 

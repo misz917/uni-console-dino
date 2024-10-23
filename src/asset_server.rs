@@ -5,6 +5,8 @@ use crate::{
     utils::{self, Sprite, XY},
 };
 
+pub const TRANSPARENT_CHAR: char = '$'; // do not confuse with space
+
 pub struct AssetServer {
     assets: HashMap<String, Sprite>,
 }
@@ -28,41 +30,30 @@ impl SpriteFileReader {
     pub fn read(file_path: &str) -> Bitmap<char> {
         let contents = fs::read_to_string(file_path);
         if let Err(_) = contents {
-            utils::ErrorDisplayer::error(&format!("File not found at {}", file_path));
+            utils::ErrorDisplayer::error(&format!("File not found at: {}", file_path));
         }
         Self::parse_file_contents(&contents.unwrap())
     }
 
     fn parse_file_contents(contents: &String) -> Bitmap<char> {
-        let parts: Vec<&str> = contents.split(';').collect();
-        if parts.len() != 2 {
-            utils::ErrorDisplayer::error("Sprite file format error");
-        }
-        let resolution = Self::parse_header(parts[0]);
-        let map = Self::parse_tail(parts[1], &resolution);
-        Bitmap { resolution, map }
-    }
+        let lines: Vec<&str> = contents.lines().collect();
+        let resolution = XY {
+            x: lines[0].parse::<usize>().unwrap(),
+            y: lines.len() - 1,
+        };
+        let char_matrix: Vec<Vec<char>> = lines
+            .iter()
+            .skip(1)
+            .map(|&line| {
+                let mut chars: Vec<char> = line.chars().collect();
+                chars.resize(16, '$');
+                chars
+            })
+            .collect();
 
-    fn parse_header(header: &str) -> XY<usize> {
-        let numbers: Vec<&str> = header.split(':').collect();
-        XY {
-            x: numbers[0].parse::<usize>().unwrap(),
-            y: numbers[1].parse::<usize>().unwrap(),
+        Bitmap {
+            resolution,
+            map: char_matrix,
         }
-    }
-
-    // no idea how it works but it does
-    fn parse_tail(tail: &str, resolution: &XY<usize>) -> Vec<Vec<char>> {
-        let mut output_array: Vec<Vec<char>> = vec![vec![' '; resolution.y]; resolution.x];
-        for (col, line) in tail.split_whitespace().enumerate() {
-            for row in 0..resolution.x {
-                if row < line.len() {
-                    output_array[col][row] = line.chars().nth(row).unwrap();
-                } else {
-                    output_array[col][row] = ' ';
-                }
-            }
-        }
-        output_array
     }
 }
