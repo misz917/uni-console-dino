@@ -1,4 +1,4 @@
-use std::{clone, process::exit};
+use std::process::exit;
 
 use crate::utils::{ANSI, XY};
 

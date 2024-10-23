@@ -1,9 +1,8 @@
-use std::{collections::HashMap, fs, ops::Index, process::exit};
+use std::{collections::HashMap, fs, process::exit};
 
 use crate::{
     bitmap::Bitmap,
     utils::{Sprite, XY},
-    WINDOW_RESOLUTION,
 };
 
 pub struct AssetServer {

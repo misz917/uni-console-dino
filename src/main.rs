@@ -1,37 +1,22 @@
 use std::{
-    env,
-    process::exit,
-    thread::sleep,
-    time::{Duration, SystemTime},
+    env, process::exit, thread::sleep, time::{Duration, SystemTime}
 };
 
 pub mod asset_server;
 pub mod bitmap;
 pub mod frame_assembler;
-pub mod screen;
+pub mod terminal_screen;
 pub mod utils;
 pub mod window;
 
-use frame_assembler::FrameAssembler;
-use utils::Sprite;
-
 use crate::{
-    bitmap::{Bitmap, BitmapBuffer},
-    screen::TerminalScreen,
-    utils::{ANSI, XY},
+    terminal_screen::TerminalScreen,
+    utils::XY,
 };
 
 const BORDER_WIDTH: XY<usize> = XY::new(2, 2);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 30.0;
-
-fn prepare() {
-    print!("{}[H", ANSI); // move to 0,0
-    print!("{}[1m", ANSI); // enable bold mode
-    print!("{}[48;2;{};{};{}m", ANSI, 255, 0, 100); // set background color rgb
-    print!("{}[38;2;{};{};{}m", ANSI, 127, 127, 127); // set foreground color rgb
-    print!("{}[?25l", ANSI); // make cursor invisible
-}
 
 fn separate_window_creation() {
     let args: Vec<String> = env::args().collect();
@@ -57,20 +42,10 @@ fn main() {
 
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
 
-    // screen.display_frame();
-    let sprite_bitmap = Bitmap::new(XY::new(8, 8), '*');
-    let sprite = Sprite {
-        dimensions: XY::new(),
-        bitmap: todo!(),
-    }
-    let mut bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    let position = XY::new(10, 10);
-    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut bitmap, &position);
-
     loop {
         let time = SystemTime::now();
 
-        // screen.display_frame();
+        screen.display_frame();
 
         if let Ok(elapsed) = time.elapsed() {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
