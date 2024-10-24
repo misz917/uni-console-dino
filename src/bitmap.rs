@@ -1,6 +1,6 @@
 use std::process::exit;
 
-use crate::{asset_server::TRANSPARENT_CHAR, utils::{ESC, XY}, BORDER_WIDTH};
+use crate::{asset_server::TRANSPARENT_CHAR, utils::{ErrorDisplayer, ESC, XY}, BORDER_WIDTH};
 
 #[derive(Clone)]
 pub struct Bitmap<T> {
@@ -17,7 +17,6 @@ impl<T: Clone> Bitmap<T> {
     }
 }
 
-static mut GLOBAL_DATA: i32 = 0;
 
 pub struct BitmapPrinter;
 impl BitmapPrinter {
@@ -27,11 +26,9 @@ impl BitmapPrinter {
                 if *item == TRANSPARENT_CHAR {
                     continue;
                 }
-                unsafe { GLOBAL_DATA += 1 };
                 print!("{}[{};{}H{}", ESC, i + 1 + border_width.y, j + 1 + border_width.x, item);
             }
         }
-    unsafe { println!("{}", GLOBAL_DATA) };
     }
 }
 
@@ -40,6 +37,7 @@ impl BitmapPrinter {
 pub struct BitmapBuffer {
     active_frame: Bitmap<char>,
     following_frame: Bitmap<char>,
+    possible_update: bool,
     resolution: XY<usize>,
 }
 impl BitmapBuffer {
@@ -48,29 +46,33 @@ impl BitmapBuffer {
         BitmapBuffer {
             active_frame: default_frame.clone(),
             following_frame: default_frame.clone(),
+            possible_update: true,
             resolution,
         }
     }
 
     pub fn update(&mut self) {
-        for col in 0..self.resolution.y {
-            for row in 0..self.resolution.x {
-                let new = self.following_frame.matrix[col][row];
-                let old = self.active_frame.matrix[col][row];
-                if old != new {
-                    self.active_frame.matrix[col][row] = new;
+        if !self.possible_update {
+            return;
+        }
+        for row in 0..self.resolution.y {
+            for col in 0..self.resolution.x {
+                if self.active_frame.matrix[row][col] == self.following_frame.matrix[row][col] {
+                    self.active_frame.matrix[row][col] = TRANSPARENT_CHAR.clone();
                 } else {
-                    self.active_frame.matrix[col][row] = TRANSPARENT_CHAR;
+                    self.active_frame.matrix[row][col] = self.following_frame.matrix[row][col].clone();
                 }
             }
         }
+        self.possible_update = false;
     }
 
     pub fn new_following_frame(&mut self, new_frame: &Bitmap<char>) {
         if new_frame.resolution != self.resolution {
-            exit(1);
+            ErrorDisplayer::error("New frame has incorrect resolution");
         }
         self.following_frame = new_frame.clone();
+        self.possible_update = true;
     }
 
     pub fn get_active_frame(&self) -> &Bitmap<char> {
