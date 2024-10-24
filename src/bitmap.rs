@@ -17,6 +17,8 @@ impl<T: Clone> Bitmap<T> {
     }
 }
 
+static mut GLOBAL_DATA: i32 = 0;
+
 pub struct BitmapPrinter;
 impl BitmapPrinter {
     pub fn print_bitmap (bitmap: &Bitmap<char>, border_width: &XY<usize>) {
@@ -25,18 +27,20 @@ impl BitmapPrinter {
                 if *item == TRANSPARENT_CHAR {
                     continue;
                 }
+                unsafe { GLOBAL_DATA += 1 };
                 print!("{}[{};{}H{}", ESC, i + 1 + border_width.y, j + 1 + border_width.x, item);
             }
         }
+    unsafe { println!("{}", GLOBAL_DATA) };
     }
 }
 
 
 #[derive(Clone)]
 pub struct BitmapBuffer {
-    pub active_frame: Bitmap<char>,
-    pub following_frame: Bitmap<char>,
-    pub resolution: XY<usize>,
+    active_frame: Bitmap<char>,
+    following_frame: Bitmap<char>,
+    resolution: XY<usize>,
 }
 impl BitmapBuffer {
     pub fn new(default_frame: &Bitmap<char>) -> Self {

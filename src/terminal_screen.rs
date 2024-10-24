@@ -1,5 +1,5 @@
 use crate::{
-    bitmap::{Bitmap, BitmapBuffer},
+    bitmap::{Bitmap, BitmapBuffer, BitmapPrinter},
     utils::{ESC, XY},
 };
 use std::io::{self, Write};
@@ -26,9 +26,9 @@ impl TerminalScreen {
 
     pub fn display_frame(&mut self) {
         Self::move_cursor_home();
-        // BufferPrinter::print_bitmap(&self.bitmap_buffer, &self.border_width);
+        BitmapPrinter::print_bitmap(&self.bitmap_buffer.get_active_frame(), &self.border_width);
+        self.bitmap_buffer.update();
         Self::flush_terminal_buffer();
-        // self.bitmap_buffer.update(); // should be done while adding a new frame
     }
 
     // fixes a problem where terminal doesn't print out a number of characters
