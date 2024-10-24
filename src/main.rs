@@ -1,5 +1,5 @@
 use std::{
-    env, process::exit, thread::sleep, time::{Duration, SystemTime}
+    borrow::Borrow, env, process::exit, thread::sleep, time::{Duration, SystemTime}
 };
 
 pub mod asset_server;
@@ -11,6 +11,7 @@ pub mod window;
 
 use bitmap::{Bitmap, BitmapPrinter};
 use frame_assembler::FrameAssembler;
+use window::{GnomeTerminal, WindowCreator};
 
 use crate::{
     terminal_screen::TerminalScreen,
@@ -21,26 +22,8 @@ const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 30.0; // buggy above ~46
 
-fn separate_window_creation() {
-    let args: Vec<String> = env::args().collect();
-    let mut ready: bool = false;
-    for arg in &args {
-        if arg == "-ready" {
-            ready = true;
-        }
-    }
-    if !ready {
-        window::WindowCreator::open_new_window(
-            window::GnomeTerminal,
-            WINDOW_RESOLUTION,
-            BORDER_WIDTH,
-        );
-        exit(0); // this exit is not an error
-    }
-}
-
 fn main() {
-    separate_window_creation();
+    WindowCreator::separate_window_creation(WINDOW_RESOLUTION, BORDER_WIDTH, &GnomeTerminal);
     let sleep_duration = 1.0 / FPS_LIMIT;
     // let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
 

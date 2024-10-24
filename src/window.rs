@@ -1,5 +1,9 @@
-use crate::utils::XY;
-use std::{env, process::Command};
+use crate::{utils::XY, BORDER_WIDTH, WINDOW_RESOLUTION};
+use std::{env, process::{exit, Command}};
+
+pub enum TerminalType {
+    GnomeTerminal,
+}
 
 pub trait Terminal {
     fn open(&self, resolution: XY<usize>, border_width: XY<usize>);
@@ -41,11 +45,29 @@ impl TerminalResultHandler {
 
 pub struct WindowCreator;
 impl WindowCreator {
-    pub fn open_new_window<T: Terminal>(
-        terminal: T,
+    fn open_new_window<T: Terminal>(
+        terminal: &T,
         resolution: XY<usize>,
         border_width: XY<usize>,
     ) {
         terminal.open(resolution, border_width);
+    }
+
+    pub fn separate_window_creation<T: Terminal>(window_resolution: XY<usize>, border_width: XY<usize>, terminal: &T) {
+        let args: Vec<String> = env::args().collect();
+        let mut ready: bool = false;
+        for arg in &args {
+            if arg == "-ready" {
+                ready = true;
+            }
+        }
+        if !ready {
+            Self::open_new_window(
+                terminal,
+                window_resolution,
+                border_width,
+            );
+            exit(0); // this exit is not an error
+        }
     }
 }
