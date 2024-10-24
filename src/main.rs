@@ -17,7 +17,7 @@ use crate::{
     utils::XY,
 };
 
-const BORDER_WIDTH: XY<usize> = XY::new(2, 2); // buggy
+const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 30.0; // buggy above ~46
 
@@ -48,11 +48,12 @@ fn main() {
     let binding = env::current_exe().unwrap();
     let binding = binding.parent().unwrap().parent().unwrap().parent().unwrap();
     let path = binding.to_string_lossy() + "/src/assets/dino_sprite.txt";
-
     let sprite = utils::Sprite::from_bitmap(&crate::asset_server::SpriteFileReader::read(&path));
+    // creates a sprite ^
+
     let mut bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
     bitmap.matrix[1][4] = 'E';
-    BitmapPrinter::print_bitmap(&bitmap);
+    BitmapPrinter::print_bitmap(&bitmap, &BORDER_WIDTH);
     TerminalScreen::flush_terminal_buffer();
 
     loop {

@@ -12,26 +12,33 @@ impl<T: Clone> Bitmap<T> {
     pub fn new(resolution: XY<usize>, default_contents: T) -> Self {
         Bitmap {
             resolution,
-            matrix: vec![vec![default_contents.clone(); resolution.y]; resolution.x],
+            matrix: vec![vec![default_contents.clone(); resolution.x]; resolution.y],
         }
     }
 }
 
 pub struct BitmapPrinter;
 impl BitmapPrinter {
-    pub fn print_bitmap(bitmap: &Bitmap<char>) {
-        for row in 0..bitmap.resolution.x { // Iterate over rows first (x-axis)
-            for col in 0..bitmap.resolution.y { // Iterate over columns (y-axis)
-                if bitmap.matrix[col][row] == TRANSPARENT_CHAR {
-                    continue;
-                }
-                print!(
-                    "{}[{};{}f{}",
-                    ESC,
-                    row + BORDER_WIDTH.x, // Use row for x
-                    col + BORDER_WIDTH.y, // Use col for y
-                    bitmap.matrix[col][row]
-                );
+    // pub fn print_bitmap(bitmap: &Bitmap<char>) {
+    //     for row in 0..bitmap.resolution.x {
+    //         for col in 0..bitmap.resolution.y {
+    //             if bitmap.matrix[col][row] == TRANSPARENT_CHAR {
+    //                 continue;
+    //             }
+    //             print!(
+    //                 "{}[{};{}f{}",
+    //                 ESC,
+    //                 row + BORDER_WIDTH.x,
+    //                 col + BORDER_WIDTH.y,
+    //                 bitmap.matrix[col][row]
+    //             );
+    //         }
+    //     }
+    // }
+    pub fn print_bitmap (bitmap: &Bitmap<char>, border_width: &XY<usize>) {
+        for (i, row) in bitmap.matrix.iter().enumerate() {
+            for (j, item) in row.iter().enumerate() {
+                print!("{}[{};{}H{}", ESC, i + 1 + border_width.y, j + 1 + border_width.x, item);
             }
         }
     }

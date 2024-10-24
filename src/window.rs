@@ -13,8 +13,8 @@ impl Terminal for GnomeTerminal {
                 "--geometry",
                 &format!(
                     "{}x{}",
-                    resolution.x + border_width.x,
-                    resolution.y + border_width.y,
+                    resolution.x + border_width.x * 2,
+                    resolution.y + border_width.y * 2,
                 ),
                 "--",
                 "bash",
