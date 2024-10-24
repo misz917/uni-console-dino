@@ -12,7 +12,6 @@ pub mod window;
 
 use asset_server::AssetServer;
 use frame_assembler::FrameAssembler;
-use utils::Sprite;
 use window::Terminal;
 
 use crate::{

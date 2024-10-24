@@ -15,7 +15,6 @@ impl<T: Clone> Bitmap<T> {
     }
 }
 
-
 pub struct BitmapPrinter;
 impl BitmapPrinter {
     pub fn print_bitmap (bitmap: &Bitmap<char>, border_width: &XY<usize>) {
@@ -29,7 +28,6 @@ impl BitmapPrinter {
         }
     }
 }
-
 
 #[derive(Clone)]
 pub struct BitmapBuffer {
