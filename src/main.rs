@@ -23,7 +23,7 @@ use crate::{
 // create a settings file later
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 2.0; // buggy above ~46
+const FPS_LIMIT: f32 = 5.0; // buggy above ~46
 
 fn main() {
     WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &GnomeTerminal);
@@ -44,7 +44,7 @@ fn main() {
     // creates a sprite ^
 
     let mut new_frame = Bitmap::new(WINDOW_RESOLUTION, '#');
-    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut new_frame, &XY::new(0, 0));
+    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut new_frame, &XY::new(5, 0));
 
     let mut frame_count: u128 = 0;
     loop {
