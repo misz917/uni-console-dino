@@ -1,6 +1,6 @@
 use std::process::exit;
 
-use crate::utils::{ESC, XY};
+use crate::{asset_server::TRANSPARENT_CHAR, utils::{ESC, XY}, BORDER_WIDTH};
 
 #[derive(Clone)]
 pub struct Bitmap<T> {
@@ -12,36 +12,36 @@ impl<T: Clone> Bitmap<T> {
     pub fn new(resolution: XY<usize>, default_contents: T) -> Self {
         Bitmap {
             resolution,
-            matrix: vec![vec![default_contents.clone(); resolution.x]; resolution.y],
+            matrix: vec![vec![default_contents.clone(); resolution.y]; resolution.x],
         }
     }
 }
 
-pub struct BufferPrinter;
-impl BufferPrinter {
-    pub fn print_bitmap(bitmap_buffer: &BitmapBuffer, border_width: &XY<usize>) {
-        for y in 0..bitmap_buffer.resolution.y {
-            for x in 0..bitmap_buffer.resolution.x {
-                if bitmap_buffer.get_active_frame().matrix[y][x] == '$' || !bitmap_buffer.changed_pixels.matrix[y][x] {
+pub struct BitmapPrinter;
+impl BitmapPrinter {
+    pub fn print_bitmap(bitmap: &Bitmap<char>) {
+        for row in 0..bitmap.resolution.x { // Iterate over rows first (x-axis)
+            for col in 0..bitmap.resolution.y { // Iterate over columns (y-axis)
+                if bitmap.matrix[col][row] == TRANSPARENT_CHAR {
                     continue;
                 }
                 print!(
                     "{}[{};{}f{}",
                     ESC,
-                    y + border_width.y,
-                    x + border_width.x,
-                    bitmap_buffer.active_frame.matrix[y][x]
+                    row + BORDER_WIDTH.x, // Use row for x
+                    col + BORDER_WIDTH.y, // Use col for y
+                    bitmap.matrix[col][row]
                 );
             }
         }
     }
 }
 
+
 #[derive(Clone)]
 pub struct BitmapBuffer {
     pub active_frame: Bitmap<char>,
     pub following_frame: Bitmap<char>,
-    pub changed_pixels: Bitmap<bool>,
     pub resolution: XY<usize>,
 }
 impl BitmapBuffer {
@@ -50,7 +50,6 @@ impl BitmapBuffer {
         BitmapBuffer {
             active_frame: default_frame.clone(),
             following_frame: default_frame.clone(),
-            changed_pixels: Bitmap::new(resolution, false),
             resolution,
         }
     }
@@ -62,9 +61,8 @@ impl BitmapBuffer {
                 let old = self.active_frame.matrix[col][row];
                 if old != new {
                     self.active_frame.matrix[col][row] = new;
-                    self.changed_pixels.matrix[col][row] = true;
                 } else {
-                    self.changed_pixels.matrix[col][row] = false;
+                    self.active_frame.matrix[col][row] = TRANSPARENT_CHAR;
                 }
             }
         }

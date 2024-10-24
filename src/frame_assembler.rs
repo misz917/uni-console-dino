@@ -9,7 +9,7 @@ impl FrameAssembler {
     pub fn write_sprite_to_bitmap(sprite: &Sprite, bitmap: &mut Bitmap<char>, position: &XY<i32>) {
         for col in 0..sprite.bitmap.resolution.x {
             for row in 0..sprite.bitmap.resolution.y {
-                bitmap.matrix[row][col] = sprite.bitmap.matrix[row][col];
+                bitmap.matrix[row + position.x as usize][col + position.y as usize] = sprite.bitmap.matrix[row][col];
             }
         }
     }
