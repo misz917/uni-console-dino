@@ -11,8 +11,8 @@ pub mod utils;
 pub mod window;
 
 use asset_server::AssetServer;
-use bitmap::Bitmap;
 use frame_assembler::FrameAssembler;
+use utils::Sprite;
 use window::Terminal;
 
 use crate::{
@@ -40,7 +40,7 @@ fn main() {
     let sprite = asset_server.load("dino_sprite.txt");
 
     let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
-    frame_assembler.insert_sprite(sprite, &XY::new(40, 10));
+    frame_assembler.insert_sprite(&sprite, &XY::new(40, 10));
     let new_frame = *frame_assembler.get_frame();
     screen.schedule_frame(&new_frame);
 

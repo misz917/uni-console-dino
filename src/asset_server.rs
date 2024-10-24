@@ -7,8 +7,10 @@ use crate::{
 
 pub const TRANSPARENT_CHAR: char = '$'; // works like png's transparency, do not confuse with space
 
+static mut GLOBAL_DATA: (i32, i32) = (0, 0);
+
 pub struct AssetServer {
-    assets: HashMap<String, Sprite>,
+    assets: HashMap<String, Box<Sprite>>,
     asset_directory: String,
 }
 impl AssetServer {
@@ -19,12 +21,14 @@ impl AssetServer {
         }
     }
 
-    pub fn load(&mut self, sprite_name: &str) -> &Sprite {
+    pub fn load(&mut self, sprite_name: &str) -> Box<Sprite> {
         if let None = self.assets.get(sprite_name) {
             let new_sprite = SpriteFileReader::read(&(self.asset_directory.clone() + sprite_name));
-            self.assets.insert(sprite_name.to_owned(), new_sprite);
+            self.assets.insert(sprite_name.to_owned(), Box::new(new_sprite));
+            unsafe { GLOBAL_DATA.0 += 1 };
         }
-        self.assets.get(sprite_name).unwrap()
+        unsafe { GLOBAL_DATA.1 += 1 };
+        self.assets.get(sprite_name).unwrap().clone()
     }
 }
 

@@ -26,6 +26,7 @@ where
     }
 }
 
+#[derive(Clone)]
 pub struct Sprite {
     pub bitmap: Bitmap<char>,
 }
