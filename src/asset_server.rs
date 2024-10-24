@@ -5,7 +5,7 @@ use crate::{
     utils::{self, Sprite, XY},
 };
 
-pub const TRANSPARENT_CHAR: char = '$'; // do not confuse with space
+pub const TRANSPARENT_CHAR: char = '$'; // works like png's transparency, do not confuse with space
 
 pub struct AssetServer {
     assets: HashMap<String, Sprite>,

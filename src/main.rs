@@ -1,5 +1,5 @@
 use std::{
-    env, thread::sleep, time::{Duration, SystemTime}
+    thread::sleep, time::{Duration, SystemTime}
 };
 
 pub mod asset_server;
@@ -12,7 +12,6 @@ pub mod window;
 use crate::{
     terminal_screen::TerminalScreen,
     utils::XY,
-    bitmap::{Bitmap, BitmapPrinter},
     window::{GnomeTerminal, WindowCreator},
 };
 

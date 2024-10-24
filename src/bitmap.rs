@@ -1,6 +1,4 @@
-use std::process::exit;
-
-use crate::{asset_server::TRANSPARENT_CHAR, utils::{ErrorDisplayer, ESC, XY}, BORDER_WIDTH};
+use crate::{asset_server::TRANSPARENT_CHAR, utils::{ErrorDisplayer, ESC, XY}};
 
 #[derive(Clone)]
 pub struct Bitmap<T> {
