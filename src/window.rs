@@ -1,9 +1,5 @@
-use crate::{utils::XY, BORDER_WIDTH, WINDOW_RESOLUTION};
+use crate::utils::XY;
 use std::{env, process::{exit, Command}};
-
-pub enum TerminalType {
-    GnomeTerminal,
-}
 
 pub trait Terminal {
     fn open(&self, resolution: XY<usize>, border_width: XY<usize>);
@@ -53,7 +49,7 @@ impl WindowCreator {
         terminal.open(resolution, border_width);
     }
 
-    pub fn separate_window_creation<T: Terminal>(window_resolution: XY<usize>, border_width: XY<usize>, terminal: &T) {
+    pub fn create_separate_window<T: Terminal>(window_resolution: XY<usize>, border_width: XY<usize>, terminal: &T) {
         let args: Vec<String> = env::args().collect();
         let mut ready: bool = false;
         for arg in &args {
