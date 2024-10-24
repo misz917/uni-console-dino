@@ -13,6 +13,7 @@ pub mod window;
 
 use bitmap::Bitmap;
 use frame_assembler::FrameAssembler;
+use utils::Sprite;
 
 use crate::{
     terminal_screen::TerminalScreen,
@@ -25,13 +26,7 @@ const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 5.0; // buggy above ~46
 
-fn main() {
-    WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &GnomeTerminal);
-    let sleep_duration = 1.0 / FPS_LIMIT;
-    let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
-    TerminalScreen::prepare();
-
-    // cursed stuff
+fn debug_sprite_load(sprite_name: &str) -> Sprite {
     let binding = env::current_exe().unwrap();
     let binding = binding
         .parent()
@@ -40,15 +35,24 @@ fn main() {
         .unwrap()
         .parent()
         .unwrap();
-    let path = binding.to_string_lossy() + "/src/assets/dino_sprite.txt";
-    let sprite = utils::Sprite::from_bitmap(&crate::asset_server::SpriteFileReader::read(&path));
-    // creates a sprite ^
+    let path = binding.to_string_lossy() + "/src/assets/" + sprite_name;
+    let sprite = Sprite::from_bitmap(&crate::asset_server::SpriteFileReader::read(&path));
+    return sprite;
+}
+
+fn main() {
+    WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &GnomeTerminal);
+    let sleep_duration = 1.0 / FPS_LIMIT;
+    let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
+    TerminalScreen::prepare();
+
+    let sprite = debug_sprite_load("dino_sprite.txt");
 
     let mut new_frame = Bitmap::new(WINDOW_RESOLUTION, '#');
     FrameAssembler::write_sprite_to_bitmap(&sprite, &mut new_frame, &XY::new(-1, 35));
     screen.schedule_frame(&new_frame);
 
-    let mut frame_count: u128 = 0;
+    let mut _frame_count: u128 = 0;
     loop {
         let time = SystemTime::now();
 
@@ -59,6 +63,6 @@ fn main() {
         } else {
             return;
         }
-        frame_count += 1;
+        _frame_count += 1;
     }
 }
