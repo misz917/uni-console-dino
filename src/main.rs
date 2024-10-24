@@ -29,6 +29,7 @@ fn main() {
     WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &GnomeTerminal);
     let sleep_duration = 1.0 / FPS_LIMIT;
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
+    TerminalScreen::prepare();
 
     // cursed stuff
     let binding = env::current_exe().unwrap();
