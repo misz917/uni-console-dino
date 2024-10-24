@@ -54,8 +54,8 @@ fn main() {
 
     
     let sprite_bitmap = crate::asset_server::SpriteFileReader::read(&path);
-    // let sprite = utils::Sprite::from_bitmap(&sprite_bitmap);
-    // let mut bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
+    let sprite = utils::Sprite::from_bitmap(&sprite_bitmap);
+    let mut bitmap = Bitmap::new(WINDOW_RESOLUTION, '.');
 
     let mut bitmap_buffer = BitmapBuffer {
         following_frame: sprite_bitmap.clone(),
@@ -63,11 +63,9 @@ fn main() {
         changed_pixels: Bitmap::new(sprite_bitmap.resolution, true),
         resolution: sprite_bitmap.resolution,
     };
-    
-    // FrameAssembler::write_sprite_to_bitmap(&sprite, &mut bitmap, &XY::new(5, 10));
-    BufferPrinter::print_bitmap(&bitmap_buffer, &BORDER_WIDTH);
-    TerminalScreen::flush_terminal_buffer();
     bitmap_buffer.update();
+    
+    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut bitmap, &XY::new(5, 10));
     BufferPrinter::print_bitmap(&bitmap_buffer, &BORDER_WIDTH);
     TerminalScreen::flush_terminal_buffer();
 
