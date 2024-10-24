@@ -14,6 +14,7 @@ pub mod window;
 use bitmap::Bitmap;
 use frame_assembler::FrameAssembler;
 use utils::Sprite;
+use window::{Terminal, UnixTerminalHandler};
 
 use crate::{
     terminal_screen::TerminalScreen,
@@ -41,11 +42,15 @@ fn debug_sprite_load(sprite_name: &str) -> Sprite {
 }
 
 fn main() {
-    WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &GnomeTerminal);
     let sleep_duration = 1.0 / FPS_LIMIT;
+    let gnome = GnomeTerminal::new();
+    WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome);
+    gnome.set_raw_mode();
+
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
     TerminalScreen::prepare();
 
+    
     let sprite = debug_sprite_load("dino_sprite.txt");
 
     let mut new_frame = Bitmap::new(WINDOW_RESOLUTION, '#');

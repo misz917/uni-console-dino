@@ -3,12 +3,14 @@ use std::{env, io::Read, os::fd::AsRawFd, process::{exit, Command}};
 
 pub trait Terminal {
     fn open(&self, resolution: XY<usize>, border_width: XY<usize>);
+    fn set_raw_mode(&self);
+    fn read_key(&self) -> Option<char>;
 }
 
 pub struct UnixTerminalHandler;
 impl UnixTerminalHandler {
     // C wizardry, stolen from the internet
-    pub fn set_raw_mode() {
+    pub fn set_raw_mode(&self) {
         let fd = std::io::stdin().as_raw_fd();
         let mut old_termios = libc::termios {
             c_iflag: 0,
@@ -30,7 +32,7 @@ impl UnixTerminalHandler {
         }
     }
 
-    pub fn read_key() -> Option<char> {
+    pub fn read_key(&self) -> Option<char> {
         let mut buffer = [0; 1];
         if let Ok(n) = std::io::stdin().read(&mut buffer) {
             if n > 0 {
@@ -41,7 +43,16 @@ impl UnixTerminalHandler {
     }
 }
 
-pub struct GnomeTerminal;
+pub struct GnomeTerminal {
+    handler: UnixTerminalHandler,
+}
+impl GnomeTerminal {
+    pub fn new() -> Self {
+        GnomeTerminal {
+            handler: UnixTerminalHandler,
+        }
+    }
+}
 impl Terminal for GnomeTerminal {
     fn open(&self, resolution: XY<usize>, border_width: XY<usize>) {
         let output = Command::new("gnome-terminal")
@@ -61,6 +72,14 @@ impl Terminal for GnomeTerminal {
             .expect("Failed to open");
 
         TerminalResultHandler::handle(output);
+    }
+
+    fn set_raw_mode(&self) {
+        self.handler.set_raw_mode();
+    }
+
+    fn read_key(&self) -> Option<char> {
+        self.handler.read_key()
     }
 }
 
