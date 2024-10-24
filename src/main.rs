@@ -39,8 +39,9 @@ fn main() {
     let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
     let sprite = asset_server.load("dino_sprite.txt");
 
-    let mut new_frame = Bitmap::new(WINDOW_RESOLUTION, '#');
-    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut new_frame, &XY::new(-1, 35));
+    let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
+    frame_assembler.insert_sprite(sprite, &XY::new(40, 10));
+    let new_frame = *frame_assembler.get_frame();
     screen.schedule_frame(&new_frame);
 
     let mut _frame_count: u128 = 0;
