@@ -1,8 +1,44 @@
 use crate::utils::XY;
-use std::{env, process::{exit, Command}};
+use std::{env, io::Read, os::fd::AsRawFd, process::{exit, Command}};
 
 pub trait Terminal {
     fn open(&self, resolution: XY<usize>, border_width: XY<usize>);
+}
+
+pub struct UnixTerminalHandler;
+impl UnixTerminalHandler {
+    // C wizardry, stolen from the internet
+    pub fn set_raw_mode() {
+        let fd = std::io::stdin().as_raw_fd();
+        let mut old_termios = libc::termios {
+            c_iflag: 0,
+            c_oflag: 0,
+            c_cflag: 0,
+            c_lflag: 0,
+            c_cc: [0; 32],
+            c_ispeed: 0,
+            c_ospeed: 0,
+            c_line: 0,
+        };
+        unsafe {
+            libc::tcgetattr(fd, &mut old_termios);
+            let mut raw = old_termios;
+            raw.c_lflag &= !(libc::ICANON | libc::ECHO);
+            raw.c_cc[libc::VMIN] = 1;
+            raw.c_cc[libc::VTIME] = 0;
+            libc::tcsetattr(fd, libc::TCSANOW, &raw);
+        }
+    }
+
+    pub fn read_key() -> Option<char> {
+        let mut buffer = [0; 1];
+        if let Ok(n) = std::io::stdin().read(&mut buffer) {
+            if n > 0 {
+                return Some(buffer[0] as char);
+            }
+        }
+        None
+    }
 }
 
 pub struct GnomeTerminal;
