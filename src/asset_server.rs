@@ -9,30 +9,33 @@ pub const TRANSPARENT_CHAR: char = '$'; // works like png's transparency, do not
 
 pub struct AssetServer {
     assets: HashMap<String, Sprite>,
+    asset_directory: String,
 }
 impl AssetServer {
-    pub fn new() -> Self {
+    pub fn new(asset_directory: &str) -> Self {
         AssetServer {
             assets: HashMap::new(),
+            asset_directory: asset_directory.to_owned(),
         }
     }
 
-    pub fn load(&self, sprite_name: &String) -> &Sprite {
-        match self.assets.get(sprite_name) {
-            Some(sprite) => return sprite,
-            None => todo!(),
+    pub fn load(&mut self, sprite_name: &str) -> &Sprite {
+        if let None = self.assets.get(sprite_name) {
+            let new_sprite = SpriteFileReader::read(&(self.asset_directory.clone() + sprite_name));
+            self.assets.insert(sprite_name.to_owned(), new_sprite);
         }
+        self.assets.get(sprite_name).unwrap()
     }
 }
 
-pub struct SpriteFileReader;
+struct SpriteFileReader;
 impl SpriteFileReader {
-    pub fn read(file_path: &str) -> Bitmap<char> {
+    pub fn read(file_path: &str) -> Sprite {
         let contents = fs::read_to_string(file_path);
         if let Err(_) = contents {
             utils::ErrorDisplayer::error(&format!("File not found at: {}", file_path));
         }
-        Self::parse_file_contents(&contents.unwrap())
+        Sprite::from_bitmap(&Self::parse_file_contents(&contents.unwrap()))
     }
 
     fn parse_file_contents(contents: &String) -> Bitmap<char> {

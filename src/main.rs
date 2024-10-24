@@ -11,6 +11,7 @@ pub mod terminal_screen;
 pub mod utils;
 pub mod window;
 
+use asset_server::AssetServer;
 use bitmap::Bitmap;
 use frame_assembler::FrameAssembler;
 use utils::Sprite;
@@ -27,19 +28,19 @@ const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 5.0; // buggy above ~46
 
-fn debug_sprite_load(sprite_name: &str) -> Sprite {
-    let binding = env::current_exe().unwrap();
-    let binding = binding
-        .parent()
-        .unwrap()
-        .parent()
-        .unwrap()
-        .parent()
-        .unwrap();
-    let path = binding.to_string_lossy() + "/src/assets/" + sprite_name;
-    let sprite = Sprite::from_bitmap(&crate::asset_server::SpriteFileReader::read(&path));
-    return sprite;
-}
+// fn debug_sprite_load(sprite_name: &str) -> Sprite {
+//     let binding = env::current_exe().unwrap();
+//     let binding = binding
+//         .parent()
+//         .unwrap()
+//         .parent()
+//         .unwrap()
+//         .parent()
+//         .unwrap();
+//     let path = binding.to_string_lossy() + "/src/assets/" + sprite_name;
+//     let sprite = Sprite::from_bitmap(&crate::asset_server::SpriteFileReader::read(&path));
+//     return sprite;
+// }
 
 fn main() {
     let sleep_duration = 1.0 / FPS_LIMIT;
@@ -50,8 +51,9 @@ fn main() {
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
     TerminalScreen::prepare();
 
-    
-    let sprite = debug_sprite_load("dino_sprite.txt");
+
+    let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
+    let sprite = asset_server.load("dino_sprite.txt");
 
     let mut new_frame = Bitmap::new(WINDOW_RESOLUTION, '#');
     FrameAssembler::write_sprite_to_bitmap(&sprite, &mut new_frame, &XY::new(-1, 35));
