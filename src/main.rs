@@ -34,7 +34,7 @@ fn main() {
     // creates a sprite ^
 
     let mut bitmap = Bitmap::new(WINDOW_RESOLUTION, '#');
-    bitmap.matrix[1][4] = 'E';
+    bitmap.matrix[1][4] = '$';
     BitmapPrinter::print_bitmap(&bitmap, &BORDER_WIDTH);
     TerminalScreen::flush_terminal_buffer();
 

@@ -19,25 +19,12 @@ impl<T: Clone> Bitmap<T> {
 
 pub struct BitmapPrinter;
 impl BitmapPrinter {
-    // pub fn print_bitmap(bitmap: &Bitmap<char>) {
-    //     for row in 0..bitmap.resolution.x {
-    //         for col in 0..bitmap.resolution.y {
-    //             if bitmap.matrix[col][row] == TRANSPARENT_CHAR {
-    //                 continue;
-    //             }
-    //             print!(
-    //                 "{}[{};{}f{}",
-    //                 ESC,
-    //                 row + BORDER_WIDTH.x,
-    //                 col + BORDER_WIDTH.y,
-    //                 bitmap.matrix[col][row]
-    //             );
-    //         }
-    //     }
-    // }
     pub fn print_bitmap (bitmap: &Bitmap<char>, border_width: &XY<usize>) {
         for (i, row) in bitmap.matrix.iter().enumerate() {
             for (j, item) in row.iter().enumerate() {
+                if *item == TRANSPARENT_CHAR {
+                    continue;
+                }
                 print!("{}[{};{}H{}", ESC, i + 1 + border_width.y, j + 1 + border_width.x, item);
             }
         }
