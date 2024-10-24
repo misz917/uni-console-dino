@@ -24,6 +24,10 @@ impl TerminalScreen {
         }
     }
 
+    pub fn schedule_frame(&mut self, new_frame: &Bitmap<char>) {
+        self.bitmap_buffer.new_following_frame(new_frame);
+    }
+
     pub fn display_frame(&mut self) {
         Self::move_cursor_home();
         BitmapPrinter::print_bitmap(&self.bitmap_buffer.get_active_frame(), &self.border_width);
