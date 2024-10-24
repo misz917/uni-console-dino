@@ -44,7 +44,7 @@ fn main() {
     // creates a sprite ^
 
     let mut new_frame = Bitmap::new(WINDOW_RESOLUTION, '#');
-    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut new_frame, &XY::new(5, 0));
+    FrameAssembler::write_sprite_to_bitmap(&sprite, &mut new_frame, &XY::new(-1, 2));
 
     let mut frame_count: u128 = 0;
     loop {
