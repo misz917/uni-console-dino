@@ -1,5 +1,4 @@
 use std::{
-    env,
     thread::sleep,
     time::{Duration, SystemTime},
 };
@@ -14,8 +13,7 @@ pub mod window;
 use asset_server::AssetServer;
 use bitmap::Bitmap;
 use frame_assembler::FrameAssembler;
-use utils::Sprite;
-use window::{Terminal, UnixTerminalHandler};
+use window::Terminal;
 
 use crate::{
     terminal_screen::TerminalScreen,
@@ -27,20 +25,6 @@ use crate::{
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 5.0; // buggy above ~46
-
-// fn debug_sprite_load(sprite_name: &str) -> Sprite {
-//     let binding = env::current_exe().unwrap();
-//     let binding = binding
-//         .parent()
-//         .unwrap()
-//         .parent()
-//         .unwrap()
-//         .parent()
-//         .unwrap();
-//     let path = binding.to_string_lossy() + "/src/assets/" + sprite_name;
-//     let sprite = Sprite::from_bitmap(&crate::asset_server::SpriteFileReader::read(&path));
-//     return sprite;
-// }
 
 fn main() {
     let sleep_duration = 1.0 / FPS_LIMIT;
