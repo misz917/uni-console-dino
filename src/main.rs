@@ -11,7 +11,9 @@ pub mod utils;
 pub mod window;
 
 use asset_server::AssetServer;
+use bitmap::Bitmap;
 use frame_assembler::FrameAssembler;
+use utils::Sprite;
 use window::Terminal;
 
 use crate::{
@@ -23,7 +25,7 @@ use crate::{
 // create a settings file later
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 5.0; // buggy above ~46
+const FPS_LIMIT: f32 = 10.0; // buggy above ~46
 
 fn main() {
     let sleep_duration = 1.0 / FPS_LIMIT;
@@ -38,14 +40,18 @@ fn main() {
     let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
     let sprite = asset_server.load("dino_sprite.txt");
 
-    let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
-    frame_assembler.insert_sprite(&sprite, &XY::new(40, 10));
-    let new_frame = *frame_assembler.get_frame();
-    screen.schedule_frame(&new_frame);
+    // let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
+    // frame_assembler.insert_sprite(&sprite, &XY::new(40, 10));
+    // let new_frame = *frame_assembler.get_frame();
+    // screen.schedule_frame(&new_frame);
 
     let mut _frame_count: u128 = 0;
     loop {
         let time = SystemTime::now();
+
+        let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
+        frame_assembler.insert_sprite(&Sprite::from_bitmap(&Bitmap::from_string(&_frame_count.to_string())), &XY::new(1, 1));
+        screen.schedule_frame(&frame_assembler.get_frame());
 
         screen.display_frame();
 
