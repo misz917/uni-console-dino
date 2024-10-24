@@ -5,14 +5,14 @@ use crate::utils::{ESC, XY};
 #[derive(Clone)]
 pub struct Bitmap<T> {
     pub resolution: XY<usize>,
-    pub map: Vec<Vec<T>>,
+    pub matrix: Vec<Vec<T>>,
 }
 
 impl<T: Clone> Bitmap<T> {
     pub fn new(resolution: XY<usize>, default_contents: T) -> Self {
         Bitmap {
             resolution,
-            map: vec![vec![default_contents.clone(); resolution.x]; resolution.y],
+            matrix: vec![vec![default_contents.clone(); resolution.x]; resolution.y],
         }
     }
 }
@@ -22,7 +22,7 @@ impl BufferPrinter {
     pub fn print_bitmap(bitmap_buffer: &BitmapBuffer, border_width: &XY<usize>) {
         for y in 0..bitmap_buffer.resolution.y {
             for x in 0..bitmap_buffer.resolution.x {
-                if bitmap_buffer.get_active_frame().map[y][x] == '$' || !bitmap_buffer.changed_pixels.map[y][x] {
+                if bitmap_buffer.get_active_frame().matrix[y][x] == '$' || !bitmap_buffer.changed_pixels.matrix[y][x] {
                     continue;
                 }
                 print!(
@@ -30,7 +30,7 @@ impl BufferPrinter {
                     ESC,
                     y + border_width.y,
                     x + border_width.x,
-                    bitmap_buffer.active_frame.map[y][x]
+                    bitmap_buffer.active_frame.matrix[y][x]
                 );
             }
         }
@@ -58,13 +58,13 @@ impl BitmapBuffer {
     pub fn update(&mut self) {
         for col in 0..self.resolution.y {
             for row in 0..self.resolution.x {
-                let new = self.following_frame.map[col][row];
-                let old = self.active_frame.map[col][row];
+                let new = self.following_frame.matrix[col][row];
+                let old = self.active_frame.matrix[col][row];
                 if old != new {
-                    self.active_frame.map[col][row] = new;
-                    self.changed_pixels.map[col][row] = true;
+                    self.active_frame.matrix[col][row] = new;
+                    self.changed_pixels.matrix[col][row] = true;
                 } else {
-                    self.changed_pixels.map[col][row] = false;
+                    self.changed_pixels.matrix[col][row] = false;
                 }
             }
         }

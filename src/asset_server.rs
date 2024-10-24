@@ -53,7 +53,7 @@ impl SpriteFileReader {
 
         Bitmap {
             resolution,
-            map: char_matrix,
+            matrix: char_matrix,
         }
     }
 }
