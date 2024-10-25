@@ -1,5 +1,5 @@
 use crate::{
-    asset_server::TRANSPARENT_CHAR, bitmap::Bitmap, utils::{Sprite, XY}
+    asset_server::TRANSPARENT_CHAR, bitmap::Bitmap, bitmap_wrapper::Sprite, utils::XY
 };
 
 pub struct FrameAssembler {

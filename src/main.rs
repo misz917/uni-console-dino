@@ -10,17 +10,16 @@ pub mod terminal_screen;
 pub mod utils;
 pub mod window;
 pub mod bitmap_buffer;
-
-use asset_server::AssetServer;
-use bitmap::Bitmap;
-use frame_assembler::FrameAssembler;
-use utils::Sprite;
-use window::Terminal;
+pub mod bitmap_wrapper;
 
 use crate::{
     terminal_screen::TerminalScreen,
     utils::XY,
-    window::{GnomeTerminal, WindowCreator},
+    window::{GnomeTerminal, WindowCreator, Terminal},
+    asset_server::AssetServer,
+    bitmap::Bitmap,
+    bitmap_wrapper::Sprite,
+    frame_assembler::FrameAssembler,
 };
 
 // create a settings file later
@@ -36,7 +35,6 @@ fn main() {
 
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
     TerminalScreen::prepare();
-
 
     let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
     let sprite = asset_server.load("dino_sprite.txt");
