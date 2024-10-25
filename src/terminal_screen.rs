@@ -1,7 +1,7 @@
 use std::io::{self, Write};
 use crate::{
-    bitmap::{Bitmap, BitmapPrinter},
-    bitmap_buffer::BitmapBuffer,
+    bitmap::{Bitmap, BitmapPrinter, Printer},
+    bitmap_buffer::{BitmapBuffer, BufferManager},
     utils::{ESC, XY},
 };
 
@@ -37,5 +37,35 @@ impl TerminalHelper {
 
     fn enable_bold_mode() {
         print!("{}[1m", ESC);
+    }
+}
+
+pub struct TerminalScreen<B: BufferManager, P: Printer> {
+    buffer: B,
+    printer: P,
+    border_width: XY<usize>,
+}
+impl<B: BufferManager, P: Printer> TerminalScreen<B, P> {
+    pub fn new(buffer: B, printer: P, border_width: XY<usize>) -> Self {
+        TerminalScreen {
+            buffer,
+            printer,
+            border_width,
+        }
+    }
+
+    pub fn schedule_frame(&mut self, new_frame: &Bitmap<char>) {
+        self.buffer.new_following_frame(new_frame);
+    }
+
+    pub fn display_frame(&mut self) {
+        TerminalHelper::move_cursor_home();
+        self.printer.print(&self.buffer.get_active_frame(), &self.border_width);
+        self.buffer.update();
+        TerminalHelper::flush_terminal_buffer();
+    }
+
+    pub fn prepare() {
+        TerminalHelper::prepare_terminal();
     }
 }
