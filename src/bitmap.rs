@@ -17,9 +17,13 @@ impl<T: Clone> Bitmap<T> {
     }
 }
 
+pub trait BitmapDisplayer {
+    fn print(bitmap: &Bitmap<char>, border_width: &XY<usize>);
+}
+
 pub struct BitmapPrinter;
-impl BitmapPrinter {
-    pub fn print_bitmap (bitmap: &Bitmap<char>, border_width: &XY<usize>) {
+impl BitmapDisplayer for BitmapPrinter {
+    fn print (bitmap: &Bitmap<char>, border_width: &XY<usize>) {
         for (i, row) in bitmap.matrix.iter().enumerate() {
             for (j, item) in row.iter().enumerate() {
                 if *item == TRANSPARENT_CHAR {
