@@ -5,38 +5,16 @@ use crate::{
     utils::{ESC, XY},
 };
 
-pub struct TerminalScreen {
-    bitmap_buffer: BitmapBuffer,
-    border_width: XY<usize>,
-}
-impl TerminalScreen {
-    pub fn new(bitmap_buffer: &BitmapBuffer, border_width: XY<usize>) -> Self {
-        TerminalScreen {
-            bitmap_buffer: bitmap_buffer.clone(),
-            border_width,
-        }
-    }
-
-    pub fn new_default(resolution: XY<usize>, border_width: XY<usize>) -> Self {
-        let bitmap = Bitmap::new(resolution, '#');
-        TerminalScreen {
-            bitmap_buffer: BitmapBuffer::new(&bitmap),
-            border_width,
-        }
-    }
-
-    pub fn schedule_frame(&mut self, new_frame: &Bitmap<char>) {
-        self.bitmap_buffer.new_following_frame(new_frame);
-    }
-
-    pub fn display_frame(&mut self) {
+pub struct TerminalHelper;
+impl TerminalHelper {
+    pub fn prepare_terminal() {
+        Self::set_character_color(255, 255, 255);
+        Self::set_background_color(10, 50, 150);
+        Self::disable_cursor_visibility();
+        Self::enable_bold_mode();
         Self::move_cursor_home();
-        BitmapPrinter::print_bitmap(&self.bitmap_buffer.get_active_frame(), &self.border_width);
-        self.bitmap_buffer.update();
-        Self::flush_terminal_buffer();
     }
 
-    // fixes a problem where terminal doesn't print out a number of characters
     pub fn flush_terminal_buffer() {
         io::stdout().flush().unwrap();
     }
@@ -45,11 +23,19 @@ impl TerminalScreen {
         print!("{}[H", ESC);
     }
 
-    pub fn prepare() {
-        print!("{}[1m", ESC); // enable bold mode
-        print!("{}[48;2;{};{};{}m", ESC, 10, 50, 150); // set background color rgb
-        print!("{}[38;2;{};{};{}m", ESC, 255, 255, 255); // set foreground color rgb
-        print!("{}[?25l", ESC); // make cursor invisible
-        print!("{}[H", ESC); // move to 0,0
+    fn set_background_color(r: u8, g: u8, b: u8) {
+        print!("{}[48;2;{};{};{}m", ESC, r, g, b);
+    }
+
+    fn set_character_color(r: u8, g: u8, b: u8) {
+        print!("{}[38;2;{};{};{}m", ESC, r, g, b);
+    }
+
+    fn disable_cursor_visibility() {
+        print!("{}[?25l", ESC);
+    }
+
+    fn enable_bold_mode() {
+        print!("{}[1m", ESC);
     }
 }
