@@ -24,7 +24,7 @@ use crate::{
 // create a settings file later
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 10.0; // buggy above ~46
+const FPS_LIMIT: f32 = 30.0; // buggy above ~46
 
 fn main() {
     let sleep_duration = 1.0 / FPS_LIMIT;
@@ -35,7 +35,9 @@ fn main() {
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
     TerminalScreen::prepare();
 
-    // let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
+    let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
+    let dino = asset_server.load("dino.txt");
+    let vase = asset_server.load("vase.txt");
 
     let mut _frame_count: u128 = 0;
     loop {
@@ -43,6 +45,8 @@ fn main() {
 
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
         frame_assembler.insert(&Label::new(&_frame_count.to_string()), &XY::new(1, 1));
+        frame_assembler.insert(&*dino, &XY::new(3, 33));
+        frame_assembler.insert(&*vase, &XY::new(30, 34));
         screen.schedule_frame(&frame_assembler.get_frame());
 
         screen.display_frame();
