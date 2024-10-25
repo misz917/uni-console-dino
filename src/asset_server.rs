@@ -38,7 +38,7 @@ impl SpriteFileReader {
         if let Err(_) = contents {
             utils::ErrorDisplayer::error(&format!("File not found at: {}", file_path));
         }
-        Sprite::from_bitmap(&Self::parse_file_contents(&contents.unwrap()))
+        Sprite::new(&Self::parse_file_contents(&contents.unwrap()))
     }
 
     fn parse_file_contents(contents: &String) -> Bitmap<char> {

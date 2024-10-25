@@ -1,6 +1,6 @@
 use std::{ops::Add, thread::sleep, time::Duration};
 
-use crate::{bitmap::Bitmap, terminal_screen::TerminalScreen};
+use crate::terminal_screen::TerminalScreen;
 
 pub const ESC: &str = "\x1B";
 

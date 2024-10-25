@@ -17,9 +17,8 @@ use crate::{
     utils::XY,
     window::{GnomeTerminal, WindowCreator, Terminal},
     asset_server::AssetServer,
-    bitmap::Bitmap,
-    bitmap_wrapper::Sprite,
     frame_assembler::FrameAssembler,
+    bitmap_wrapper::Label
 };
 
 // create a settings file later
@@ -36,20 +35,14 @@ fn main() {
     let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
     TerminalScreen::prepare();
 
-    let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
-    let sprite = asset_server.load("dino_sprite.txt");
-
-    // let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
-    // frame_assembler.insert_sprite(&sprite, &XY::new(40, 10));
-    // let new_frame = *frame_assembler.get_frame();
-    // screen.schedule_frame(&new_frame);
+    // let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
 
     let mut _frame_count: u128 = 0;
     loop {
         let time = SystemTime::now();
 
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
-        frame_assembler.insert_sprite(&Sprite::from_bitmap(&Bitmap::from_string(&_frame_count.to_string())), &XY::new(1, 1));
+        frame_assembler.insert(&Label::new(&_frame_count.to_string()), &XY::new(1, 1));
         screen.schedule_frame(&frame_assembler.get_frame());
 
         screen.display_frame();
