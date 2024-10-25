@@ -1,7 +1,9 @@
-use crate::{
-    bitmap::{Bitmap, BitmapPrinter}, bitmap_buffer::BitmapBuffer, utils::{ESC, XY}
-};
 use std::io::{self, Write};
+use crate::{
+    bitmap::{Bitmap, BitmapPrinter},
+    bitmap_buffer::BitmapBuffer,
+    utils::{ESC, XY},
+};
 
 pub struct TerminalScreen {
     bitmap_buffer: BitmapBuffer,

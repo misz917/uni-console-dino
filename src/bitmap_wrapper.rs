@@ -1,4 +1,7 @@
-use crate::{bitmap::Bitmap, utils::XY};
+use crate::{
+    bitmap::Bitmap,
+    utils::XY,
+};
 
 pub trait BitmapContainer {
     fn get_bitmap(&self) -> &Bitmap<char>;

@@ -1,7 +1,8 @@
 use std::{collections::HashMap, fs};
-
 use crate::{
-    bitmap::Bitmap, bitmap_wrapper::Sprite, utils::{self, XY}
+    bitmap::Bitmap,
+    bitmap_wrapper::Sprite,
+    utils::{self, XY},
 };
 
 pub const TRANSPARENT_CHAR: char = '$'; // works like png's transparency, do not confuse with space

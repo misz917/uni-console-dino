@@ -1,4 +1,8 @@
-use crate::{asset_server::TRANSPARENT_CHAR, bitmap::Bitmap, utils::{ErrorDisplayer, XY}};
+use crate::{
+    asset_server::TRANSPARENT_CHAR,
+    bitmap::Bitmap,
+    utils::{ErrorDisplayer, XY},
+};
 
 #[derive(Clone)]
 pub struct BitmapBuffer {

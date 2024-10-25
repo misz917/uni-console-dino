@@ -1,4 +1,7 @@
-use crate::{asset_server::TRANSPARENT_CHAR, utils::{ESC, XY}};
+use crate::{
+    asset_server::TRANSPARENT_CHAR,
+    utils::{ESC, XY},
+};
 
 #[derive(Clone)]
 pub struct Bitmap<T> {

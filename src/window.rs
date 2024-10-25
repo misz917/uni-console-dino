@@ -1,5 +1,5 @@
-use crate::utils::XY;
 use std::{env, io::Read, os::fd::AsRawFd, process::{exit, Command}};
+use crate::utils::XY;
 
 pub trait Terminal {
     fn open(&self, resolution: XY<usize>, border_width: XY<usize>);
