@@ -17,12 +17,12 @@ impl<T: Clone> Bitmap<T> {
     }
 }
 
-pub trait BitmapDisplayer {
+pub trait Printer {
     fn print(bitmap: &Bitmap<char>, border_width: &XY<usize>);
 }
 
 pub struct BitmapPrinter;
-impl BitmapDisplayer for BitmapPrinter {
+impl Printer for BitmapPrinter {
     fn print (bitmap: &Bitmap<char>, border_width: &XY<usize>) {
         for (i, row) in bitmap.matrix.iter().enumerate() {
             for (j, item) in row.iter().enumerate() {
