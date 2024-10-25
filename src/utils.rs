@@ -1,5 +1,5 @@
 use std::{ops::Add, thread::sleep, time::Duration};
-use crate::terminal_screen::TerminalScreen;
+use crate::terminal_screen::TerminalHelper;
 
 pub const ESC: &str = "\x1B";
 
@@ -29,7 +29,7 @@ pub struct ErrorDisplayer;
 impl ErrorDisplayer {
     pub fn error(message: &str) {
         print!("{}[H{}", ESC, message);
-        TerminalScreen::flush_terminal_buffer();
+        TerminalHelper::flush_terminal_buffer();
         loop {
             sleep(Duration::from_secs(1));
         }
