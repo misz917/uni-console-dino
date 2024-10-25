@@ -1,6 +1,5 @@
 use crate::{
-    bitmap::{Bitmap, BitmapBuffer, BitmapPrinter},
-    utils::{ESC, XY},
+    bitmap::{Bitmap, BitmapPrinter}, bitmap_buffer::BitmapBuffer, utils::{ESC, XY}
 };
 use std::io::{self, Write};
 

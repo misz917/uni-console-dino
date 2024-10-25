@@ -9,6 +9,7 @@ pub mod frame_assembler;
 pub mod terminal_screen;
 pub mod utils;
 pub mod window;
+pub mod bitmap_buffer;
 
 use asset_server::AssetServer;
 use bitmap::Bitmap;
