@@ -12,6 +12,10 @@ pub mod window;
 pub mod bitmap_buffer;
 pub mod bitmap_wrapper;
 
+use bitmap::{Bitmap, BitmapPrinter};
+use bitmap_buffer::BitmapBuffer;
+use terminal_screen::TerminalHelper;
+
 use crate::{
     terminal_screen::TerminalScreen,
     utils::XY,
@@ -32,8 +36,9 @@ fn main() {
     WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome);
     gnome.set_raw_mode();
 
-    let mut screen = TerminalScreen::new_default(WINDOW_RESOLUTION, BORDER_WIDTH);
-    TerminalScreen::prepare();
+    let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '#'));
+    let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
+    TerminalHelper::prepare_terminal();
 
     let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
     let dino = asset_server.load("dino.txt");
