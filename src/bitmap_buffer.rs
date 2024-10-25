@@ -18,11 +18,11 @@ pub struct BitmapBuffer {
     possible_update: bool,
 }
 impl BitmapBuffer {
-    pub fn new(default_frame: &Bitmap<char>) -> Self {
+    pub fn new(first_frame: &Bitmap<char>) -> Self {
         BitmapBuffer {
-            active_frame: default_frame.clone(),
-            following_frame: default_frame.clone(),
-            resolution: default_frame.resolution,
+            active_frame: first_frame.clone(),
+            following_frame: first_frame.clone(),
+            resolution: first_frame.resolution,
             possible_update: true,
         }
     }
