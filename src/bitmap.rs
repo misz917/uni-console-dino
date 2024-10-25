@@ -13,15 +13,6 @@ impl<T: Clone> Bitmap<T> {
         }
     }
 }
-impl Bitmap<char> {
-    pub fn from_string(text: &str) -> Self {
-        let matrix: Vec<Vec<char>> = vec![text.chars().collect()];
-        Bitmap {
-            resolution: XY::new(text.len(), 1),
-            matrix,
-        }
-    }
-}
 
 pub struct BitmapPrinter;
 impl BitmapPrinter {
