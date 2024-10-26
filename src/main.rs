@@ -1,6 +1,5 @@
 use std::{
-    thread::sleep,
-    time::{Duration, SystemTime},
+    io::{self, Read}, os::fd::AsRawFd, thread::sleep, time::{Duration, SystemTime}
 };
 
 pub mod asset_server;
@@ -15,6 +14,7 @@ pub mod bitmap_wrapper;
 use bitmap::{Bitmap, BitmapPrinter};
 use bitmap_buffer::BitmapBuffer;
 use terminal_screen::TerminalHelper;
+use termios::{tcsetattr, Termios, ECHO, ICANON, TCSANOW};
 
 use crate::{
     terminal_screen::TerminalScreen,
@@ -33,7 +33,7 @@ const FPS_LIMIT: f32 = 30.0; // buggy above ~46
 fn main() {
     let sleep_duration = 1.0 / FPS_LIMIT;
     let gnome_window = GnomeTerminal::new();
-    WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome_window);
+    // WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome_window);
     // gnome_window.set_raw_mode();
 
     let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '#'));
@@ -44,6 +44,13 @@ fn main() {
     let dino = *asset_server.load("dino.txt");
     let vase = *asset_server.load("vase.txt");
 
+
+    let mut stdin = io::stdin();
+    let fd = stdin.as_raw_fd();
+    let mut termios = Termios::from_fd(fd).unwrap();
+    termios.c_lflag &= !(ECHO | ICANON);
+    let _ = tcsetattr(fd, TCSANOW, &termios);
+
     let mut _frame_count: u128 = 0;
     loop {
         let time = SystemTime::now();
@@ -53,10 +60,20 @@ fn main() {
         frame_assembler.insert(&dino, &XY::new(3, 33));
         frame_assembler.insert(&vase, &XY::new(30, 34));
 
+        let mut buffer = [0; 1];
+        if stdin.read(&mut buffer).is_ok() {
+            match buffer[0] {
+                b'q' => frame_assembler.insert(&Label::new("Pressed Q"), &XY::new(5, 5)),
+                _ => {},
+            }
+        }
+
         screen.schedule_frame(&frame_assembler.get_frame());
         screen.display_frame();
         if let Ok(elapsed) = time.elapsed() {
-            sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
+            if Duration::from_secs_f32(sleep_duration) > elapsed {
+                sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
+            }
         } else {
             return;
         }
