@@ -9,7 +9,7 @@ pub mod terminal_screen;
 pub mod utils;
 pub mod window;
 pub mod bitmap_buffer;
-pub mod bitmap_wrapper;
+pub mod drawable_object;
 
 use bitmap::{Bitmap, BitmapPrinter};
 use bitmap_buffer::BitmapBuffer;
@@ -22,7 +22,7 @@ use crate::{
     window::{GnomeTerminal, WindowCreator, Terminal},
     asset_server::AssetServer,
     frame_assembler::FrameAssembler,
-    bitmap_wrapper::Label
+    drawable_object::Label
 };
 
 // create a settings file later

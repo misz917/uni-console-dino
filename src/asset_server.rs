@@ -1,7 +1,7 @@
 use std::{cmp::max, collections::HashMap, fs};
 use crate::{
     bitmap::Bitmap,
-    bitmap_wrapper::Sprite,
+    drawable_object::Sprite,
     utils::{self, XY},
 };
 

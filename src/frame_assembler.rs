@@ -1,7 +1,7 @@
 use crate::{
     asset_server::TRANSPARENT_CHAR,
     bitmap::Bitmap,
-    bitmap_wrapper::BitmapContainer,
+    drawable_object::BitmapContainer,
     utils::XY,
 };
 
