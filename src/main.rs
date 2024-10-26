@@ -41,8 +41,8 @@ fn main() {
     TerminalHelper::prepare_terminal();
 
     let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
-    let dino = asset_server.load("dino.txt");
-    let vase = asset_server.load("vase.txt");
+    let dino = *asset_server.load("dino.txt");
+    let vase = *asset_server.load("vase.txt");
 
     let mut _frame_count: u128 = 0;
     loop {
@@ -50,8 +50,8 @@ fn main() {
 
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
         frame_assembler.insert(&Label::new(&_frame_count.to_string()), &XY::new(1, 1));
-        frame_assembler.insert(&*dino, &XY::new(3, 33));
-        frame_assembler.insert(&*vase, &XY::new(30, 34));
+        frame_assembler.insert(&dino, &XY::new(3, 33));
+        frame_assembler.insert(&vase, &XY::new(30, 34));
         screen.schedule_frame(&frame_assembler.get_frame());
 
         screen.display_frame();
