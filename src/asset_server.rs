@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs};
+use std::{cmp::max, collections::HashMap, fs};
 use crate::{
     bitmap::Bitmap,
     bitmap_wrapper::Sprite,
@@ -30,33 +30,53 @@ impl AssetServer {
 
 struct SpriteFileReader;
 impl SpriteFileReader {
-    pub fn read(file_path: &str) -> Sprite {
+    pub fn read(file_path: &str) -> Vec<Sprite> {
         let contents = fs::read_to_string(file_path);
         if let Err(_) = contents {
             utils::ErrorDisplayer::error(&format!("File not found at: {}", file_path));
         }
-        Sprite::new(&Self::parse_file_contents(&contents.unwrap()))
+        // Sprite::new(&Self::parse_file_contents(&contents.unwrap()))
+        todo!()
     }
 
-    fn parse_file_contents(contents: &String) -> Bitmap<char> {
+    fn parse_file_contents(contents: &String) -> Vec<Bitmap<char>> {
         let lines: Vec<&str> = contents.lines().collect();
-        let resolution = XY {
-            x: lines[0].parse::<usize>().unwrap(),
-            y: lines.len() - 1,
-        };
-        let char_matrix: Vec<Vec<char>> = lines
-            .iter()
-            .skip(1)
+        let x_length = Self::find_line_length(&lines);
+        let y_height = lines[0].parse::<usize>().unwrap();
+
+        let groups = Self::split_into_groups(lines[1..].to_vec(), y_height);
+
+        // Bitmap {
+        //     resolution: XY::new(x_length, y_height),
+        //     matrix,
+        // }
+        todo!()
+    }
+
+    fn find_line_length(lines: &Vec<&str>) -> usize {
+        let mut max_length = 0;
+        for line in lines.iter() {
+            if line.len() > max_length {
+                max_length = line.len();
+            }
+        }
+        max_length
+    }
+
+    fn split_into_groups(lines: Vec<&str>, group_size: usize) -> Vec<Vec<&str>> {
+        return lines
+        .chunks(group_size)
+        .map(|chunk| chunk.to_vec())
+        .collect();
+    }
+
+    fn format_group(group: &Vec<&str>, size: usize) -> Vec<Vec<char>> {
+        return group.iter()
             .map(|&line| {
                 let mut chars: Vec<char> = line.chars().collect();
-                chars.resize(16, '$');
+                chars.resize(size, '$');
                 chars
             })
             .collect();
-
-        Bitmap {
-            resolution,
-            matrix: char_matrix,
-        }
     }
 }
