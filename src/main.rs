@@ -1,5 +1,5 @@
 use std::{
-    io::{self, Read}, os::fd::AsRawFd, thread::sleep, time::{Duration, SystemTime}
+    thread::sleep, time::{Duration, SystemTime}
 };
 
 pub mod asset_server;
@@ -11,18 +11,16 @@ pub mod window;
 pub mod bitmap_buffer;
 pub mod drawable_object;
 
-use bitmap::{Bitmap, BitmapPrinter};
-use bitmap_buffer::BitmapBuffer;
-use terminal_screen::TerminalHelper;
-use termios::{tcsetattr, Termios, ECHO, ICANON, TCSANOW};
-
 use crate::{
     terminal_screen::TerminalScreen,
     utils::XY,
     window::{GnomeTerminal, WindowCreator, Terminal},
     asset_server::AssetServer,
     frame_assembler::FrameAssembler,
-    drawable_object::Label
+    drawable_object::Label,
+    bitmap::{Bitmap, BitmapPrinter},
+    bitmap_buffer::BitmapBuffer,
+    terminal_screen::TerminalHelper,
 };
 
 // create a settings file later
@@ -42,7 +40,7 @@ fn main() {
 
     let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
     let dino = *asset_server.load("dino.txt");
-    // let vase = *asset_server.load("vase.txt");
+    let vase = *asset_server.load("vase.txt");
 
     let mut _frame_count: u128 = 0;
     loop {
@@ -52,9 +50,9 @@ fn main() {
 
         frame_assembler.insert(&Label::new(&_frame_count.to_string()), &XY::new(1, 1));
         frame_assembler.insert(&dino, &XY::new(3, 33));
-        // frame_assembler.insert(&vase, &XY::new(30, 34));
+        frame_assembler.insert(&vase, &XY::new(30, 34));
 
-        let input = gnome_window.read_key();
+        // let input = gnome_window.read_key();
 
         screen.schedule_frame(&frame_assembler.get_frame());
         if let Ok(elapsed) = time.elapsed() {

@@ -1,4 +1,4 @@
-use std::{cmp::max, collections::HashMap, fs};
+use std::{collections::HashMap, fs};
 use crate::{
     bitmap::Bitmap,
     drawable_object::{Animation, DrawableObject, Sprite},
