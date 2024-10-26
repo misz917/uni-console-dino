@@ -32,9 +32,9 @@ const FPS_LIMIT: f32 = 30.0; // buggy above ~46
 
 fn main() {
     let sleep_duration = 1.0 / FPS_LIMIT;
-    let gnome = GnomeTerminal::new();
-    WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome);
-    gnome.set_raw_mode();
+    let gnome_window = GnomeTerminal::new();
+    WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome_window);
+    // gnome_window.set_raw_mode();
 
     let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '#'));
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
@@ -47,15 +47,14 @@ fn main() {
     let mut _frame_count: u128 = 0;
     loop {
         let time = SystemTime::now();
-
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
+
         frame_assembler.insert(&Label::new(&_frame_count.to_string()), &XY::new(1, 1));
         frame_assembler.insert(&dino, &XY::new(3, 33));
         frame_assembler.insert(&vase, &XY::new(30, 34));
+
         screen.schedule_frame(&frame_assembler.get_frame());
-
         screen.display_frame();
-
         if let Ok(elapsed) = time.elapsed() {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
         } else {
