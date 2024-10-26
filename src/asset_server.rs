@@ -1,14 +1,14 @@
 use std::{cmp::max, collections::HashMap, fs};
 use crate::{
     bitmap::Bitmap,
-    drawable_object::Sprite,
+    drawable_object::{DrawableObject, Sprite},
     utils::{self, XY},
 };
 
 pub const TRANSPARENT_CHAR: char = '$'; // works like png's transparency, do not confuse with space
 
 pub struct AssetServer {
-    assets: HashMap<String, Box<Sprite>>,
+    assets: HashMap<String, Box<DrawableObject>>,
     asset_directory: String,
 }
 impl AssetServer {
@@ -19,18 +19,18 @@ impl AssetServer {
         }
     }
 
-    pub fn load(&mut self, sprite_name: &str) -> Box<Sprite> {
-        if let None = self.assets.get(sprite_name) {
-            let new_sprite = SpriteFileReader::read(&(self.asset_directory.clone() + sprite_name));
-            self.assets.insert(sprite_name.to_owned(), Box::new(new_sprite));
+    pub fn load(&mut self, object_name: &str) -> Box<DrawableObject> {
+        if let None = self.assets.get(object_name) {
+            let new_object = SpriteFileReader::read(&(self.asset_directory.clone() + object_name));
+            self.assets.insert(object_name.to_owned(), Box::new(new_object));
         }
-        self.assets.get(sprite_name).unwrap().clone()
+        self.assets.get(object_name).unwrap().clone()
     }
 }
 
 struct SpriteFileReader;
 impl SpriteFileReader {
-    pub fn read(file_path: &str) -> Vec<Sprite> {
+    pub fn read(file_path: &str) -> DrawableObject {
         let contents = fs::read_to_string(file_path);
         if let Err(_) = contents {
             utils::ErrorDisplayer::error(&format!("File not found at: {}", file_path));

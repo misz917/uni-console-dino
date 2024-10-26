@@ -46,6 +46,7 @@ impl BitmapContainer for Sprite {
     }
 }
 
+#[derive(Clone)]
 pub struct Animation {
     frames: Vec<Bitmap<char>>,
     number_of_frames: usize,
@@ -66,6 +67,7 @@ impl Animation {
     }
 }
 
+#[derive(Clone)]
 pub enum DrawableObject {
     Animation(Animation),
     Label(Label),
