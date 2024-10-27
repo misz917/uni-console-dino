@@ -3,7 +3,7 @@ use crate::{
     utils::XY,
 };
 
-pub trait BitmapContainer<T> {
+pub trait ImmutableBitmapContainer<T> {
     fn get_bitmap(&self) -> &Bitmap<T>;
 }
 
@@ -22,7 +22,7 @@ impl Label {
         })
     }
 }
-impl BitmapContainer<char> for Label {
+impl ImmutableBitmapContainer<char> for Label {
     fn get_bitmap(&self) -> &Bitmap<char> {
         &self.0
     }
@@ -35,7 +35,7 @@ impl Sprite {
         Sprite( bitmap.clone() )
     }
 }
-impl BitmapContainer<char> for Sprite {
+impl ImmutableBitmapContainer<char> for Sprite {
     fn get_bitmap(&self) -> &Bitmap<char> {
         &self.0
     }
@@ -73,7 +73,7 @@ impl Animation {
         &self.frames[self.active_frame]
     }
 }
-impl BitmapContainer<char> for Animation {
+impl ImmutableBitmapContainer<char> for Animation {
     fn get_bitmap(&self) -> &Bitmap<char> {
         self.get_active_frame()
     }
@@ -101,7 +101,7 @@ pub enum ImmutableDrawableObject {
     Label(Label),
     Sprite(Sprite),
 }
-impl BitmapContainer<char> for ImmutableDrawableObject {
+impl ImmutableBitmapContainer<char> for ImmutableDrawableObject {
     fn get_bitmap(&self) -> &Bitmap<char> {
         match self {
             ImmutableDrawableObject::Label(label) => label.get_bitmap(),
