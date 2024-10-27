@@ -5,6 +5,9 @@ use crate::{
 
 pub trait BitmapContainer {
     fn get_bitmap(&self) -> &Bitmap<char>;
+}
+
+pub trait MutableBitmapContainer {
     fn get_bitmap_mut(&mut self) -> &Bitmap<char>;
 }
 
@@ -23,10 +26,6 @@ impl BitmapContainer for Label {
     fn get_bitmap(&self) -> &Bitmap<char> {
         &self.0
     }
-    
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
-        &self.0
-    }
 }
 
 #[derive(Clone)]
@@ -38,10 +37,6 @@ impl Sprite {
 }
 impl BitmapContainer for Sprite {
     fn get_bitmap(&self) -> &Bitmap<char> {
-        &self.0
-    }
-
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
         &self.0
     }
 }
@@ -61,32 +56,42 @@ impl Animation {
         }
     }
 
-    pub fn get_frame(&mut self) -> &Bitmap<char> {
+    fn update(&mut self) {
         self.active_frame = (self.active_frame + 1) % self.number_of_frames;
+    }
+
+    fn get_active_frame(&mut self) -> &Bitmap<char> {
         return &self.frames[self.active_frame];
+    }
+}
+impl MutableBitmapContainer for Animation {
+    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
+        self.update();
+        return self.get_active_frame();
     }
 }
 
 #[derive(Clone)]
-pub enum DrawableObject {
+pub enum MutableDrawableObject {
     Animation(Animation),
+}
+impl MutableBitmapContainer for MutableDrawableObject {
+    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
+        match self {
+            MutableDrawableObject::Animation(animation) => animation.get_bitmap_mut(),
+        }
+    }
+}
+
+pub enum ImmutableDrawableObject {
     Label(Label),
     Sprite(Sprite),
 }
-impl BitmapContainer for DrawableObject {
+impl BitmapContainer for ImmutableDrawableObject {
     fn get_bitmap(&self) -> &Bitmap<char> {
         match self {
-            DrawableObject::Animation(animation) => &animation.frames[animation.active_frame],
-            DrawableObject::Label(label) => label.get_bitmap(),
-            DrawableObject::Sprite(sprite) => sprite.get_bitmap(),
-        }
-    }
-    
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
-        match self {
-            DrawableObject::Animation(animation) => animation.get_frame(),
-            DrawableObject::Label(label) => label.get_bitmap_mut(),
-            DrawableObject::Sprite(sprite) => sprite.get_bitmap_mut(),
+            ImmutableDrawableObject::Label(label) => label.get_bitmap(),
+            ImmutableDrawableObject::Sprite(sprite) => sprite.get_bitmap(),
         }
     }
 }
