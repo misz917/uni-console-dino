@@ -109,3 +109,8 @@ impl ImmutableBitmapContainer<char> for ImmutableDrawableObject {
         }
     }
 }
+
+pub enum DrawableObject {
+    Immutable(ImmutableDrawableObject),
+    Mutable(MutableDrawableObject),
+}
