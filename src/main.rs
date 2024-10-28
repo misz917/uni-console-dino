@@ -1,28 +1,29 @@
 use std::{
-    thread::sleep, time::{Duration, SystemTime}
+    thread::sleep,
+    time::{Duration, SystemTime},
 };
 
 pub mod asset_server;
 pub mod bitmap;
+pub mod bitmap_buffer;
+pub mod drawable_object;
 pub mod frame_assembler;
 pub mod terminal_screen;
 pub mod utils;
 pub mod window;
-pub mod bitmap_buffer;
-pub mod drawable_object;
 
 use drawable_object::DrawableObject;
 
 use crate::{
-    terminal_screen::TerminalScreen,
-    utils::XY,
-    window::{GnomeTerminal, WindowCreator, Terminal},
     asset_server::AssetServer,
-    frame_assembler::FrameAssembler,
-    drawable_object::Label,
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
+    drawable_object::Label,
+    frame_assembler::FrameAssembler,
     terminal_screen::TerminalHelper,
+    terminal_screen::TerminalScreen,
+    utils::XY,
+    window::{GnomeTerminal, Terminal, WindowCreator},
 };
 
 // create a settings file later
@@ -40,7 +41,9 @@ fn main() {
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     TerminalHelper::prepare_terminal();
 
-    let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
+    // let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
+    let mut asset_server =
+        AssetServer::new("/home/user/Codes/githubRepos/uni-console-dino/src/assets/");
     let dino = *asset_server.load("dino.txt");
     let vase = *asset_server.load("vase.txt");
     let mut animation = *asset_server.load("test_animation.txt");
