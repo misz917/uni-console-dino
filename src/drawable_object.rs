@@ -3,12 +3,26 @@ use crate::{
     utils::XY,
 };
 
-pub trait ImmutableBitmapContainer<T> {
-    fn get_bitmap(&self) -> &Bitmap<T>;
+pub trait Drawable {
+    fn get_bitmap(&self) -> &Bitmap<char>;
+    fn get_bitmap_mut(&mut self) -> &Bitmap<char>;
 }
 
-pub trait MutableBitmapContainer<T> {
-    fn get_bitmap_mut(&mut self) -> &Bitmap<T>;
+#[derive(Clone)]
+pub struct Sprite(Bitmap<char>);
+impl Sprite {
+    pub fn new(bitmap: &Bitmap<char>) -> Self {
+        Sprite( bitmap.clone() )
+    }
+}
+impl Drawable for Sprite {
+    fn get_bitmap(&self) -> &Bitmap<char> {
+        &self.0
+    }
+
+    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
+        &self.0
+    }
 }
 
 #[derive(Clone)]
@@ -22,33 +36,13 @@ impl Label {
         })
     }
 }
-impl ImmutableBitmapContainer<char> for Label {
+impl Drawable for Label {
     fn get_bitmap(&self) -> &Bitmap<char> {
         &self.0
     }
-}
 
-#[derive(Clone)]
-pub struct Sprite(Bitmap<char>);
-impl Sprite {
-    pub fn new(bitmap: &Bitmap<char>) -> Self {
-        Sprite( bitmap.clone() )
-    }
-}
-impl ImmutableBitmapContainer<char> for Sprite {
-    fn get_bitmap(&self) -> &Bitmap<char> {
+    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
         &self.0
-    }
-}
-
-pub trait FrameUpdater {
-    fn next_frame(&mut self) -> usize;
-}
-
-impl FrameUpdater for Animation {
-    fn next_frame(&mut self) -> usize {
-        self.active_frame = (self.active_frame + 1) % self.frames.len();
-        self.active_frame
     }
 }
 
@@ -73,44 +67,48 @@ impl Animation {
         &self.frames[self.active_frame]
     }
 }
-impl ImmutableBitmapContainer<char> for Animation {
+impl Drawable for Animation {
     fn get_bitmap(&self) -> &Bitmap<char> {
-        self.get_active_frame()
+        &self.get_active_frame()
     }
-}
-impl MutableBitmapContainer<char> for Animation {
+
     fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
         self.update();
         self.get_active_frame()
     }
 }
 
+pub trait FrameUpdater {
+    fn next_frame(&mut self) -> usize;
+}
+
+impl FrameUpdater for Animation {
+    fn next_frame(&mut self) -> usize {
+        self.active_frame = (self.active_frame + 1) % self.frames.len();
+        self.active_frame
+    }
+}
+
 #[derive(Clone)]
-pub enum MutableDrawableObject {
+pub enum DrawableObject {
+    Sprite(Sprite),
+    Label(Label),
     Animation(Animation),
 }
-impl MutableBitmapContainer<char> for MutableDrawableObject {
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
-        match self {
-            MutableDrawableObject::Animation(animation) => animation.get_bitmap_mut(),
-        }
-    }
-}
-
-pub enum ImmutableDrawableObject {
-    Label(Label),
-    Sprite(Sprite),
-}
-impl ImmutableBitmapContainer<char> for ImmutableDrawableObject {
+impl Drawable for DrawableObject {
     fn get_bitmap(&self) -> &Bitmap<char> {
         match self {
-            ImmutableDrawableObject::Label(label) => label.get_bitmap(),
-            ImmutableDrawableObject::Sprite(sprite) => sprite.get_bitmap(),
+            DrawableObject::Sprite(sprite) => sprite.get_bitmap(),
+            DrawableObject::Label(label) => label.get_bitmap(),
+            DrawableObject::Animation(animation) => animation.get_bitmap(),
         }
     }
-}
 
-pub enum DrawableObject {
-    Immutable(ImmutableDrawableObject),
-    Mutable(MutableDrawableObject),
+    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
+        match self {
+            DrawableObject::Sprite(sprite) => sprite.get_bitmap_mut(),
+            DrawableObject::Label(label) => label.get_bitmap_mut(),
+            DrawableObject::Animation(animation) => animation.get_bitmap_mut(),
+        }
+    }
 }

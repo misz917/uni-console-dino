@@ -1,5 +1,5 @@
 use crate::{
-    asset_server::TRANSPARENT_CHAR, bitmap::Bitmap, drawable_object::ImmutableBitmapContainer, utils::XY
+    asset_server::TRANSPARENT_CHAR, bitmap::Bitmap, drawable_object::{Drawable, DrawableObject}, utils::XY
 };
 
 pub struct FrameAssembler {
@@ -13,7 +13,7 @@ impl FrameAssembler {
     }
 
     // places a sprite on a bitmap by upper left corner of the sprite
-    pub fn insert<T: ImmutableBitmapContainer<char>>(&mut self, bitmap_container: &T, position: &XY<i32>) {
+    pub fn insert (&mut self, bitmap_container: &DrawableObject, position: &XY<i32>) {
         for row in 0..bitmap_container.get_bitmap().resolution.x {
             for col in 0..bitmap_container.get_bitmap().resolution.y {
                 let target_x = position.x + row as i32;
