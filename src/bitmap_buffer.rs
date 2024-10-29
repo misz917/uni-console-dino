@@ -4,55 +4,61 @@ use crate::{
     utils::{ErrorDisplayer, XY},
 };
 
-pub trait BufferManager {
-    fn new_following_frame(&mut self, frame: &Bitmap<char>);
-    fn get_active_frame(&self) -> &Bitmap<char>;
-    fn update(&mut self);
-}
-
 #[derive(Clone)]
 pub struct BitmapBuffer {
-    active_frame: Bitmap<char>,
-    following_frame: Bitmap<char>,
+    active_frame: Box<Bitmap<char>>,
+    following_frame: Option<Box<Bitmap<char>>>,
     resolution: XY<usize>,
-    possible_update: bool,
 }
 impl BitmapBuffer {
     pub fn new(first_frame: &Bitmap<char>) -> Self {
         BitmapBuffer {
-            active_frame: first_frame.clone(),
-            following_frame: first_frame.clone(),
+            active_frame: Box::new(first_frame.clone()),
+            following_frame: None,
             resolution: first_frame.resolution,
-            possible_update: true,
         }
     }
 }
+
+pub trait BufferManager {
+    fn insert_frame(&mut self, frame: Box<Bitmap<char>>);
+    fn get_frame(&mut self) -> &Bitmap<char>; // generates a frame of only differences between following and active
+}
+
 impl BufferManager for BitmapBuffer {
-    fn new_following_frame(&mut self, new_frame: &Bitmap<char>) {
+    fn insert_frame(&mut self, new_frame: Box<Bitmap<char>>) {
         if new_frame.resolution != self.resolution {
             ErrorDisplayer::error("New frame has incorrect resolution");
         }
-        self.following_frame = new_frame.clone();
-        self.possible_update = true;
+
+        if let Some(bitmap) = self.following_frame.take() {
+            self.active_frame = bitmap;
+        }
+
+        self.following_frame = Some(new_frame);
     }
 
-    fn get_active_frame(&self) -> &Bitmap<char> {
-        &self.active_frame
+    fn get_frame(&mut self) -> &Bitmap<char> {
+        todo!()
+        // self.active_frame = self.following_frame.clone();
+        // &self.following_frame
     }
 
-    fn update(&mut self) {
-        if !self.possible_update {
-            return;
-        }
-        for row in 0..self.resolution.y {
-            for col in 0..self.resolution.x {
-                if self.active_frame.matrix[row][col] == self.following_frame.matrix[row][col] {
-                    self.active_frame.matrix[row][col] = TRANSPARENT_CHAR.clone();
-                } else {
-                    self.active_frame.matrix[row][col] = self.following_frame.matrix[row][col].clone();
-                }
-            }
-        }
-        self.possible_update = false;
-    }
+    // fn update(&mut self) {
+    //     if !self.possible_update {
+    //         return;
+    //     }
+
+    //     for row in 0..self.resolution.y {
+    //         for col in 0..self.resolution.x {
+    //             if self.active_frame.matrix[row][col] == self.following_frame.matrix[row][col] {
+    //                 self.active_frame.matrix[row][col] = TRANSPARENT_CHAR.clone();
+    //             } else {
+    //                 self.active_frame.matrix[row][col] = self.following_frame.matrix[row][col].clone();
+    //             }
+    //         }
+    //     }
+        
+    //     self.possible_update = false;
+    // }
 }
