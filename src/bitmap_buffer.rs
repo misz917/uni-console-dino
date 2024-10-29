@@ -1,7 +1,7 @@
 use crate::{
     asset_server::TRANSPARENT_CHAR,
     bitmap::Bitmap,
-    utils::{ErrorDisplayer, XY},
+    utils::{ErrorDisplayer, XY}, WINDOW_RESOLUTION,
 };
 
 #[derive(Clone)]
@@ -22,7 +22,7 @@ impl BitmapBuffer {
 
 pub trait BufferManager {
     fn insert_frame(&mut self, frame: Box<Bitmap<char>>);
-    fn get_frame(&mut self) -> &Bitmap<char>; // generates a frame of only differences between following and active
+    fn get_frame(&mut self) -> Option<Box<Bitmap<char>>>;
 }
 
 impl BufferManager for BitmapBuffer {
@@ -38,27 +38,19 @@ impl BufferManager for BitmapBuffer {
         self.following_frame = Some(new_frame);
     }
 
-    fn get_frame(&mut self) -> &Bitmap<char> {
-        todo!()
-        // self.active_frame = self.following_frame.clone();
-        // &self.following_frame
+    // generates a frame of transparent chars and differences between following and active
+    fn get_frame(&mut self) -> Option<Box<Bitmap<char>>> { 
+        if let Some(following_frame) = &self.following_frame {
+            let mut differences = Bitmap::new(self.resolution, '$');
+            for row in 0..self.resolution.y {
+                for col in 0..self.resolution.x {
+                    if self.active_frame.matrix[row][col] != following_frame.matrix[row][col] {
+                        differences.matrix[row][col] = following_frame.matrix[row][col];
+                    }
+                }
+            }
+            return Some(Box::new(differences))
+        }
+        return None;
     }
-
-    // fn update(&mut self) {
-    //     if !self.possible_update {
-    //         return;
-    //     }
-
-    //     for row in 0..self.resolution.y {
-    //         for col in 0..self.resolution.x {
-    //             if self.active_frame.matrix[row][col] == self.following_frame.matrix[row][col] {
-    //                 self.active_frame.matrix[row][col] = TRANSPARENT_CHAR.clone();
-    //             } else {
-    //                 self.active_frame.matrix[row][col] = self.following_frame.matrix[row][col].clone();
-    //             }
-    //         }
-    //     }
-        
-    //     self.possible_update = false;
-    // }
 }
