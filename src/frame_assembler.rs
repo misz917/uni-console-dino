@@ -9,10 +9,14 @@ pub struct FrameAssembler {
     frame: Bitmap<char>,
 }
 impl FrameAssembler {
-    pub fn new(frame_resolution: XY<usize>) -> Self {
+    pub fn new(frame_resolution: XY<usize>, background: char) -> Self {
         FrameAssembler {
-            frame: Bitmap::new(frame_resolution, TRANSPARENT_CHAR),
+            frame: Bitmap::new(frame_resolution, background),
         }
+    }
+
+    pub fn new_default(frame_resolution: XY<usize>) -> Self {
+        Self::new(frame_resolution, TRANSPARENT_CHAR)
     }
 
     // places a sprite on a bitmap by upper left corner of the sprite

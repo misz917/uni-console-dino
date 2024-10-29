@@ -44,12 +44,14 @@ impl MovingObject {
 pub struct View {
     objects: Vec<MovingObject>,
     asset_server: AssetServer,
+    default_background: char,
 }
 impl View {
-    pub fn new(asset_directory: &str) -> Self {
+    pub fn new(asset_directory: &str, default_background: char) -> Self {
         View {
             objects: Vec::new(),
-            asset_server: AssetServer::new(asset_directory)
+            asset_server: AssetServer::new(asset_directory),
+            default_background,
         }
     }
 
@@ -69,7 +71,7 @@ impl View {
     }
 
     pub fn compile(&mut self) -> Box<Bitmap<char>> {
-        let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
+        let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION, self.default_background);
         for object in self.objects.iter_mut() {
             let mut modified_position = object.start_position;
             if let Some(movement_function) = &object.mov_function {

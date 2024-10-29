@@ -47,11 +47,10 @@ fn main() {
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     TerminalHelper::prepare_terminal();
 
-    let mut view = View::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
+    let mut view = View::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/", ' ');
 
     loop {
         let timer = SystemTime::now();
-        screen.display_frame();
 
         if let Ok(input) = rx.try_recv() {
             match input {
@@ -62,6 +61,7 @@ fn main() {
         view.insert_asset("dino.txt", XY::new(10, 10), Some(MovementFunction::new(movement_functions::move_right)));
 
         screen.schedule_frame(view.compile());
+        screen.display_frame();
         enforce_fps(timer);
     }
 }
