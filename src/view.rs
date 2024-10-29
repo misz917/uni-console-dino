@@ -15,8 +15,14 @@ impl MovementFunction {
     }
 }
 
+pub struct MovingObject {
+    pub object: DrawableObject,
+    pub position: XY<i32>,
+    pub mov_function: Option<MovementFunction>,
+}
+
 pub struct View {
-    objects: HashMap<String, (DrawableObject, Option<MovementFunction>)>,
+    objects: HashMap<String, MovingObject>,
     asset_server: AssetServer,
 }
 impl View {
@@ -27,10 +33,22 @@ impl View {
         }
     }
 
-    pub fn insert_asset(&mut self, asset_name: &str, access_code: &str) {
+    pub fn insert_asset(
+        &mut self,
+        asset_name: &str,
+        access_code: &str,
+        position: XY<i32>,
+        mov_function: MovementFunction,
+    ) {
         let new_asset = self.asset_server.load(asset_name);
-        self.objects
-            .insert(access_code.to_owned(), (*new_asset, None));
+        self.objects.insert(
+            access_code.to_owned(),
+            MovingObject {
+                object: *new_asset,
+                position,
+                mov_function: Some(mov_function),
+            },
+        );
     }
 
     pub fn compile(&mut self) -> Box<Bitmap<char>> {
