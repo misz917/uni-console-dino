@@ -34,7 +34,6 @@ const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 30.0; // buggy above ~46
 
 fn main() {
-    let sleep_duration = 1.0 / FPS_LIMIT;
     let gnome_window = GnomeTerminal::new();
     WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome_window);
     gnome_window.set_raw_mode();
@@ -65,18 +64,13 @@ fn main() {
         // let input = gnome_window.read_key();
 
         screen.schedule_frame(&frame_assembler.get_frame());
-        if let Ok(elapsed) = frame_duration.elapsed() {
-            if Duration::from_secs_f32(sleep_duration) > elapsed {
-                sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
-            }
-        } else {
-            return;
-        }
+        enforce_fps(frame_duration);
         _frame_count += 1;
     }
 }
 
 fn enforce_fps(frame_duration: SystemTime) {
+    let sleep_duration = 1.0 / FPS_LIMIT;
     if let Ok(elapsed) = frame_duration.elapsed() {
         if Duration::from_secs_f32(sleep_duration) > elapsed {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);

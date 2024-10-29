@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, time::SystemTime};
 
 use crate::{
     asset_server::AssetServer,
@@ -24,6 +24,7 @@ pub struct MovingObject {
     pub object: DrawableObject,
     pub position: XY<i32>,
     pub mov_function: Option<MovementFunction>,
+    pub clock: SystemTime,
 }
 
 pub struct View {
@@ -52,6 +53,7 @@ impl View {
                 object: *new_asset,
                 position,
                 mov_function: Some(mov_function),
+                clock: SystemTime::now(),
             },
         );
     }
