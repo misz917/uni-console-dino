@@ -16,6 +16,8 @@ pub mod window;
 pub mod movement_functions;
 
 use drawable_object::DrawableObject;
+use movement_functions::move_right;
+use view::{MovementFunction, View};
 
 use crate::{
     asset_server::AssetServer,
@@ -32,7 +34,7 @@ use crate::{
 // create a settings file later
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 30.0; // buggy above ~46
+const FPS_LIMIT: f32 = 1.0; // buggy above ~46
 
 fn main() {
     let gnome_window = GnomeTerminal::new();
@@ -51,9 +53,7 @@ fn main() {
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     TerminalHelper::prepare_terminal();
 
-    let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
-    // let mut asset_server = AssetServer::new("/home/user/Codes/githubRepos/uni-console-dino/src/assets/");
-    let dino = *asset_server.load("dino.txt");
+    let mut view = View::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
 
     loop {
         let timer = SystemTime::now();
@@ -65,7 +65,9 @@ fn main() {
             }
         }
 
-        // screen.schedule_frame(&frame_assembler.get_frame());
+        view.insert_asset("dino.txt", XY::new(10, 10), Some(MovementFunction::new(move_right)));
+
+        screen.schedule_frame(&view.compile());
         enforce_fps(timer);
     }
 }

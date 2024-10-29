@@ -1,4 +1,4 @@
-use std::{collections::HashMap, time::SystemTime};
+use std::{collections::{HashMap, LinkedList}, time::SystemTime};
 
 use crate::{
     asset_server::AssetServer,
@@ -9,13 +9,13 @@ use crate::{
     WINDOW_RESOLUTION,
 };
 
-pub struct MovementFunction(fn(i32) -> XY<i32>);
+pub struct MovementFunction(fn(f32) -> XY<i32>);
 impl MovementFunction {
-    pub fn new(function: fn(i32) -> XY<i32>) -> Self {
+    pub fn new(function: fn(f32) -> XY<i32>) -> Self {
         MovementFunction(function)
     }
 
-    pub fn calculate_position(&self, time: i32) -> XY<i32> {
+    pub fn calculate_position(&self, time: f32) -> XY<i32> {
         (self.0)(time)
     }
 }
@@ -27,44 +27,56 @@ pub struct MovingObject {
     pub clock: SystemTime,
 }
 impl MovingObject {
-    pub fn new(drawable_object: DrawableObject, start_position: XY<i32>, mov_function: MovementFunction) -> Self {
+    pub fn new(
+        drawable_object: DrawableObject,
+        start_position: XY<i32>,
+        mov_function: Option<MovementFunction>
+    ) -> Self {
         MovingObject {
             drawable_object,
             start_position,
-            mov_function: Some(mov_function),
+            mov_function,
             clock: SystemTime::now(),
         }
     }
 }
 
 pub struct View {
-    objects: HashMap<String, MovingObject>,
+    objects: Vec<MovingObject>,
     asset_server: AssetServer,
 }
 impl View {
-    pub fn new(asset_server: AssetServer) -> Self {
+    pub fn new(asset_directory: &str) -> Self {
         View {
-            objects: HashMap::new(),
-            asset_server,
+            objects: Vec::new(),
+            asset_server: AssetServer::new(asset_directory)
         }
     }
 
-    pub fn insert_object(
+    pub fn insert_asset(
         &mut self,
         asset_name: &str,
-        access_code: &str,
         start_position: XY<i32>,
-        mov_function: MovementFunction,
+        mov_function: Option<MovementFunction>
     ) {
-        let new_asset = self.asset_server.load(asset_name);
-        self.objects.insert(
-            access_code.to_owned(),
-            MovingObject::new(*new_asset, start_position, mov_function),
-        );
+        let drawable_object = self.asset_server.load(asset_name);
+        let moving_object = MovingObject::new(*drawable_object, start_position, mov_function);
+        self.objects.push(moving_object);
+    }
+
+    pub fn insert_object() {
+        todo!()
     }
 
     pub fn compile(&mut self) -> Box<Bitmap<char>> {
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
-        todo!()
+        for object in self.objects.iter_mut() {
+            let mut modified_position = object.start_position;
+            if let Some(movement_function) = &object.mov_function {
+                modified_position = movement_function.calculate_position(object.clock.elapsed().unwrap().as_secs_f32());
+            }
+            frame_assembler.insert(&object.drawable_object, &modified_position);
+        }
+        return frame_assembler.get_frame();
     }
 }
