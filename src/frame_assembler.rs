@@ -1,8 +1,8 @@
 use crate::{
     asset_server::TRANSPARENT_CHAR,
     bitmap::Bitmap,
-    drawable_object::{Drawable, DrawableObject},
-    utils::XY
+    drawable_object::{Drawable, DrawableObject, Label},
+    utils::XY,
 };
 
 pub struct FrameAssembler {
@@ -11,7 +11,7 @@ pub struct FrameAssembler {
 impl FrameAssembler {
     pub fn new(frame_resolution: XY<usize>) -> Self {
         FrameAssembler {
-            frame: Bitmap::new(frame_resolution, TRANSPARENT_CHAR)
+            frame: Bitmap::new(frame_resolution, TRANSPARENT_CHAR),
         }
     }
 
@@ -22,12 +22,14 @@ impl FrameAssembler {
             for col in 0..bitmap.resolution.y {
                 let target_x = position.x + row as i32;
                 let target_y = position.y + col as i32;
-    
-                if target_x >= 0 && target_y >= 0
+
+                if target_x >= 0
+                    && target_y >= 0
                     && (target_x as usize) < self.frame.resolution.x
                     && (target_y as usize) < self.frame.resolution.y
                 {
-                    self.frame.matrix[target_y as usize][target_x as usize] = bitmap.matrix[col][row];
+                    self.frame.matrix[target_y as usize][target_x as usize] =
+                        bitmap.matrix[col][row];
                 }
             }
         }
@@ -39,18 +41,26 @@ impl FrameAssembler {
             for col in 0..bitmap.resolution.y {
                 let target_x = position.x + row as i32;
                 let target_y = position.y + col as i32;
-    
-                if target_x >= 0 && target_y >= 0
+
+                if target_x >= 0
+                    && target_y >= 0
                     && (target_x as usize) < self.frame.resolution.x
                     && (target_y as usize) < self.frame.resolution.y
                 {
-                    self.frame.matrix[target_y as usize][target_x as usize] = bitmap.matrix[col][row];
+                    self.frame.matrix[target_y as usize][target_x as usize] =
+                        bitmap.matrix[col][row];
                 }
             }
         }
     }
-    
+
     pub fn get_frame(self) -> Box<Bitmap<char>> {
         Box::new(self.frame)
+    }
+}
+impl FrameAssembler {
+    pub fn label(&mut self, text: &str, position: (i32, i32)) {
+        let label = DrawableObject::Label(Label::new(text));
+        self.insert(&label, &XY::new(position.0, position.1));
     }
 }
