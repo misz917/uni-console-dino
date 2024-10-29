@@ -39,17 +39,6 @@ fn main() {
     WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome_window);
     gnome_window.set_raw_mode();
 
-    let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '#'));
-    let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
-    TerminalHelper::prepare_terminal();
-
-    // let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
-    let mut asset_server =
-        AssetServer::new("/home/user/Codes/githubRepos/uni-console-dino/src/assets/");
-    let dino = *asset_server.load("dino.txt");
-    let vase = *asset_server.load("vase.txt");
-    let mut animation = *asset_server.load("test_animation.txt");
-
     let (tx, rx): (Sender<char>, Receiver<char>) = mpsc::channel();
     thread::spawn(move || loop {
         let input = gnome_window.read_key();
@@ -58,35 +47,32 @@ fn main() {
         }
     });
 
-    let mut _frame_count: u128 = 0;
-    loop {
-        let frame_duration = SystemTime::now();
-        screen.display_frame();
-        let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
+    let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '#'));
+    let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
+    TerminalHelper::prepare_terminal();
 
-        let label = DrawableObject::Label(Label::new(&_frame_count.to_string()));
-        frame_assembler.insert(&label, &XY::new(1, 1));
-        frame_assembler.insert(&dino, &XY::new(3, 33));
-        frame_assembler.insert(&vase, &XY::new(30, 34));
-        frame_assembler.insert_mut(&mut animation, &XY::new(45, 34));
+    let mut asset_server = AssetServer::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/");
+    // let mut asset_server = AssetServer::new("/home/user/Codes/githubRepos/uni-console-dino/src/assets/");
+    let dino = *asset_server.load("dino.txt");
+
+    loop {
+        let timer = SystemTime::now();
+        screen.display_frame();
 
         if let Ok(input) = rx.try_recv() {
-            frame_assembler.label(&format!("MESSAGE RECEIVED: {}", input), (1, 3));
             match input {
-                ' ' => (),
                 _ => (),
             }
         }
 
-        screen.schedule_frame(&frame_assembler.get_frame());
-        enforce_fps(frame_duration);
-        _frame_count += 1;
+        // screen.schedule_frame(&frame_assembler.get_frame());
+        enforce_fps(timer);
     }
 }
 
-fn enforce_fps(frame_duration: SystemTime) {
+fn enforce_fps(timer: SystemTime) {
     let sleep_duration = 1.0 / FPS_LIMIT;
-    if let Ok(elapsed) = frame_duration.elapsed() {
+    if let Ok(elapsed) = timer.elapsed() {
         if Duration::from_secs_f32(sleep_duration) > elapsed {
             sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
         }
