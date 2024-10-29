@@ -33,7 +33,7 @@ impl View {
             .insert(access_code.to_owned(), (*new_asset, None));
     }
 
-    pub fn assemble() -> Box<Bitmap<char>> {
+    pub fn compile(&mut self) -> Box<Bitmap<char>> {
         todo!()
     }
 }
