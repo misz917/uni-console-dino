@@ -1,7 +1,7 @@
 use crate::{
     asset_server::TRANSPARENT_CHAR,
     bitmap::Bitmap,
-    utils::{ErrorDisplayer, XY}, WINDOW_RESOLUTION,
+    utils::{ErrorDisplayer, XY},
 };
 
 #[derive(Clone)]
@@ -41,7 +41,7 @@ impl BufferManager for BitmapBuffer {
     // generates a frame of transparent chars and differences between following and active
     fn get_frame(&mut self) -> Option<Box<Bitmap<char>>> { 
         if let Some(following_frame) = &self.following_frame {
-            let mut differences = Bitmap::new(self.resolution, '$');
+            let mut differences = Bitmap::new(self.resolution, TRANSPARENT_CHAR);
             for row in 0..self.resolution.y {
                 for col in 0..self.resolution.x {
                     if self.active_frame.matrix[row][col] != following_frame.matrix[row][col] {

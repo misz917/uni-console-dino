@@ -54,14 +54,14 @@ impl<B: BufferManager, P: Printer> TerminalScreen<B, P> {
         }
     }
 
-    pub fn schedule_frame(&mut self, new_frame: &Bitmap<char>) {
-        self.buffer.new_following_frame(new_frame);
+    pub fn schedule_frame(&mut self, new_frame: Box<Bitmap<char>>) {
+        self.buffer.insert_frame(new_frame);
     }
 
     pub fn display_frame(&mut self) {
-        TerminalHelper::move_cursor_home();
-        self.printer.print(&self.buffer.get_active_frame(), &self.border_width);
-        self.buffer.update();
+        if let Some(frame) = self.buffer.get_frame() {
+            self.printer.print(&frame, &self.border_width);
+        }
         TerminalHelper::flush_terminal_buffer();
     }
 

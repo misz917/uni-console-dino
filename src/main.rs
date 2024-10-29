@@ -61,7 +61,7 @@ fn main() {
 
         view.insert_asset("dino.txt", XY::new(10, 10), Some(MovementFunction::new(movement_functions::move_right)));
 
-        screen.schedule_frame(&view.compile());
+        screen.schedule_frame(view.compile());
         enforce_fps(timer);
     }
 }
