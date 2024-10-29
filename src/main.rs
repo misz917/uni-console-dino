@@ -9,11 +9,11 @@ pub mod bitmap;
 pub mod bitmap_buffer;
 pub mod drawable_object;
 pub mod frame_assembler;
-pub mod movement_functions;
 pub mod terminal_screen;
 pub mod utils;
 pub mod view;
 pub mod window;
+pub mod movement_functions;
 
 use drawable_object::DrawableObject;
 

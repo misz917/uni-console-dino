@@ -3,28 +3,38 @@ use std::{collections::HashMap, time::SystemTime};
 use crate::{
     asset_server::AssetServer,
     bitmap::Bitmap,
-    drawable_object::DrawableObject,
-    frame_assembler::{self, FrameAssembler},
+    drawable_object::{self, DrawableObject},
+    frame_assembler::FrameAssembler,
     utils::XY,
     WINDOW_RESOLUTION,
 };
 
-pub struct MovementFunction(fn(i32) -> XY<usize>);
+pub struct MovementFunction(fn(i32) -> XY<i32>);
 impl MovementFunction {
-    pub fn new(function: fn(i32) -> XY<usize>) -> Self {
+    pub fn new(function: fn(i32) -> XY<i32>) -> Self {
         MovementFunction(function)
     }
 
-    pub fn calculate_position(&self, val: i32) -> XY<usize> {
-        (self.0)(val)
+    pub fn calculate_position(&self, time: i32) -> XY<i32> {
+        (self.0)(time)
     }
 }
 
 pub struct MovingObject {
-    pub object: DrawableObject,
-    pub position: XY<i32>,
+    pub drawable_object: DrawableObject,
+    pub start_position: XY<i32>,
     pub mov_function: Option<MovementFunction>,
     pub clock: SystemTime,
+}
+impl MovingObject {
+    pub fn new(drawable_object: DrawableObject, start_position: XY<i32>, mov_function: MovementFunction) -> Self {
+        MovingObject {
+            drawable_object,
+            start_position,
+            mov_function: Some(mov_function),
+            clock: SystemTime::now(),
+        }
+    }
 }
 
 pub struct View {
@@ -39,22 +49,17 @@ impl View {
         }
     }
 
-    pub fn insert_asset(
+    pub fn insert_object(
         &mut self,
         asset_name: &str,
         access_code: &str,
-        position: XY<i32>,
+        start_position: XY<i32>,
         mov_function: MovementFunction,
     ) {
         let new_asset = self.asset_server.load(asset_name);
         self.objects.insert(
             access_code.to_owned(),
-            MovingObject {
-                object: *new_asset,
-                position,
-                mov_function: Some(mov_function),
-                clock: SystemTime::now(),
-            },
+            MovingObject::new(*new_asset, start_position, mov_function),
         );
     }
 
