@@ -52,7 +52,7 @@ fn main() {
 
     let mut _frame_count: u128 = 0;
     loop {
-        let time = SystemTime::now();
+        let frame_duration = SystemTime::now();
         screen.display_frame();
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
 
@@ -65,7 +65,7 @@ fn main() {
         // let input = gnome_window.read_key();
 
         screen.schedule_frame(&frame_assembler.get_frame());
-        if let Ok(elapsed) = time.elapsed() {
+        if let Ok(elapsed) = frame_duration.elapsed() {
             if Duration::from_secs_f32(sleep_duration) > elapsed {
                 sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
             }
@@ -73,5 +73,15 @@ fn main() {
             return;
         }
         _frame_count += 1;
+    }
+}
+
+fn enforce_fps(frame_duration: SystemTime) {
+    if let Ok(elapsed) = frame_duration.elapsed() {
+        if Duration::from_secs_f32(sleep_duration) > elapsed {
+            sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
+        }
+    } else {
+        return;
     }
 }

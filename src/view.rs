@@ -1,7 +1,12 @@
 use std::collections::HashMap;
 
 use crate::{
-    asset_server::AssetServer, bitmap::Bitmap, drawable_object::DrawableObject, utils::XY,
+    asset_server::AssetServer,
+    bitmap::Bitmap,
+    drawable_object::DrawableObject,
+    frame_assembler::{self, FrameAssembler},
+    utils::XY,
+    WINDOW_RESOLUTION,
 };
 
 pub struct MovementFunction(fn(i32) -> XY<usize>);
@@ -52,6 +57,7 @@ impl View {
     }
 
     pub fn compile(&mut self) -> Box<Bitmap<char>> {
+        let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION);
         todo!()
     }
 }
