@@ -1,22 +1,22 @@
-use std::{collections::{HashMap, LinkedList}, time::SystemTime};
+use std::time::SystemTime;
 
 use crate::{
     asset_server::AssetServer,
     bitmap::Bitmap,
-    drawable_object::{self, DrawableObject},
+    drawable_object::DrawableObject,
     frame_assembler::FrameAssembler,
     utils::XY,
     WINDOW_RESOLUTION,
 };
 
-pub struct MovementFunction(fn(f32) -> XY<i32>);
+pub struct MovementFunction(fn(XY<i32>, f32) -> XY<i32>);
 impl MovementFunction {
-    pub fn new(function: fn(f32) -> XY<i32>) -> Self {
+    pub fn new(function: fn(XY<i32>, f32) -> XY<i32>) -> Self {
         MovementFunction(function)
     }
 
-    pub fn calculate_position(&self, time: f32) -> XY<i32> {
-        (self.0)(time)
+    pub fn calculate_position(&self, original_position: XY<i32>, time: f32) -> XY<i32> {
+        (self.0)(original_position, time)
     }
 }
 
@@ -73,7 +73,7 @@ impl View {
         for object in self.objects.iter_mut() {
             let mut modified_position = object.start_position;
             if let Some(movement_function) = &object.mov_function {
-                modified_position = movement_function.calculate_position(object.clock.elapsed().unwrap().as_secs_f32());
+                modified_position = movement_function.calculate_position(object.start_position, object.clock.elapsed().unwrap().as_secs_f32());
             }
             frame_assembler.insert(&object.drawable_object, &modified_position);
         }

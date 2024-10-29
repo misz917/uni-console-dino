@@ -15,26 +15,20 @@ pub mod view;
 pub mod window;
 pub mod movement_functions;
 
-use drawable_object::DrawableObject;
-use movement_functions::move_right;
-use view::{MovementFunction, View};
-
 use crate::{
-    asset_server::AssetServer,
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
-    drawable_object::Label,
-    frame_assembler::FrameAssembler,
     terminal_screen::TerminalHelper,
     terminal_screen::TerminalScreen,
     utils::XY,
     window::{GnomeTerminal, Terminal, WindowCreator},
+    view::{MovementFunction, View},
 };
 
 // create a settings file later
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 1.0; // buggy above ~46
+const FPS_LIMIT: f32 = 3.0; // buggy above ~46
 
 fn main() {
     let gnome_window = GnomeTerminal::new();
@@ -65,7 +59,7 @@ fn main() {
             }
         }
 
-        view.insert_asset("dino.txt", XY::new(10, 10), Some(MovementFunction::new(move_right)));
+        view.insert_asset("dino.txt", XY::new(10, 10), Some(MovementFunction::new(movement_functions::move_right)));
 
         screen.schedule_frame(&view.compile());
         enforce_fps(timer);
