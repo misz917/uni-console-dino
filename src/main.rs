@@ -1,5 +1,6 @@
 use std::{
-    thread::sleep,
+    sync::mpsc::{self, Receiver, Sender},
+    thread::{self, sleep},
     time::{Duration, SystemTime},
 };
 
@@ -49,6 +50,14 @@ fn main() {
     let vase = *asset_server.load("vase.txt");
     let mut animation = *asset_server.load("test_animation.txt");
 
+    let (tx, rx): (Sender<char>, Receiver<char>) = mpsc::channel();
+    thread::spawn(move || loop {
+        let input = gnome_window.read_key();
+        if let Some(pressed_key) = input {
+            tx.send(pressed_key).unwrap();
+        }
+    });
+
     let mut _frame_count: u128 = 0;
     loop {
         let frame_duration = SystemTime::now();
@@ -61,7 +70,13 @@ fn main() {
         frame_assembler.insert(&vase, &XY::new(30, 34));
         frame_assembler.insert_mut(&mut animation, &XY::new(45, 34));
 
-        // let input = gnome_window.read_key();
+        if let Ok(input) = rx.try_recv() {
+            frame_assembler.label(&format!("MESSAGE RECEIVED: {}", input), (1, 3));
+            match input {
+                ' ' => (),
+                _ => (),
+            }
+        }
 
         screen.schedule_frame(&frame_assembler.get_frame());
         enforce_fps(frame_duration);
