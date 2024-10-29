@@ -28,7 +28,7 @@ use crate::{
 // create a settings file later
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 3.0; // buggy above ~46
+const FPS_LIMIT: f32 = 30.0; // buggy above ~46
 
 fn main() {
     let gnome_window = GnomeTerminal::new();
