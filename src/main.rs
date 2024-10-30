@@ -82,7 +82,14 @@ fn enforce_fps(timer: SystemTime) {
 fn insert_objects(view: &mut View) {
     view.insert_asset(
         "dino.txt",
-        XY::new(10, 25),
-        Some(MovementFunction::new(movement_functions::move_right)),
+        XY::new(5, 32),
+        // Some(MovementFunction::new(movement_functions::move_right)),
+        None,
+    );
+
+    view.insert_asset(
+        "vase.txt",
+        XY::new(150, 33),
+        Some(MovementFunction::new(movement_functions::move_left)),
     );
 }
