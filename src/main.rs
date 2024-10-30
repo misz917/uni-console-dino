@@ -9,11 +9,11 @@ pub mod bitmap;
 pub mod bitmap_buffer;
 pub mod drawable_object;
 pub mod frame_assembler;
+pub mod movement_functions;
 pub mod terminal_screen;
 pub mod utils;
 pub mod view;
 pub mod window;
-pub mod movement_functions;
 
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
@@ -21,8 +21,8 @@ use crate::{
     terminal_screen::TerminalHelper,
     terminal_screen::TerminalScreen,
     utils::XY,
-    window::{GnomeTerminal, Terminal, WindowCreator},
     view::{MovementFunction, View},
+    window::{GnomeTerminal, Terminal, WindowCreator},
 };
 
 // create a settings file later
@@ -47,7 +47,9 @@ fn main() {
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     TerminalHelper::prepare_terminal();
 
-    let mut view = View::new("/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/", ' ');
+    let laptop_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
+    // let pc_pat = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
+    let mut view = View::new(laptop_path, ' ');
 
     loop {
         let timer = SystemTime::now();
@@ -58,7 +60,11 @@ fn main() {
             }
         }
 
-        view.insert_asset("dino.txt", XY::new(10, 10), Some(MovementFunction::new(movement_functions::move_right)));
+        view.insert_asset(
+            "dino.txt",
+            XY::new(10, 10),
+            Some(MovementFunction::new(movement_functions::move_right)),
+        );
 
         screen.schedule_frame(view.compile());
         screen.display_frame();
