@@ -53,11 +53,4 @@ impl BufferManager for BitmapBuffer {
         }
         return None;
     }
-
-    // fn get_frame(&mut self) -> Option<Box<Bitmap<char>>> {
-    //     // if let Some(following_frame) = self.following_frame.take() {
-    //     // self.active_frame = following_frame;
-    //     // }
-    //     return self.following_frame.clone();
-    // }
 }
