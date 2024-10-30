@@ -21,10 +21,10 @@ impl MovementFunction {
 }
 
 pub struct MovingObject {
-    pub drawable_object: DrawableObject,
-    pub start_position: XY<i32>,
-    pub mov_function: Option<MovementFunction>,
-    pub clock: SystemTime,
+    drawable_object: DrawableObject,
+    start_position: XY<i32>,
+    mov_function: Option<MovementFunction>,
+    clock: SystemTime,
 }
 impl MovingObject {
     pub fn new(
@@ -67,7 +67,7 @@ impl View {
     }
 
     pub fn insert_object() {
-        todo!()
+        todo!() // implement later if needed
     }
 
     pub fn compile(&mut self) -> Box<Bitmap<char>> {
@@ -75,7 +75,10 @@ impl View {
         for object in self.objects.iter_mut() {
             let mut modified_position = object.start_position;
             if let Some(movement_function) = &object.mov_function {
-                modified_position = movement_function.calculate_position(object.start_position, object.clock.elapsed().unwrap().as_secs_f32());
+                modified_position = movement_function.calculate_position(
+                    object.start_position,
+                     object.clock.elapsed().unwrap().as_secs_f32()
+                    );
             }
             frame_assembler.insert(&object.drawable_object, &modified_position);
         }

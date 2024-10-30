@@ -19,8 +19,7 @@ pub mod collision_detector;
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
-    terminal_screen::TerminalHelper,
-    terminal_screen::TerminalScreen,
+    terminal_screen::{TerminalHelper, TerminalScreen},
     utils::XY,
     view::{MovementFunction, View},
     window::{GnomeTerminal, Terminal, WindowCreator},
