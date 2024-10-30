@@ -1,12 +1,8 @@
-use std::time::SystemTime;
 use crate::{
-    asset_server::AssetServer,
-    bitmap::Bitmap,
-    drawable_object::DrawableObject,
-    frame_assembler::FrameAssembler,
-    utils::XY,
-    WINDOW_RESOLUTION,
+    asset_server::AssetServer, bitmap::Bitmap, drawable_object::DrawableObject,
+    frame_assembler::FrameAssembler, utils::XY, WINDOW_RESOLUTION,
 };
+use std::time::SystemTime;
 
 pub struct MovementFunction(fn(XY<i32>, f32) -> XY<i32>);
 impl MovementFunction {
@@ -23,13 +19,14 @@ pub struct MovingObject {
     drawable_object: DrawableObject,
     start_position: XY<i32>,
     mov_function: Option<MovementFunction>,
+    // hitbox_size: XY<usize>, // dimensions counted from upper-left corner
     clock: SystemTime,
 }
 impl MovingObject {
     pub fn new(
         drawable_object: DrawableObject,
         start_position: XY<i32>,
-        mov_function: Option<MovementFunction>
+        mov_function: Option<MovementFunction>,
     ) -> Self {
         MovingObject {
             drawable_object,
@@ -58,7 +55,7 @@ impl View {
         &mut self,
         asset_name: &str,
         start_position: XY<i32>,
-        movement_function: Option<MovementFunction>
+        movement_function: Option<MovementFunction>,
     ) {
         let drawable_object = self.asset_server.load(asset_name);
         let moving_object = MovingObject::new(*drawable_object, start_position, movement_function);
@@ -76,8 +73,8 @@ impl View {
             if let Some(movement_function) = &object.mov_function {
                 modified_position = movement_function.run_logic(
                     object.start_position,
-                     object.clock.elapsed().unwrap().as_secs_f32()
-                    );
+                    object.clock.elapsed().unwrap().as_secs_f32(),
+                );
             }
             frame_assembler.insert(&object.drawable_object, &modified_position);
         }
