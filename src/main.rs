@@ -62,7 +62,7 @@ fn main() {
 
         view.insert_asset(
             "dino.txt",
-            XY::new(10, 10),
+            XY::new(10, 25),
             Some(MovementFunction::new(movement_functions::move_right)),
         );
 

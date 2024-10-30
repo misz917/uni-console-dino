@@ -39,7 +39,7 @@ impl BufferManager for BitmapBuffer {
     }
 
     // generates a frame of transparent chars and differences between following and active
-    fn get_frame(&mut self) -> Option<Box<Bitmap<char>>> { 
+    fn get_frame(&mut self) -> Option<Box<Bitmap<char>>> {
         if let Some(following_frame) = &self.following_frame {
             let mut differences = Bitmap::new(self.resolution, TRANSPARENT_CHAR);
             for row in 0..self.resolution.y {
@@ -49,8 +49,15 @@ impl BufferManager for BitmapBuffer {
                     }
                 }
             }
-            return Some(Box::new(differences))
+            return Some(Box::new(differences));
         }
         return None;
     }
+
+    // fn get_frame(&mut self) -> Option<Box<Bitmap<char>>> {
+    //     // if let Some(following_frame) = self.following_frame.take() {
+    //     // self.active_frame = following_frame;
+    //     // }
+    //     return self.following_frame.clone();
+    // }
 }

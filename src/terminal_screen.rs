@@ -1,9 +1,9 @@
-use std::io::{self, Write};
 use crate::{
     bitmap::{Bitmap, Printer},
     bitmap_buffer::BufferManager,
     utils::{ESC, XY},
 };
+use std::io::{self, Write};
 
 pub struct TerminalHelper;
 impl TerminalHelper {
