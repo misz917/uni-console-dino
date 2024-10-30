@@ -14,6 +14,7 @@ pub mod terminal_screen;
 pub mod utils;
 pub mod view;
 pub mod window;
+pub mod collision_detector;
 
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
