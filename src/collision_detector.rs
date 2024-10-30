@@ -25,16 +25,20 @@ impl CollisionDetector {
 
     pub fn does_collide(&self, name: &str) -> Option<bool> {
         if let Some(compared_object) = self.objects.get(name) {
-            for object in &self.objects {
-                todo!()
+            for (object_name, object_hitbox) in &self.objects {
+                if object_name == name {
+                    continue;
+                } else if Self::check_collision(compared_object, object_hitbox) {
+                    return Some(true);
+                }
             }
-            todo!()
+            return Some(false);
         } else {
             return None;
         }
     }
 
-    fn check_collision(object_a: HitBox, object_b: HitBox) -> bool {
+    fn check_collision(object_a: &HitBox, object_b: &HitBox) -> bool {
         let a_left = object_a.position.x;
         let a_right = object_a.position.x + object_a.size.x as i32;
         let a_top = object_a.position.y;
