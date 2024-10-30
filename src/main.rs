@@ -7,15 +7,15 @@ use std::{
 pub mod asset_server;
 pub mod bitmap;
 pub mod bitmap_buffer;
+pub mod collision_detector;
 pub mod drawable_object;
 pub mod frame_assembler;
 pub mod movement_functions;
+pub mod task_scheduler;
 pub mod terminal_screen;
 pub mod utils;
 pub mod view;
 pub mod window;
-pub mod collision_detector;
-pub mod task_scheduler;
 
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
@@ -48,9 +48,9 @@ fn main() {
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     TerminalHelper::prepare_terminal();
 
-    // let laptop_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
-    let pc_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
-    let mut view = View::new(pc_path, ' ');
+    let _laptop_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
+    let _pc_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
+    let mut view = View::new(_laptop_path, ' ');
     insert_objects(&mut view);
 
     loop {
