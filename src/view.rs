@@ -1,5 +1,4 @@
 use std::time::SystemTime;
-
 use crate::{
     asset_server::AssetServer,
     bitmap::Bitmap,
@@ -15,8 +14,8 @@ impl MovementFunction {
         MovementFunction(function)
     }
 
-    pub fn calculate_position(&self, original_position: XY<i32>, time: f32) -> XY<i32> {
-        (self.0)(original_position, time)
+    pub fn run_logic(&self, original_position: XY<i32>, time: f32) -> XY<i32> {
+        (self.0)(original_position, time) // let the function delete the object, make it work first and only later make it elegant
     }
 }
 
@@ -59,10 +58,10 @@ impl View {
         &mut self,
         asset_name: &str,
         start_position: XY<i32>,
-        mov_function: Option<MovementFunction>
+        movement_function: Option<MovementFunction>
     ) {
         let drawable_object = self.asset_server.load(asset_name);
-        let moving_object = MovingObject::new(*drawable_object, start_position, mov_function);
+        let moving_object = MovingObject::new(*drawable_object, start_position, movement_function);
         self.objects.push(moving_object);
     }
 
@@ -75,7 +74,7 @@ impl View {
         for object in self.objects.iter_mut() {
             let mut modified_position = object.start_position;
             if let Some(movement_function) = &object.mov_function {
-                modified_position = movement_function.calculate_position(
+                modified_position = movement_function.run_logic(
                     object.start_position,
                      object.clock.elapsed().unwrap().as_secs_f32()
                     );
