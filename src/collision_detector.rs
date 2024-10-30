@@ -34,21 +34,16 @@ impl CollisionDetector {
         }
     }
 
-    fn check_collision(
-        size_a: XY<usize>,
-        position_a: XY<i32>,
-        size_b: XY<usize>,
-        position_b: XY<i32>,
-    ) -> bool {
-        let a_left = position_a.x;
-        let a_right = position_a.x + size_a.x as i32;
-        let a_top = position_a.y;
-        let a_bottom = position_a.y + size_a.y as i32;
+    fn check_collision(object_a: HitBox, object_b: HitBox) -> bool {
+        let a_left = object_a.position.x;
+        let a_right = object_a.position.x + object_a.size.x as i32;
+        let a_top = object_a.position.y;
+        let a_bottom = object_a.position.y + object_a.size.y as i32;
 
-        let b_left = position_b.x;
-        let b_right = position_b.x + size_b.x as i32;
-        let b_top = position_b.y;
-        let b_bottom = position_b.y + size_b.y as i32;
+        let b_left = object_b.position.x;
+        let b_right = object_b.position.x + object_b.size.x as i32;
+        let b_top = object_b.position.y;
+        let b_bottom = object_b.position.y + object_b.size.y as i32;
 
         return !(a_left >= b_right || a_right <= b_left || a_top >= b_bottom || a_bottom <= b_top);
     }
