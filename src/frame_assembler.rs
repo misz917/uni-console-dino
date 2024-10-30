@@ -32,6 +32,9 @@ impl FrameAssembler {
                     && (target_x as usize) < self.frame.resolution.x
                     && (target_y as usize) < self.frame.resolution.y
                 {
+                    if bitmap.matrix[col][row] == TRANSPARENT_CHAR {
+                        continue;
+                    }
                     self.frame.matrix[target_y as usize][target_x as usize] =
                         bitmap.matrix[col][row];
                 }
