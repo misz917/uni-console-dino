@@ -47,15 +47,10 @@ fn main() {
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     TerminalHelper::prepare_terminal();
 
-    let laptop_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
-    // let pc_pat = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
-    let mut view = View::new(laptop_path, ' ');
-
-    view.insert_asset(
-        "dino.txt",
-        XY::new(10, 25),
-        Some(MovementFunction::new(movement_functions::move_right)),
-    );
+    // let laptop_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
+    let pc_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
+    let mut view = View::new(pc_path, ' ');
+    insert_objects(&mut view);
 
     loop {
         let timer = SystemTime::now();
@@ -81,4 +76,12 @@ fn enforce_fps(timer: SystemTime) {
     } else {
         return;
     }
+}
+
+fn insert_objects(view: &mut View) {
+    view.insert_asset(
+        "dino.txt",
+        XY::new(10, 25),
+        Some(MovementFunction::new(movement_functions::move_right)),
+    );
 }
