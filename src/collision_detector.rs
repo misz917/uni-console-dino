@@ -16,11 +16,13 @@ impl HitBox {
 
 pub struct CollisionDetector {
     objects: HashMap<String, HitBox>,
+    special_objects: HashMap<String, HitBox>,
 }
 impl CollisionDetector {
     pub fn new() -> Self {
         CollisionDetector {
             objects: HashMap::new(),
+            special_objects: HashMap::new(),
         }
     }
 
@@ -31,6 +33,11 @@ impl CollisionDetector {
     pub fn insert(&mut self, size: &XY<usize>, position: &XY<i32>, name: &str) {
         let new_object = HitBox::new(size, position);
         self.objects.insert(name.to_owned(), new_object);
+    }
+
+    pub fn special_insert(&mut self, size: &XY<usize>, position: &XY<i32>, name: &str) {
+        let new_object = HitBox::new(size, position);
+        self.special_objects.insert(name.to_owned(), new_object);
     }
 
     pub fn check_for_collisions(&self, name: &str) -> Option<bool> {
@@ -63,12 +70,19 @@ impl CollisionDetector {
     }
 
     pub fn check_for_collision_between(&self, name_a: &str, name_b: &str) -> bool {
-        if let Some(object_a) = self.objects.get(name_a) {
-            if let Some(object_b) = self.objects.get(name_b) {
-                return Self::check_collision(object_a, object_b);
-            }
-            return false;
+        let mut object_a: Option<&HitBox> = None;
+        let mut object_b: Option<&HitBox> = None;
+        if let Some(object) = self.objects.get(name_a) {
+            object_a = Some(object);
         }
-        return false;
+        if let Some(object) = self.objects.get(name_b) {
+            object_b = Some(object);
+        }
+
+        if object_a.is_none() || object_b.is_none() {
+            return false;
+        } else {
+            return Self::check_collision(object_a.unwrap(), object_b.unwrap());
+        }
     }
 }

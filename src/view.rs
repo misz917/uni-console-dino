@@ -83,6 +83,10 @@ impl View {
         self.objects.push(moving_object);
     }
 
+    pub fn insert_object() {
+        todo!() // implement later if needed
+    }
+
     pub fn replace_movement_function(
         &mut self,
         name: &str,
@@ -110,10 +114,6 @@ impl View {
         }
     }
 
-    pub fn insert_object() {
-        todo!() // implement later if needed
-    }
-
     pub fn compile(&mut self) -> Box<Bitmap<char>> {
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION, self.default_background);
         self.collision_detector.empty();
@@ -128,6 +128,12 @@ impl View {
             }
             if object.can_collide {
                 self.collision_detector.insert(
+                    &object.drawable_object.get_bitmap().resolution,
+                    &modified_position,
+                    &object.name,
+                );
+            } else {
+                self.collision_detector.special_insert(
                     &object.drawable_object.get_bitmap().resolution,
                     &modified_position,
                     &object.name,
