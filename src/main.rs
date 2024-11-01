@@ -17,13 +17,11 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use libc::exit;
-use utils::ErrorDisplayer;
-
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
     terminal_screen::{TerminalHelper, TerminalScreen},
+    utils::ErrorDisplayer,
     utils::XY,
     view::{MovementFunction, View},
     window::{GnomeTerminal, Terminal, WindowCreator},
