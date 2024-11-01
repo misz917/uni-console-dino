@@ -82,6 +82,7 @@ impl View {
         self.objects.push(moving_object);
     }
 
+    // untested, unused
     pub fn remove_object(&mut self, name: &str) {
         let mut found_index: Option<usize> = None;
         for (index, object) in self.objects.iter().enumerate() {
