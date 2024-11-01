@@ -69,7 +69,7 @@ fn main() {
             }
         }
 
-        if view.check_collision("player") {
+        if view.check_for_collision("player") {
             ErrorDisplayer::error("The End");
         }
 

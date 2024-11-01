@@ -33,7 +33,7 @@ impl CollisionDetector {
         self.objects.insert(name.to_owned(), new_object);
     }
 
-    pub fn does_collide(&self, name: &str) -> Option<bool> {
+    pub fn check_for_collisions(&self, name: &str) -> Option<bool> {
         if let Some(compared_object) = self.objects.get(name) {
             for (object_name, object_hitbox) in &self.objects {
                 if object_name == name {
@@ -60,5 +60,15 @@ impl CollisionDetector {
         let b_bottom = object_b.position.y + object_b.size.y as i32;
 
         return !(a_left >= b_right || a_right <= b_left || a_top >= b_bottom || a_bottom <= b_top);
+    }
+
+    pub fn check_for_collision_between(&self, name_a: &str, name_b: &str) -> bool {
+        if let Some(object_a) = self.objects.get(name_a) {
+            if let Some(object_b) = self.objects.get(name_b) {
+                return Self::check_collision(object_a, object_b);
+            }
+            return false;
+        }
+        return false;
     }
 }

@@ -139,10 +139,15 @@ impl View {
         return frame_assembler.get_frame();
     }
 
-    pub fn check_collision(&self, name: &str) -> bool {
-        if let Some(b) = self.collision_detector.does_collide(name) {
+    pub fn check_for_collision(&self, name: &str) -> bool {
+        if let Some(b) = self.collision_detector.check_for_collisions(name) {
             return b;
         }
         return false;
+    }
+
+    pub fn check_for_collision_between(&self, name_a: &str, name_b: &str) -> bool {
+        self.collision_detector
+            .check_for_collision_between(name_a, name_b)
     }
 }
