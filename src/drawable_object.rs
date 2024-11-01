@@ -1,7 +1,4 @@
-use crate::{
-    bitmap::Bitmap,
-    utils::XY,
-};
+use crate::{bitmap::Bitmap, utils::XY};
 
 pub trait Drawable {
     fn get_bitmap(&self) -> &Bitmap<char>;
@@ -12,7 +9,7 @@ pub trait Drawable {
 pub struct Sprite(Bitmap<char>);
 impl Sprite {
     pub fn new(bitmap: &Bitmap<char>) -> Self {
-        Sprite( bitmap.clone() )
+        Sprite(bitmap.clone())
     }
 }
 impl Drawable for Sprite {
@@ -52,7 +49,8 @@ pub struct Animation {
     active_frame: usize,
 }
 impl Animation {
-    pub fn new(frames: &Vec<Bitmap<char>>) -> Self { // maybe could be optimised with Box
+    pub fn new(frames: &Vec<Bitmap<char>>) -> Self {
+        // maybe could be optimised with Box
         Animation {
             frames: frames.clone(),
             active_frame: 0,
@@ -78,6 +76,23 @@ impl Drawable for Animation {
     }
 }
 
+#[derive(Clone)]
+pub struct Rectangle(Bitmap<char>);
+impl Rectangle {
+    pub fn new(dimensions: XY<usize>, filling: char) -> Self {
+        Rectangle(Bitmap::new(dimensions, filling))
+    }
+}
+impl Drawable for Rectangle {
+    fn get_bitmap(&self) -> &Bitmap<char> {
+        &self.0
+    }
+
+    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
+        self.get_bitmap()
+    }
+}
+
 pub trait FrameUpdater {
     fn next_frame(&mut self) -> usize;
 }
@@ -94,6 +109,7 @@ pub enum DrawableObject {
     Sprite(Sprite),
     Label(Label),
     Animation(Animation),
+    Rectangle(Rectangle),
 }
 impl Drawable for DrawableObject {
     fn get_bitmap(&self) -> &Bitmap<char> {
@@ -101,6 +117,7 @@ impl Drawable for DrawableObject {
             DrawableObject::Sprite(sprite) => sprite.get_bitmap(),
             DrawableObject::Label(label) => label.get_bitmap(),
             DrawableObject::Animation(animation) => animation.get_bitmap(),
+            DrawableObject::Rectangle(rectangle) => rectangle.get_bitmap(),
         }
     }
 
@@ -109,6 +126,7 @@ impl Drawable for DrawableObject {
             DrawableObject::Sprite(sprite) => sprite.get_bitmap_mut(),
             DrawableObject::Label(label) => label.get_bitmap_mut(),
             DrawableObject::Animation(animation) => animation.get_bitmap_mut(),
+            DrawableObject::Rectangle(rectangle) => rectangle.get_bitmap_mut(),
         }
     }
 }
