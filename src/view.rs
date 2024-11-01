@@ -1,5 +1,11 @@
 use crate::{
-    asset_server::AssetServer, bitmap::Bitmap, collision_detector::{self, CollisionDetector}, drawable_object::{Drawable, DrawableObject}, frame_assembler::FrameAssembler, utils::XY, WINDOW_RESOLUTION
+    asset_server::AssetServer,
+    bitmap::Bitmap,
+    collision_detector::CollisionDetector,
+    drawable_object::{Drawable, DrawableObject},
+    frame_assembler::FrameAssembler,
+    utils::XY,
+    WINDOW_RESOLUTION,
 };
 use std::time::SystemTime;
 
@@ -15,19 +21,24 @@ impl MovementFunction {
 }
 
 pub struct MovingObject {
+    name: String,
+    can_collide: bool,
     drawable_object: DrawableObject,
     start_position: XY<i32>,
     mov_function: Option<MovementFunction>,
-    // hitbox_size: XY<usize>, // dimensions counted from upper-left corner
     clock: SystemTime,
 }
 impl MovingObject {
     pub fn new(
+        name: &str,
+        can_collide: bool,
         drawable_object: DrawableObject,
         start_position: XY<i32>,
         mov_function: Option<MovementFunction>,
     ) -> Self {
         MovingObject {
+            name: name.to_owned(),
+            can_collide,
             drawable_object,
             start_position,
             mov_function,
@@ -37,7 +48,7 @@ impl MovingObject {
 }
 
 pub struct View {
-    objects: Vec<(String, MovingObject)>,
+    objects: Vec<MovingObject>,
     asset_server: AssetServer,
     default_background: char,
     collision_detector: CollisionDetector,
@@ -48,20 +59,27 @@ impl View {
             objects: Vec::new(),
             asset_server: AssetServer::new(asset_directory),
             default_background,
-            collision_detector: CollisionDetector::new()
+            collision_detector: CollisionDetector::new(),
         }
     }
 
     pub fn insert_asset(
         &mut self,
-        asset_name: &str,
+        name: &str,
+        can_collide: bool,
         asset_path: &str,
         start_position: XY<i32>,
         movement_function: Option<MovementFunction>,
     ) {
         let drawable_object = self.asset_server.load(asset_path);
-        let moving_object = MovingObject::new(*drawable_object, start_position, movement_function);
-        self.objects.push((asset_name.to_owned(), moving_object));
+        let moving_object = MovingObject::new(
+            name,
+            can_collide,
+            *drawable_object,
+            start_position,
+            movement_function,
+        );
+        self.objects.push(moving_object);
     }
 
     pub fn insert_object() {
@@ -73,15 +91,21 @@ impl View {
         self.collision_detector.empty();
 
         for object in self.objects.iter_mut() {
-            let mut modified_position = object.1.start_position;
-            if let Some(movement_function) = &object.1.mov_function {
+            let mut modified_position = object.start_position;
+            if let Some(movement_function) = &object.mov_function {
                 modified_position = movement_function.run_logic(
-                    object.1.start_position,
-                    object.1.clock.elapsed().unwrap().as_secs_f32(),
+                    object.start_position,
+                    object.clock.elapsed().unwrap().as_secs_f32(),
                 );
             }
-            self.collision_detector.insert(&object.1.drawable_object.get_bitmap().resolution, &modified_position, &object.0);
-            frame_assembler.insert(&object.1.drawable_object, &modified_position);
+            if object.can_collide {
+                self.collision_detector.insert(
+                    &object.drawable_object.get_bitmap().resolution,
+                    &modified_position,
+                    &object.name,
+                );
+            }
+            frame_assembler.insert(&object.drawable_object, &modified_position);
         }
 
         return frame_assembler.get_frame();
