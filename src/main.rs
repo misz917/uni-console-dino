@@ -53,11 +53,18 @@ fn main() {
     let mut view = View::new(asset_path, ' ');
     insert_objects(&mut view);
 
+    let mut frame_counter: u64 = 0;
     loop {
         let timer = SystemTime::now();
 
         if let Ok(input) = rx.try_recv() {
             match input {
+                ' ' => {
+                    view.replace_movement_function(
+                        "player",
+                        Some(MovementFunction::new(movement_functions::jump)),
+                    );
+                }
                 _ => (),
             }
         }
@@ -69,6 +76,7 @@ fn main() {
         screen.schedule_frame(view.compile());
         screen.display_frame();
         enforce_fps(timer);
+        frame_counter += 1;
     }
 }
 

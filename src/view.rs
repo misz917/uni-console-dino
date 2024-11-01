@@ -9,6 +9,7 @@ use crate::{
 };
 use std::time::SystemTime;
 
+#[derive(Clone)]
 pub struct MovementFunction(fn(XY<i32>, f32) -> XY<i32>);
 impl MovementFunction {
     pub fn new(function: fn(XY<i32>, f32) -> XY<i32>) -> Self {
@@ -80,6 +81,19 @@ impl View {
             movement_function,
         );
         self.objects.push(moving_object);
+    }
+
+    pub fn replace_movement_function(
+        &mut self,
+        name: &str,
+        movement_function: Option<MovementFunction>,
+    ) {
+        for object in self.objects.iter_mut() {
+            if object.name == name {
+                object.mov_function = movement_function.clone();
+                object.clock = SystemTime::now();
+            }
+        }
     }
 
     // untested, unused
