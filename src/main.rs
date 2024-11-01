@@ -17,7 +17,8 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use drawable_object::{DrawableObject, Label};
+use drawable_object::{DrawableObject, Label, Rectangle};
+use task_scheduler::TaskScheduler;
 
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
@@ -104,6 +105,16 @@ fn insert_objects(view: &mut View) {
         Some(MovementFunction::new(movement_functions::move_left)),
     );
 
-    let drawable_object = DrawableObject::Label(Label::new("Hardcore gameplay live"));
-    view.insert_object("test_label", false, drawable_object, XY::new(2, 1), None);
+    let test_label = DrawableObject::Label(Label::new("Hardcore gameplay live"));
+    view.insert_object("test_label", false, test_label, XY::new(2, 1), None);
+
+    let invisible_floor =
+        DrawableObject::Rectangle(Rectangle::new(XY::new(WINDOW_RESOLUTION.x, 1), '$'));
+    view.insert_object(
+        "invisible_floor",
+        false,
+        invisible_floor,
+        XY::new(0, 37),
+        None,
+    );
 }
