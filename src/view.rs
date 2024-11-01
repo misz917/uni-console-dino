@@ -1,6 +1,5 @@
 use crate::{
-    asset_server::AssetServer, bitmap::Bitmap, drawable_object::DrawableObject,
-    frame_assembler::FrameAssembler, utils::XY, WINDOW_RESOLUTION,
+    asset_server::AssetServer, bitmap::Bitmap, collision_detector::{self, CollisionDetector}, drawable_object::{Drawable, DrawableObject}, frame_assembler::FrameAssembler, utils::XY, WINDOW_RESOLUTION
 };
 use std::time::SystemTime;
 
@@ -38,9 +37,10 @@ impl MovingObject {
 }
 
 pub struct View {
-    objects: Vec<MovingObject>,
+    objects: Vec<(String, MovingObject)>,
     asset_server: AssetServer,
     default_background: char,
+    collision_detector: CollisionDetector,
 }
 impl View {
     pub fn new(asset_directory: &str, default_background: char) -> Self {
@@ -48,18 +48,20 @@ impl View {
             objects: Vec::new(),
             asset_server: AssetServer::new(asset_directory),
             default_background,
+            collision_detector: CollisionDetector::new()
         }
     }
 
     pub fn insert_asset(
         &mut self,
         asset_name: &str,
+        asset_path: &str,
         start_position: XY<i32>,
         movement_function: Option<MovementFunction>,
     ) {
-        let drawable_object = self.asset_server.load(asset_name);
+        let drawable_object = self.asset_server.load(asset_path);
         let moving_object = MovingObject::new(*drawable_object, start_position, movement_function);
-        self.objects.push(moving_object);
+        self.objects.push((asset_name.to_owned(), moving_object));
     }
 
     pub fn insert_object() {
@@ -68,16 +70,20 @@ impl View {
 
     pub fn compile(&mut self) -> Box<Bitmap<char>> {
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION, self.default_background);
+        self.collision_detector.empty();
+
         for object in self.objects.iter_mut() {
-            let mut modified_position = object.start_position;
-            if let Some(movement_function) = &object.mov_function {
+            let mut modified_position = object.1.start_position;
+            if let Some(movement_function) = &object.1.mov_function {
                 modified_position = movement_function.run_logic(
-                    object.start_position,
-                    object.clock.elapsed().unwrap().as_secs_f32(),
+                    object.1.start_position,
+                    object.1.clock.elapsed().unwrap().as_secs_f32(),
                 );
             }
-            frame_assembler.insert(&object.drawable_object, &modified_position);
+            self.collision_detector.insert(&object.1.drawable_object.get_bitmap().resolution, &modified_position, &object.0);
+            frame_assembler.insert(&object.1.drawable_object, &modified_position);
         }
+
         return frame_assembler.get_frame();
     }
 }
