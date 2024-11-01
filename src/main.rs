@@ -51,9 +51,8 @@ fn main() {
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     TerminalHelper::prepare_terminal();
 
-    let _laptop_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
-    let _pc_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
-    let mut view = View::new(_pc_path, ' ');
+    let asset_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
+    let mut view = View::new(asset_path, ' ');
     insert_objects(&mut view);
 
     loop {
