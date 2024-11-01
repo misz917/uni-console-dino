@@ -56,21 +56,13 @@ fn main() {
     let mut view = View::new(asset_path, ' ');
     insert_objects(&mut view);
 
+    let mut task_scheduler = TaskScheduler::new();
+
     let mut frame_counter: u64 = 0;
     loop {
         let timer = SystemTime::now();
 
-        if let Ok(input) = rx.try_recv() {
-            match input {
-                ' ' => {
-                    view.replace_movement_function(
-                        "player",
-                        Some(MovementFunction::new(movement_functions::jump)),
-                    );
-                }
-                _ => (),
-            }
-        }
+        handle_input(&mut view, &rx);
 
         if view.check_for_collision("player") {
             ErrorDisplayer::error("The End");
@@ -117,4 +109,19 @@ fn insert_objects(view: &mut View) {
         XY::new(0, 37),
         None,
     );
+}
+
+fn handle_input(view: &mut View, rx: &Receiver<char>) {
+    if let Ok(input) = rx.try_recv() {
+        match input {
+            ' ' => {
+                view.replace_movement_function(
+                    "player",
+                    Some(MovementFunction::new(movement_functions::jump)),
+                );
+                // task_scheduler.push(function, execution_time);
+            }
+            _ => (),
+        }
+    }
 }
