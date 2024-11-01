@@ -83,8 +83,22 @@ impl View {
         self.objects.push(moving_object);
     }
 
-    pub fn insert_object() {
-        todo!() // implement later if needed
+    pub fn insert_object(
+        &mut self,
+        name: &str,
+        can_collide: bool,
+        drawable_object: DrawableObject,
+        start_position: XY<i32>,
+        movement_function: Option<MovementFunction>,
+    ) {
+        let moving_object = MovingObject::new(
+            name,
+            can_collide,
+            drawable_object,
+            start_position,
+            movement_function,
+        );
+        self.objects.push(moving_object);
     }
 
     pub fn replace_movement_function(

@@ -17,6 +17,8 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
+use drawable_object::{DrawableObject, Label};
+
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
@@ -101,4 +103,7 @@ fn insert_objects(view: &mut View) {
         XY::new(150, 33),
         Some(MovementFunction::new(movement_functions::move_left)),
     );
+
+    let drawable_object = DrawableObject::Label(Label::new("Hardcore gameplay live"));
+    view.insert_object("test_label", false, drawable_object, XY::new(2, 1), None);
 }
