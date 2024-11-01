@@ -24,6 +24,10 @@ impl CollisionDetector {
         }
     }
 
+    pub fn empty(&mut self) {
+        self.objects.clear();
+    }
+
     pub fn insert(&mut self, size: &XY<usize>, position: &XY<i32>, name: &str) {
         let new_object = HitBox::new(size, position);
         self.objects.insert(name.to_owned(), new_object);
