@@ -82,6 +82,19 @@ impl View {
         self.objects.push(moving_object);
     }
 
+    pub fn remove_object(&mut self, name: &str) {
+        let mut found_index: Option<usize> = None;
+        for (index, object) in self.objects.iter().enumerate() {
+            if object.name == name {
+                found_index = Some(index);
+                break;
+            }
+        }
+        if let Some(index) = found_index {
+            self.objects.swap_remove(index);
+        }
+    }
+
     pub fn insert_object() {
         todo!() // implement later if needed
     }
