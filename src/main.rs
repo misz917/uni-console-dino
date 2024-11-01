@@ -17,6 +17,9 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
+use libc::exit;
+use utils::ErrorDisplayer;
+
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
@@ -50,7 +53,7 @@ fn main() {
 
     let _laptop_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
     let _pc_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
-    let mut view = View::new(_laptop_path, ' ');
+    let mut view = View::new(_pc_path, ' ');
     insert_objects(&mut view);
 
     loop {
@@ -60,6 +63,10 @@ fn main() {
             match input {
                 _ => (),
             }
+        }
+
+        if view.check_collision("player") {
+            ErrorDisplayer::error("The End");
         }
 
         screen.schedule_frame(view.compile());
