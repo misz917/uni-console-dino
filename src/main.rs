@@ -97,10 +97,10 @@ fn insert_objects(view: &mut View) {
     view.insert_asset("player", true, "dino.txt", XY::new(5, 32), None);
 
     // view.insert_asset(
-    //     "obstacle",
+    //     "vase",
     //     true,
     //     "vase.txt",
-    //     XY::new(150, 33),
+    //     XY::new(WINDOW_RESOLUTION.x as i32 + 1, 33),
     //     Some(MovementFunction::new(movement_functions::move_left)),
     // );
 
