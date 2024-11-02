@@ -59,6 +59,14 @@ fn main() {
     loop {
         let timer = SystemTime::now();
 
+        let label = DrawableObject::Label(Label::new(&format!("Frame: {}", _frame_counter)));
+        view.remove_object("frame_count");
+        view.insert_object("frame_count", false, label, XY::new(2, 1), None);
+
+        if view.check_for_collision("player") {
+            ErrorDisplayer::error("The End");
+        }
+
         if _frame_counter % 120 == 0 {
             view.insert_asset(
                 &format!("vase{}", _frame_counter),
@@ -70,10 +78,6 @@ fn main() {
         }
 
         handle_input(&mut view, &rx);
-
-        if view.check_for_collision("player") {
-            ErrorDisplayer::error("The End");
-        }
 
         screen.schedule_frame(view.compile());
         screen.display_frame();
@@ -95,17 +99,6 @@ fn enforce_fps(timer: SystemTime) {
 
 fn insert_objects(view: &mut View) {
     view.insert_asset("player", true, "dino.txt", XY::new(5, 32), None);
-
-    // view.insert_asset(
-    //     "vase",
-    //     true,
-    //     "vase.txt",
-    //     XY::new(WINDOW_RESOLUTION.x as i32 + 1, 33),
-    //     Some(MovementFunction::new(movement_functions::move_left)),
-    // );
-
-    let test_label = DrawableObject::Label(Label::new("Live gameplay"));
-    view.insert_object("test_label", false, test_label, XY::new(2, 1), None);
 
     let invisible_floor =
         DrawableObject::Rectangle(Rectangle::new(XY::new(WINDOW_RESOLUTION.x, 1), '$'));
