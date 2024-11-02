@@ -32,7 +32,7 @@ use crate::{
 // create a settings file later
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 30.0; // buggy above ~46
+const FPS_LIMIT: f32 = 40.0; // buggy above ~46
 
 fn main() {
     let gnome_window = GnomeTerminal::new();
@@ -58,6 +58,16 @@ fn main() {
     let mut _frame_counter: u64 = 0;
     loop {
         let timer = SystemTime::now();
+
+        if _frame_counter % 120 == 0 {
+            view.insert_asset(
+                "vase",
+                true,
+                "vase.txt",
+                XY::new(150, 33),
+                Some(MovementFunction::new(movement_functions::move_left)),
+            );
+        }
 
         handle_input(&mut view, &rx);
 
@@ -86,15 +96,15 @@ fn enforce_fps(timer: SystemTime) {
 fn insert_objects(view: &mut View) {
     view.insert_asset("player", true, "dino.txt", XY::new(5, 32), None);
 
-    view.insert_asset(
-        "obstacle",
-        true,
-        "vase.txt",
-        XY::new(150, 33),
-        Some(MovementFunction::new(movement_functions::move_left)),
-    );
+    // view.insert_asset(
+    //     "obstacle",
+    //     true,
+    //     "vase.txt",
+    //     XY::new(150, 33),
+    //     Some(MovementFunction::new(movement_functions::move_left)),
+    // );
 
-    let test_label = DrawableObject::Label(Label::new("Hardcore gameplay live"));
+    let test_label = DrawableObject::Label(Label::new("Live gameplay"));
     view.insert_object("test_label", false, test_label, XY::new(2, 1), None);
 
     let invisible_floor =
