@@ -64,7 +64,7 @@ fn main() {
                 "vase",
                 true,
                 "vase.txt",
-                XY::new(150, 33),
+                XY::new(WINDOW_RESOLUTION.x as i32 + 1, 33),
                 Some(MovementFunction::new(movement_functions::move_left)),
             );
         }
