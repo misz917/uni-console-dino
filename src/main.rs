@@ -61,7 +61,7 @@ fn main() {
 
         if _frame_counter % 120 == 0 {
             view.insert_asset(
-                "vase",
+                &format!("vase{}", _frame_counter),
                 true,
                 "vase.txt",
                 XY::new(WINDOW_RESOLUTION.x as i32 + 1, 33),
