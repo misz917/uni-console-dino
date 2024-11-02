@@ -103,7 +103,7 @@ fn insert_objects(view: &mut View) {
         "invisible_floor",
         false,
         invisible_floor,
-        XY::new(0, 37),
+        XY::new(0, 36),
         None,
     );
 }
@@ -112,11 +112,12 @@ fn handle_input(view: &mut View, rx: &Receiver<char>) {
     if let Ok(input) = rx.try_recv() {
         match input {
             ' ' => {
-                view.replace_movement_function(
-                    "player",
-                    Some(MovementFunction::new(movement_functions::jump)),
-                );
-                // task_scheduler.push(function, execution_time);
+                if view.check_for_collision_between("player", "invisible_floor") {
+                    view.replace_movement_function(
+                        "player",
+                        Some(MovementFunction::new(movement_functions::jump)),
+                    );
+                }
             }
             _ => (),
         }

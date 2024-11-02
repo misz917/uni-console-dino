@@ -1,6 +1,7 @@
-use crate::utils::XY;
+use crate::utils::{ErrorDisplayer, XY};
 use std::collections::HashMap;
 
+#[derive(Debug)]
 struct HitBox {
     size: XY<usize>,
     position: XY<i32>,
@@ -74,8 +75,12 @@ impl CollisionDetector {
         let mut object_b: Option<&HitBox> = None;
         if let Some(object) = self.objects.get(name_a) {
             object_a = Some(object);
+        } else if let Some(object) = self.special_objects.get(name_a) {
+            object_a = Some(object);
         }
         if let Some(object) = self.objects.get(name_b) {
+            object_b = Some(object);
+        } else if let Some(object) = self.special_objects.get(name_b) {
             object_b = Some(object);
         }
 
