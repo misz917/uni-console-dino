@@ -55,7 +55,7 @@ fn main() {
     let mut view = View::new(asset_path, ' ');
     insert_objects(&mut view);
 
-    let mut frame_counter: u64 = 0;
+    let mut _frame_counter: u64 = 0;
     loop {
         let timer = SystemTime::now();
 
@@ -68,7 +68,7 @@ fn main() {
         screen.schedule_frame(view.compile());
         screen.display_frame();
         enforce_fps(timer);
-        frame_counter += 1;
+        _frame_counter += 1;
     }
 }
 

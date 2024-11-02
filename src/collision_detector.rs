@@ -1,4 +1,4 @@
-use crate::utils::{ErrorDisplayer, XY};
+use crate::utils::XY;
 use std::collections::HashMap;
 
 #[derive(Debug)]
