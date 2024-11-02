@@ -98,7 +98,7 @@ fn enforce_fps(timer: SystemTime) {
 }
 
 fn insert_objects(view: &mut View) {
-    view.insert_asset("player", true, "dino.txt", XY::new(5, 32), None);
+    view.insert_asset("player", true, "test_animation.txt", XY::new(5, 32), None);
 
     let invisible_floor =
         DrawableObject::Rectangle(Rectangle::new(XY::new(WINDOW_RESOLUTION.x, 1), '$'));
