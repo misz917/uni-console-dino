@@ -153,7 +153,7 @@ impl View {
                     &object.name,
                 );
             }
-            frame_assembler.insert(&object.drawable_object, &modified_position);
+            frame_assembler.insert(&mut object.drawable_object, &modified_position);
         }
 
         return frame_assembler.get_frame();
