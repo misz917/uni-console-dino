@@ -18,7 +18,6 @@ pub mod view;
 pub mod window;
 
 use drawable_object::{DrawableObject, Label, Rectangle};
-use task_scheduler::TaskScheduler;
 
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
@@ -55,8 +54,6 @@ fn main() {
     let asset_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
     let mut view = View::new(asset_path, ' ');
     insert_objects(&mut view);
-
-    let mut task_scheduler = TaskScheduler::new();
 
     let mut frame_counter: u64 = 0;
     loop {
