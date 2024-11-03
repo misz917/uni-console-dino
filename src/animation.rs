@@ -17,7 +17,9 @@ impl Animation {
     }
 
     fn get_frame(&self) -> &Bitmap<char> {
-        &self.frames[0]
+        let current_frame_num =
+            (self.time.elapsed().unwrap().as_secs_f32() / self.fps) as usize % self.frames.len();
+        &self.frames[current_frame_num]
     }
 }
 impl Drawable for Animation {

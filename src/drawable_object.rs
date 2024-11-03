@@ -1,5 +1,3 @@
-use std::time::SystemTime;
-
 use crate::{animation::Animation, bitmap::Bitmap, utils::XY};
 
 pub trait Drawable {
