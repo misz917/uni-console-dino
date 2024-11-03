@@ -80,7 +80,7 @@ fn main() {
             view.insert_asset(
                 &format!("bird{}", _frame_counter),
                 true,
-                "bird.txt",
+                "bird_flying.txt",
                 XY::new(WINDOW_RESOLUTION.x as i32 + 1, 20),
                 Some(MovementFunction::new(movement_functions::move_left)),
             );
