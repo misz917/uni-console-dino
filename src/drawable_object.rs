@@ -2,7 +2,6 @@ use crate::{animation::Animation, bitmap::Bitmap, utils::XY};
 
 pub trait Drawable {
     fn get_bitmap(&self) -> &Bitmap<char>;
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char>;
 }
 
 #[derive(Clone, Debug)]
@@ -14,10 +13,6 @@ impl Sprite {
 }
 impl Drawable for Sprite {
     fn get_bitmap(&self) -> &Bitmap<char> {
-        &self.0
-    }
-
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
         &self.0
     }
 }
@@ -37,10 +32,6 @@ impl Drawable for Label {
     fn get_bitmap(&self) -> &Bitmap<char> {
         &self.0
     }
-
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
-        &self.0
-    }
 }
 
 #[derive(Clone, Debug)]
@@ -53,10 +44,6 @@ impl Rectangle {
 impl Drawable for Rectangle {
     fn get_bitmap(&self) -> &Bitmap<char> {
         &self.0
-    }
-
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
-        self.get_bitmap()
     }
 }
 
@@ -74,15 +61,6 @@ impl Drawable for DrawableObject {
             DrawableObject::Label(label) => label.get_bitmap(),
             DrawableObject::Animation(animation) => animation.get_bitmap(),
             DrawableObject::Rectangle(rectangle) => rectangle.get_bitmap(),
-        }
-    }
-
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
-        match self {
-            DrawableObject::Sprite(sprite) => sprite.get_bitmap_mut(),
-            DrawableObject::Label(label) => label.get_bitmap_mut(),
-            DrawableObject::Animation(animation) => animation.get_bitmap_mut(),
-            DrawableObject::Rectangle(rectangle) => rectangle.get_bitmap_mut(),
         }
     }
 }

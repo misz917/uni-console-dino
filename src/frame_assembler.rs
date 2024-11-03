@@ -21,11 +21,7 @@ impl FrameAssembler {
 
     // places a sprite on a bitmap by upper left corner of the sprite
     pub fn insert(&mut self, drawable_object: &mut DrawableObject, position: &XY<i32>) {
-        let bitmap: &Bitmap<char>;
-        match drawable_object {
-            DrawableObject::Animation(_) => bitmap = drawable_object.get_bitmap_mut(),
-            _ => bitmap = drawable_object.get_bitmap(),
-        }
+        let bitmap: &Bitmap<char> = drawable_object.get_bitmap();
         for row in 0..bitmap.resolution.x {
             for col in 0..bitmap.resolution.y {
                 let target_x = position.x + row as i32;
@@ -47,7 +43,7 @@ impl FrameAssembler {
     }
 
     pub fn insert_mut(&mut self, drawable_object: &mut DrawableObject, position: &XY<i32>) {
-        let bitmap = drawable_object.get_bitmap_mut();
+        let bitmap = drawable_object.get_bitmap();
         for row in 0..bitmap.resolution.x {
             for col in 0..bitmap.resolution.y {
                 let target_x = position.x + row as i32;

@@ -26,8 +26,4 @@ impl Drawable for Animation {
     fn get_bitmap(&self) -> &Bitmap<char> {
         &self.get_frame()
     }
-
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
-        self.get_frame()
-    }
 }
