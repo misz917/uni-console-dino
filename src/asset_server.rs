@@ -1,6 +1,7 @@
 use crate::{
+    animation::Animation,
     bitmap::Bitmap,
-    drawable_object::{Animation, DrawableObject, Sprite},
+    drawable_object::{DrawableObject, Sprite},
     utils::{self, XY},
 };
 use std::{collections::HashMap, fs};

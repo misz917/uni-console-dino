@@ -1,4 +1,6 @@
-use crate::{bitmap::Bitmap, utils::XY};
+use std::time::SystemTime;
+
+use crate::{animation::Animation, bitmap::Bitmap, utils::XY};
 
 pub trait Drawable {
     fn get_bitmap(&self) -> &Bitmap<char>;
@@ -44,40 +46,6 @@ impl Drawable for Label {
 }
 
 #[derive(Clone, Debug)]
-pub struct Animation {
-    frames: Vec<Bitmap<char>>,
-    active_frame: usize,
-    fps: f32,
-}
-impl Animation {
-    pub fn new(frames: &Vec<Bitmap<char>>, fps: f32) -> Self {
-        Animation {
-            frames: frames.clone(),
-            active_frame: 0,
-            fps,
-        }
-    }
-
-    fn update(&mut self) {
-        self.next_frame();
-    }
-
-    fn get_active_frame(&self) -> &Bitmap<char> {
-        &self.frames[self.active_frame]
-    }
-}
-impl Drawable for Animation {
-    fn get_bitmap(&self) -> &Bitmap<char> {
-        &self.get_active_frame()
-    }
-
-    fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
-        self.update();
-        self.get_active_frame()
-    }
-}
-
-#[derive(Clone, Debug)]
 pub struct Rectangle(Bitmap<char>);
 impl Rectangle {
     pub fn new(dimensions: XY<usize>, filling: char) -> Self {
@@ -91,17 +59,6 @@ impl Drawable for Rectangle {
 
     fn get_bitmap_mut(&mut self) -> &Bitmap<char> {
         self.get_bitmap()
-    }
-}
-
-pub trait FrameUpdater {
-    fn next_frame(&mut self) -> usize;
-}
-
-impl FrameUpdater for Animation {
-    fn next_frame(&mut self) -> usize {
-        self.active_frame = (self.active_frame + 1) % self.frames.len();
-        self.active_frame
     }
 }
 

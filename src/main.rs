@@ -4,6 +4,7 @@ use std::{
     time::{Duration, SystemTime},
 };
 
+pub mod animation;
 pub mod asset_server;
 pub mod bitmap;
 pub mod bitmap_buffer;
