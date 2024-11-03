@@ -5,7 +5,7 @@ pub trait Drawable {
     fn get_bitmap_mut(&mut self) -> &Bitmap<char>;
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Sprite(Bitmap<char>);
 impl Sprite {
     pub fn new(bitmap: &Bitmap<char>) -> Self {
@@ -22,7 +22,7 @@ impl Drawable for Sprite {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Label(Bitmap<char>);
 impl Label {
     pub fn new(text: &str) -> Self {
@@ -43,17 +43,18 @@ impl Drawable for Label {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Animation {
     frames: Vec<Bitmap<char>>,
     active_frame: usize,
+    fps: f32,
 }
 impl Animation {
-    pub fn new(frames: &Vec<Bitmap<char>>) -> Self {
-        // maybe could be optimised with Box
+    pub fn new(frames: &Vec<Bitmap<char>>, fps: f32) -> Self {
         Animation {
             frames: frames.clone(),
             active_frame: 0,
+            fps,
         }
     }
 
@@ -76,7 +77,7 @@ impl Drawable for Animation {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Rectangle(Bitmap<char>);
 impl Rectangle {
     pub fn new(dimensions: XY<usize>, filling: char) -> Self {
@@ -104,7 +105,7 @@ impl FrameUpdater for Animation {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum DrawableObject {
     Sprite(Sprite),
     Label(Label),

@@ -3,7 +3,7 @@ use crate::{
     utils::{ESC, XY},
 };
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Bitmap<T> {
     pub resolution: XY<usize>,
     pub matrix: Vec<Vec<T>>,

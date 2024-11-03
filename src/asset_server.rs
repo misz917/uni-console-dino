@@ -1,9 +1,9 @@
-use std::{collections::HashMap, fs};
 use crate::{
     bitmap::Bitmap,
     drawable_object::{Animation, DrawableObject, Sprite},
     utils::{self, XY},
 };
+use std::{collections::HashMap, fs};
 
 pub const TRANSPARENT_CHAR: char = '$'; // works like png's transparency, do not confuse with space
 
@@ -36,6 +36,7 @@ impl SpriteFileReader {
             utils::ErrorDisplayer::error(&format!("File not found at: {}", file_path));
         }
         let d_object = Self::parse_file_contents(&contents.unwrap());
+
         return d_object;
     }
 
@@ -43,22 +44,29 @@ impl SpriteFileReader {
         let lines: Vec<&str> = contents.lines().collect();
         let x_length = Self::find_line_length(&lines);
         let y_height = lines[0].parse::<usize>().unwrap();
+        let fps = lines[1].parse::<f32>();
 
-        let groups = Self::split_into_groups(lines[1..].to_vec(), y_height);
-        let formatted_groups: Vec<Vec<Vec<char>>> = groups.iter().map(|group| {
-            let formatted = Self::format_group(&group, x_length);
-            formatted
-        }).collect();
+        let groups = Self::split_into_groups(lines[2..].to_vec(), y_height);
+        let formatted_groups: Vec<Vec<Vec<char>>> = groups
+            .iter()
+            .map(|group| {
+                let formatted = Self::format_group(&group, x_length);
+                formatted
+            })
+            .collect();
 
         if formatted_groups.len() > 1 {
-            let frames: Vec<Bitmap<char>> = formatted_groups.iter().map(|group| {
-                let bitmap = Bitmap {
-                    resolution: XY::new(x_length, y_height),
-                    matrix: group.clone(),
-                };
-                bitmap
-            }).collect();
-            let d_object = DrawableObject::Animation(Animation::new(&frames));
+            let frames: Vec<Bitmap<char>> = formatted_groups
+                .iter()
+                .map(|group| {
+                    let bitmap = Bitmap {
+                        resolution: XY::new(x_length, y_height),
+                        matrix: group.clone(),
+                    };
+                    bitmap
+                })
+                .collect();
+            let d_object = DrawableObject::Animation(Animation::new(&frames, fps.unwrap()));
             return Box::new(d_object);
         } else {
             let bitmap = Bitmap {
@@ -82,13 +90,14 @@ impl SpriteFileReader {
 
     fn split_into_groups(lines: Vec<&str>, group_size: usize) -> Vec<Vec<&str>> {
         return lines
-        .chunks(group_size)
-        .map(|chunk| chunk.to_vec())
-        .collect();
+            .chunks(group_size)
+            .map(|chunk| chunk.to_vec())
+            .collect();
     }
 
     fn format_group(group: &Vec<&str>, size: usize) -> Vec<Vec<char>> {
-        return group.iter()
+        return group
+            .iter()
             .map(|&line| {
                 let mut chars: Vec<char> = line.chars().collect();
                 chars.resize(size, '$');
