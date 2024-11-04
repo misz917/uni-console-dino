@@ -18,13 +18,11 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use drawable_object::{DrawableObject, Label, Rectangle};
-
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
+    drawable_object::{DrawableObject, Label, Rectangle},
     terminal_screen::{TerminalHelper, TerminalScreen},
-    utils::ErrorDisplayer,
     utils::XY,
     view::{MovementFunction, View},
     window::{GnomeTerminal, Terminal, WindowCreator},
@@ -126,7 +124,7 @@ fn main() {
                     view.insert_object(
                         "game_over_label",
                         false,
-                        DrawableObject::Label(Label::new("Game over\nPress any button to retry")),
+                        DrawableObject::Label(Label::new("Game over. Press any button to retry")),
                         XY::new(2, 2),
                         None,
                     );
