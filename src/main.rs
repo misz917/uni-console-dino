@@ -35,7 +35,7 @@ const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 40.0; // buggy above ~46
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum GameState {
     Menu,
     MainGame,
@@ -63,8 +63,9 @@ fn main() {
     let mut view = View::new(asset_path, ' ');
 
     let mut game_state = GameState::Menu;
+    let mut last_game_state = game_state.clone();
 
-    insert_objects(&mut view);
+    let mut first_run = true;
 
     let mut _frame_counter: u64 = 0;
     loop {
@@ -73,11 +74,31 @@ fn main() {
         let label = DrawableObject::Label(Label::new(&format!("Frame: {}", _frame_counter)));
         view.remove_object("frame_count");
         view.insert_object("frame_count", false, label, XY::new(2, 1), None);
-        handle_input(&mut view, &rx, &mut game_state);
+        handle_input(&mut view, &rx, &mut game_state, &mut last_game_state);
+
+        if last_game_state != game_state {
+            last_game_state = game_state.clone();
+            first_run = true;
+        }
 
         match game_state {
-            GameState::Menu => {}
+            GameState::Menu => {
+                if first_run {
+                    view.insert_object(
+                        "start_label",
+                        false,
+                        DrawableObject::Label(Label::new("Press any button to start the game")),
+                        XY::new(2, 2),
+                        None,
+                    );
+                    first_run = false;
+                }
+            }
             GameState::MainGame => {
+                if first_run {
+                    insert_objects(&mut view);
+                    first_run = false;
+                }
                 if view.check_for_collision("player") {
                     game_state = GameState::GameOver;
                 }
@@ -136,11 +157,17 @@ fn insert_objects(view: &mut View) {
     );
 }
 
-fn handle_input(view: &mut View, rx: &Receiver<char>, game_state: &mut GameState) {
+fn handle_input(
+    view: &mut View,
+    rx: &Receiver<char>,
+    game_state: &mut GameState,
+    last_game_state: &mut GameState,
+) {
     if let Ok(input) = rx.try_recv() {
         match game_state {
             GameState::Menu => {
                 *game_state = GameState::MainGame;
+                *last_game_state = GameState::Menu;
             }
             GameState::MainGame => match input {
                 ' ' => {
