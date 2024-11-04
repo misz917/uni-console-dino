@@ -35,6 +35,13 @@ const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 40.0; // buggy above ~46
 
+#[derive(PartialEq, Eq)]
+pub enum GameState {
+    Menu,
+    MainGame,
+    GameOver,
+}
+
 fn main() {
     let gnome_window = GnomeTerminal::new();
     WindowCreator::create_separate_window(WINDOW_RESOLUTION, BORDER_WIDTH, &gnome_window);
@@ -54,6 +61,9 @@ fn main() {
 
     let asset_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
     let mut view = View::new(asset_path, ' ');
+
+    let mut game_state = GameState::Menu;
+
     insert_objects(&mut view);
 
     let mut _frame_counter: u64 = 0;
@@ -63,30 +73,36 @@ fn main() {
         let label = DrawableObject::Label(Label::new(&format!("Frame: {}", _frame_counter)));
         view.remove_object("frame_count");
         view.insert_object("frame_count", false, label, XY::new(2, 1), None);
+        handle_input(&mut view, &rx, &mut game_state);
 
-        if view.check_for_collision("player") {
-            ErrorDisplayer::error("The End");
+        match game_state {
+            GameState::Menu => {}
+            GameState::MainGame => {
+                if view.check_for_collision("player") {
+                    game_state = GameState::GameOver;
+                }
+                if _frame_counter % 120 == 0 {
+                    view.insert_asset(
+                        &format!("vase{}", _frame_counter),
+                        true,
+                        "vase.txt",
+                        XY::new(WINDOW_RESOLUTION.x as i32 + 1, 33),
+                        Some(MovementFunction::new(movement_functions::move_left)),
+                    );
+                } else if _frame_counter % 200 == 0 {
+                    view.insert_asset(
+                        &format!("bird{}", _frame_counter),
+                        true,
+                        "bird_flying.txt",
+                        XY::new(WINDOW_RESOLUTION.x as i32 + 1, 23),
+                        Some(MovementFunction::new(movement_functions::move_left)),
+                    );
+                }
+            }
+            GameState::GameOver => {
+                ErrorDisplayer::error("Game Over");
+            }
         }
-
-        if _frame_counter % 120 == 0 {
-            view.insert_asset(
-                &format!("vase{}", _frame_counter),
-                true,
-                "vase.txt",
-                XY::new(WINDOW_RESOLUTION.x as i32 + 1, 33),
-                Some(MovementFunction::new(movement_functions::move_left)),
-            );
-        } else if _frame_counter % 200 == 0 {
-            view.insert_asset(
-                &format!("bird{}", _frame_counter),
-                true,
-                "bird_flying.txt",
-                XY::new(WINDOW_RESOLUTION.x as i32 + 1, 23),
-                Some(MovementFunction::new(movement_functions::move_left)),
-            );
-        }
-
-        handle_input(&mut view, &rx);
 
         screen.schedule_frame(view.compile());
         screen.display_frame();
@@ -120,18 +136,24 @@ fn insert_objects(view: &mut View) {
     );
 }
 
-fn handle_input(view: &mut View, rx: &Receiver<char>) {
+fn handle_input(view: &mut View, rx: &Receiver<char>, game_state: &mut GameState) {
     if let Ok(input) = rx.try_recv() {
-        match input {
-            ' ' => {
-                if view.check_for_collision_between("player", "invisible_floor") {
-                    view.replace_movement_function(
-                        "player",
-                        Some(MovementFunction::new(movement_functions::jump)),
-                    );
-                }
+        match game_state {
+            GameState::Menu => {
+                *game_state = GameState::MainGame;
             }
-            _ => (),
+            GameState::MainGame => match input {
+                ' ' => {
+                    if view.check_for_collision_between("player", "invisible_floor") {
+                        view.replace_movement_function(
+                            "player",
+                            Some(MovementFunction::new(movement_functions::jump)),
+                        );
+                    }
+                }
+                _ => (),
+            },
+            GameState::GameOver => {}
         }
     }
 }
