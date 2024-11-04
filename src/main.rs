@@ -62,7 +62,7 @@ fn main() {
     let asset_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
     let mut view = View::new(asset_path, ' ');
 
-    let mut game_state = GameState::Menu;
+    let mut game_state = GameState::Menu; // write something to handle game states, game state switches and first_run
     let mut last_game_state = game_state.clone();
 
     let mut first_run = true;
@@ -101,6 +101,7 @@ fn main() {
                 }
                 if view.check_for_collision("player") {
                     game_state = GameState::GameOver;
+                    last_game_state = GameState::MainGame;
                 }
                 if _frame_counter % 120 == 0 {
                     view.insert_asset(
@@ -121,7 +122,25 @@ fn main() {
                 }
             }
             GameState::GameOver => {
-                ErrorDisplayer::error("Game Over");
+                if first_run {
+                    view.insert_object(
+                        "game_over_label",
+                        false,
+                        DrawableObject::Label(Label::new("Game over\nPress any button to retry")),
+                        XY::new(2, 2),
+                        None,
+                    );
+                    view.replace_movement_function("player", None);
+                    for i in 0.._frame_counter {
+                        if i % 120 == 0 {
+                            view.remove_object(&format!("vase{}", i));
+                        }
+                        if i % 200 == 0 {
+                            view.remove_object(&format!("bird{}", i));
+                        }
+                    }
+                    first_run = false;
+                }
             }
         }
 
@@ -145,6 +164,8 @@ fn enforce_fps(timer: SystemTime) {
 
 fn main_game_view_insert(view: &mut View) {
     view.remove_object("start_label");
+    view.remove_object("game_over_label");
+    view.remove_object("player");
 
     view.insert_asset("player", true, "dino_running.txt", XY::new(5, 32), None);
 
@@ -167,10 +188,13 @@ fn handle_input(
 ) {
     if let Ok(input) = rx.try_recv() {
         match game_state {
-            GameState::Menu => {
-                *game_state = GameState::MainGame;
-                *last_game_state = GameState::Menu;
-            }
+            GameState::Menu => match input {
+                _ => {
+                    *game_state = GameState::MainGame;
+                    *last_game_state = GameState::Menu;
+                }
+            },
+
             GameState::MainGame => match input {
                 ' ' => {
                     if view.check_for_collision_between("player", "invisible_floor") {
@@ -182,7 +206,13 @@ fn handle_input(
                 }
                 _ => (),
             },
-            GameState::GameOver => {}
+
+            GameState::GameOver => match input {
+                _ => {
+                    *game_state = GameState::MainGame;
+                    *last_game_state = GameState::GameOver;
+                }
+            },
         }
     }
 }
