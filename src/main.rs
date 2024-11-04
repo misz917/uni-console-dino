@@ -96,7 +96,7 @@ fn main() {
             }
             GameState::MainGame => {
                 if first_run {
-                    insert_objects(&mut view);
+                    main_game_view_insert(&mut view);
                     first_run = false;
                 }
                 if view.check_for_collision("player") {
@@ -143,7 +143,9 @@ fn enforce_fps(timer: SystemTime) {
     }
 }
 
-fn insert_objects(view: &mut View) {
+fn main_game_view_insert(view: &mut View) {
+    view.remove_object("start_label");
+
     view.insert_asset("player", true, "dino_running.txt", XY::new(5, 32), None);
 
     let invisible_floor =
