@@ -7,7 +7,7 @@ pub fn move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
 }
 
 pub fn jump(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let func = |x: f32| -(x / 2.0 - 2.83).powf(2.0) + 8.0;
+    let func = |x: f32| -(x / 2.0 - 3.18).powf(2.0) + 10.0;
     let mut difference = func(time * 8.0).round() as i32;
     if difference < 0 {
         difference = 0;

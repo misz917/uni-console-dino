@@ -52,7 +52,7 @@ fn main() {
     let mut screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     TerminalHelper::prepare_terminal();
 
-    let asset_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
+    let asset_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
     let mut view = View::new(asset_path, ' ');
     insert_objects(&mut view);
 
@@ -81,7 +81,7 @@ fn main() {
                 &format!("bird{}", _frame_counter),
                 true,
                 "bird_flying.txt",
-                XY::new(WINDOW_RESOLUTION.x as i32 + 1, 20),
+                XY::new(WINDOW_RESOLUTION.x as i32 + 1, 23),
                 Some(MovementFunction::new(movement_functions::move_left)),
             );
         }
