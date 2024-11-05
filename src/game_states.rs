@@ -104,11 +104,19 @@ impl GameStateManager {
         todo!()
     }
 
-    pub fn handle_objects_once() {
+    fn handle_objects_once(&mut self) {
         todo!()
     }
 
-    pub fn handle_objects_loop() {
+    fn handle_objects_loop(&mut self) {
         todo!()
+    }
+
+    pub fn handle_objects(&mut self) {
+        if self.first_run {
+            self.handle_objects_once();
+        } else {
+            self.handle_objects_loop();
+        }
     }
 }

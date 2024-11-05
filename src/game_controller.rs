@@ -44,6 +44,8 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             self.view
                 .insert_object("frame_count", false, label, XY::new(2, 1), None);
 
+            self.game_state_manager.handle_objects();
+
             self.screen.schedule_frame(self.view.compile());
             self.screen.display_frame();
             Self::enforce_fps(timer);

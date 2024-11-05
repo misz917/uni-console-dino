@@ -19,7 +19,7 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use game_states::{GameState, GameStateManager};
+use game_states::GameStateManager;
 
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
