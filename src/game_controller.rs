@@ -48,8 +48,10 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             self.view
                 .insert_object("frame_count", false, label, XY::new(2, 1), None);
 
-            self.game_state_manager.handle_input();
-            self.game_state_manager.handle_objects();
+            if let Ok(input) = self.rx.try_recv() {
+                self.game_state_manager.handle_input(&mut self.view, input);
+            }
+            self.game_state_manager.handle_objects(&mut self.view);
 
             self.screen.schedule_frame(self.view.compile());
             self.screen.display_frame();
