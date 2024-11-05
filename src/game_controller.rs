@@ -1,4 +1,5 @@
 use std::{
+    collections::LinkedList,
     sync::mpsc::Receiver,
     thread::{current, sleep},
     time::{Duration, SystemTime},
@@ -57,46 +58,18 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                 None,
             );
 
-            self.check_state_transitions();
-
             if let Ok(input) = self.rx.try_recv() {
                 self.active_state
                     .as_state()
                     .handle_input(&mut self.view, input);
             }
-            self.active_state.as_state().every_frame(&mut self.view);
+            // self.active_state.as_state().every_frame(&mut self.view);
 
             self.screen.schedule_frame(self.view.compile());
             self.screen.display_frame();
 
             Self::enforce_fps(timer);
             self.frame_counter += 1;
-        }
-    }
-
-    fn check_state_transitions(&mut self) {
-        match &mut self.active_state {
-            GameStateEnum::Menu(menu) => {
-                if let Ok(input) = self.rx.try_recv() {
-                    self.active_state.as_state().on_exit(&mut self.view);
-                    self.active_state = GameStateEnum::MainGameLoop(Box::new(MainGameLoop));
-                    self.active_state.as_state().on_enter(&mut self.view);
-                }
-            }
-            GameStateEnum::MainGameLoop(main_game_loop) => {
-                if self.view.check_for_collision("player") {
-                    self.active_state.as_state().on_exit(&mut self.view);
-                    self.active_state = GameStateEnum::MainGameLoop(Box::new(MainGameLoop));
-                    self.active_state.as_state().on_enter(&mut self.view);
-                }
-            }
-            GameStateEnum::GameOver(game_over) => {
-                if let Ok(input) = self.rx.try_recv() {
-                    self.active_state.as_state().on_exit(&mut self.view);
-                    self.active_state = GameStateEnum::Menu(Box::new(Menu));
-                    self.active_state.as_state().on_enter(&mut self.view);
-                }
-            }
         }
     }
 
@@ -108,4 +81,8 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             }
         }
     }
+}
+
+pub struct TaskScheduler {
+    tasks: LinkedList<fn(&mut View, todo!())>,
 }

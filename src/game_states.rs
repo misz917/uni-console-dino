@@ -23,7 +23,6 @@ impl GameStateEnum {
 
 pub trait GameState {
     fn handle_input(&mut self, view: &mut View, input: char);
-    fn every_frame(&mut self, view: &mut View);
     fn on_enter(&mut self, view: &mut View);
     fn on_exit(&mut self, view: &mut View);
 }
@@ -31,10 +30,6 @@ pub trait GameState {
 pub struct Menu;
 impl GameState for Menu {
     fn handle_input(&mut self, _view: &mut View, _input: char) {
-        // do nothing
-    }
-
-    fn every_frame(&mut self, _view: &mut View) {
         // do nothing
     }
 
@@ -82,10 +77,6 @@ impl GameState for MainGameLoop {
         }
     }
 
-    fn every_frame(&mut self, view: &mut View) {
-        // nothing
-    }
-
     fn on_enter(&mut self, view: &mut View) {
         view.insert_object(
             "invisible_floor",
@@ -105,10 +96,6 @@ impl GameState for MainGameLoop {
 pub struct GameOver;
 impl GameState for GameOver {
     fn handle_input(&mut self, view: &mut View, input: char) {
-        // nothing
-    }
-
-    fn every_frame(&mut self, view: &mut View) {
         // nothing
     }
 
