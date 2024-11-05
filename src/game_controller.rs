@@ -1,6 +1,6 @@
 use std::{
     sync::mpsc::Receiver,
-    thread::sleep,
+    thread::{current, sleep},
     time::{Duration, SystemTime},
 };
 
@@ -8,6 +8,7 @@ use crate::{
     bitmap::Printer,
     bitmap_buffer::BufferManager,
     drawable_object::{DrawableObject, Label},
+    game_states::{GameStateEnum, MainGameLoop, Menu},
     terminal_screen::TerminalScreen,
     utils::XY,
     view::View,
@@ -19,18 +20,26 @@ pub struct GameController<B: BufferManager, P: Printer> {
     view: View,
     screen: TerminalScreen<B, P>,
     rx: Receiver<char>,
+    active_state: GameStateEnum,
 }
 impl<B: BufferManager, P: Printer> GameController<B, P> {
-    pub fn new(view: View, screen: TerminalScreen<B, P>, rx: Receiver<char>) -> Self {
+    pub fn new(
+        view: View,
+        screen: TerminalScreen<B, P>,
+        rx: Receiver<char>,
+        default_game_state: GameStateEnum,
+    ) -> Self {
         GameController {
             frame_counter: 0,
             view,
             screen,
             rx,
+            active_state: default_game_state,
         }
     }
 
     pub fn run(&mut self) {
+        self.active_state.as_state().on_enter(&mut self.view);
         loop {
             let timer = SystemTime::now();
 
@@ -49,14 +58,44 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             );
 
             if let Ok(input) = self.rx.try_recv() {
-                // handle input
+                self.active_state
+                    .as_state()
+                    .handle_input(&mut self.view, input);
             }
-            // handle objects
+            self.active_state.as_state().every_frame(&mut self.view);
 
             self.screen.schedule_frame(self.view.compile());
             self.screen.display_frame();
+
+            self.check_state_transitions();
             Self::enforce_fps(timer);
             self.frame_counter += 1;
+        }
+    }
+
+    fn check_state_transitions(&mut self) {
+        match &mut self.active_state {
+            GameStateEnum::Menu(menu) => {
+                if let Ok(input) = self.rx.try_recv() {
+                    self.active_state.as_state().on_exit(&mut self.view);
+                    self.active_state = GameStateEnum::MainGameLoop(Box::new(MainGameLoop));
+                    self.active_state.as_state().on_enter(&mut self.view);
+                }
+            }
+            GameStateEnum::MainGameLoop(main_game_loop) => {
+                if self.view.check_for_collision("player") {
+                    self.active_state.as_state().on_exit(&mut self.view);
+                    self.active_state = GameStateEnum::MainGameLoop(Box::new(MainGameLoop));
+                    self.active_state.as_state().on_enter(&mut self.view);
+                }
+            }
+            GameStateEnum::GameOver(game_over) => {
+                if let Ok(input) = self.rx.try_recv() {
+                    self.active_state.as_state().on_exit(&mut self.view);
+                    self.active_state = GameStateEnum::Menu(Box::new(Menu));
+                    self.active_state.as_state().on_enter(&mut self.view);
+                }
+            }
         }
     }
 
