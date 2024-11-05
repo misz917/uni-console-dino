@@ -7,9 +7,9 @@ pub struct GameStateManager {
     active_state: States,
 }
 impl GameStateManager {
-    pub fn new() -> Self {
+    pub fn new(default_state: States) -> Self {
         GameStateManager {
-            active_state: States::Menu(Box::new(Menu)),
+            active_state: default_state,
         }
     }
 
@@ -29,5 +29,9 @@ impl GameStateManager {
 
     pub fn handle_objects(&mut self, view: &mut View) {
         self.every_frame(view);
+    }
+
+    pub fn force_enter_run(&mut self, view: &mut View) {
+        self.active_state.as_state().on_enter(view);
     }
 }

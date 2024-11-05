@@ -1,6 +1,9 @@
 use crate::{
+    drawable_object::{DrawableObject, Label},
     movement_functions,
+    utils::XY,
     view::{MovementFunction, View},
+    WINDOW_RESOLUTION,
 };
 
 pub enum States {
@@ -32,11 +35,27 @@ impl GameState for Menu {
     }
 
     fn every_frame(&mut self, view: &mut View) {
-        todo!()
+        // nothing
     }
 
     fn on_enter(&mut self, view: &mut View) {
-        todo!()
+        view.insert_object(
+            "press_to_play_label",
+            false,
+            DrawableObject::Label(Label::new("Press any button to start")),
+            XY::new(
+                (WINDOW_RESOLUTION.x / 2 - 14) as i32,
+                (WINDOW_RESOLUTION.y - 3) as i32,
+            ),
+            None,
+        );
+        view.insert_asset(
+            "title_sign",
+            false,
+            "welcome_screen.txt",
+            XY::new(0, 0),
+            None,
+        );
     }
 
     fn on_exit(&mut self, view: &mut View) {
