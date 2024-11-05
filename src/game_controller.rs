@@ -1,7 +1,6 @@
 use std::{
-    collections::LinkedList,
     sync::mpsc::Receiver,
-    thread::{current, sleep},
+    thread::sleep,
     time::{Duration, SystemTime},
 };
 
@@ -10,6 +9,7 @@ use crate::{
     bitmap_buffer::BufferManager,
     drawable_object::{DrawableObject, Label},
     game_states::GameStateEnum,
+    task_scheduler::TaskScheduler,
     terminal_screen::TerminalScreen,
     utils::XY,
     view::View,
@@ -22,6 +22,7 @@ pub struct GameController<B: BufferManager, P: Printer> {
     screen: TerminalScreen<B, P>,
     rx: Receiver<char>,
     active_state: GameStateEnum,
+    task_scheduler: TaskScheduler,
 }
 impl<B: BufferManager, P: Printer> GameController<B, P> {
     pub fn new(
@@ -29,6 +30,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
         screen: TerminalScreen<B, P>,
         rx: Receiver<char>,
         default_game_state: GameStateEnum,
+        task_scheduler: TaskScheduler,
     ) -> Self {
         GameController {
             frame_counter: 0,
@@ -36,6 +38,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             screen,
             rx,
             active_state: default_game_state,
+            task_scheduler,
         }
     }
 
@@ -72,7 +75,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
         }
     }
 
-    fn switch_state(&mut self, new_state: GameStateEnum) {
+    fn change_state(&mut self, new_state: GameStateEnum) {
         self.active_state.as_state().on_exit(&mut self.view);
         self.active_state = new_state;
         self.active_state.as_state().on_enter(&mut self.view);
@@ -86,10 +89,4 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             }
         }
     }
-}
-
-pub struct Task(fn(&mut View));
-
-pub struct TaskScheduler {
-    tasks: LinkedList<Task>,
 }

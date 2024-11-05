@@ -1,52 +1,57 @@
 use std::{
-    collections::BTreeSet,
-    time::{Duration, SystemTime},
+    cmp::Reverse,
+    collections::BinaryHeap,
+    time::{Duration, Instant},
 };
 
-#[derive(PartialEq, Eq)]
+use crate::view::View;
+
+#[derive(PartialEq, Eq, Ord, Clone)]
 pub struct Task {
-    function: fn(),
-    execution_time: SystemTime,
-}
-impl Task {
-    pub fn execute(&self) {
-        (self.function)()
-    }
+    function: fn(&mut View),
+    pub scheduled_time: Instant,
+    repeat_delay: Option<Duration>, // none = no repeat
 }
 impl PartialOrd for Task {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.execution_time.partial_cmp(&other.execution_time)
-    }
-}
-impl Ord for Task {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.execution_time.cmp(&other.execution_time)
+        self.scheduled_time.partial_cmp(&other.scheduled_time)
     }
 }
 
 pub struct TaskScheduler {
-    tasks_queue: BTreeSet<Task>,
-    init_time: SystemTime,
+    tasks: BinaryHeap<Reverse<Task>>,
 }
 impl TaskScheduler {
     pub fn new() -> Self {
         TaskScheduler {
-            tasks_queue: BTreeSet::new(),
-            init_time: SystemTime::now(),
+            tasks: BinaryHeap::new(),
         }
     }
 
-    pub fn pop(&mut self) -> Option<Task> {
-        self.tasks_queue.pop_first()
+    fn task_available(&self) -> bool {
+        if let Some(task) = self.tasks.peek() {
+            if Instant::now() >= task.0.scheduled_time {
+                return true;
+            }
+        }
+        return false;
     }
 
-    pub fn push(&mut self, function: fn(), execution_time: Duration) {
-        if let Some(time) = self.init_time.checked_add(execution_time) {
-            let new_task = Task {
-                function,
-                execution_time: time,
-            };
-            self.tasks_queue.insert(new_task);
+    pub fn get_task(&mut self) -> Option<Task> {
+        if self.task_available() {
+            if let Some(task) = self.tasks.pop() {
+                if task.0.repeat_delay.is_some() {
+                    let mut new_task = task.0.clone();
+                    new_task.scheduled_time = Instant::now() + new_task.repeat_delay.unwrap();
+                    self.schedule(new_task);
+                }
+                return Some(task.0);
+            }
         }
+        return None;
+    }
+
+    pub fn schedule(&mut self, new_task: Task) {
+        self.tasks.push(Reverse(new_task));
     }
 }
