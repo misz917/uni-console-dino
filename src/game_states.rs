@@ -3,9 +3,6 @@ use crate::{
     view::{MovementFunction, View},
 };
 
-// implement a way to automatically remove objects once the game state changes
-// and maybe re-insert them when the state changes back
-
 pub trait GameState {
     fn handle_input(&mut self, view: &mut View, input: char);
     fn every_frame(&mut self, view: &mut View);
@@ -81,7 +78,7 @@ impl GameState for GameOver {
 
 pub enum States {
     Menu(Box<Menu>),
-    MainGameLoop(Box<Menu>),
+    MainGameLoop(Box<MainGameLoop>),
     GameOver(Box<GameOver>),
 }
 impl States {
