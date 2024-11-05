@@ -1,5 +1,5 @@
 use crate::{
-    drawable_object::{DrawableObject, Label},
+    drawable_object::{DrawableObject, Label, Rectangle},
     movement_functions,
     utils::XY,
     view::{MovementFunction, View},
@@ -30,12 +30,12 @@ pub trait GameState {
 
 pub struct Menu;
 impl GameState for Menu {
-    fn handle_input(&mut self, view: &mut View, input: char) {
-        todo!()
+    fn handle_input(&mut self, _view: &mut View, _input: char) {
+        // do nothing
     }
 
-    fn every_frame(&mut self, view: &mut View) {
-        // nothing
+    fn every_frame(&mut self, _view: &mut View) {
+        // do nothing
     }
 
     fn on_enter(&mut self, view: &mut View) {
@@ -62,7 +62,8 @@ impl GameState for Menu {
     }
 
     fn on_exit(&mut self, view: &mut View) {
-        todo!()
+        view.remove_object("title_sign");
+        view.remove_object("press_to_play_label");
     }
 }
 
@@ -82,33 +83,40 @@ impl GameState for MainGameLoop {
     }
 
     fn every_frame(&mut self, view: &mut View) {
-        todo!()
+        // nothing
     }
 
     fn on_enter(&mut self, view: &mut View) {
-        todo!()
+        view.insert_object(
+            "invisible_floor",
+            false,
+            DrawableObject::Rectangle(Rectangle::new(XY::new(WINDOW_RESOLUTION.x, 1), '$')),
+            XY::new(0, (WINDOW_RESOLUTION.y - 4) as i32),
+            None,
+        );
+        view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
     }
 
     fn on_exit(&mut self, view: &mut View) {
-        todo!()
+        view.remove_object("invisible_floor");
     }
 }
 
 pub struct GameOver;
 impl GameState for GameOver {
     fn handle_input(&mut self, view: &mut View, input: char) {
-        todo!()
+        // nothing
     }
 
     fn every_frame(&mut self, view: &mut View) {
-        todo!()
+        // nothing
     }
 
     fn on_enter(&mut self, view: &mut View) {
-        todo!()
+        // nothing
     }
 
     fn on_exit(&mut self, view: &mut View) {
-        todo!()
+        // nothing
     }
 }

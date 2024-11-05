@@ -57,6 +57,8 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                 None,
             );
 
+            self.check_state_transitions();
+
             if let Ok(input) = self.rx.try_recv() {
                 self.active_state
                     .as_state()
@@ -67,7 +69,6 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             self.screen.schedule_frame(self.view.compile());
             self.screen.display_frame();
 
-            self.check_state_transitions();
             Self::enforce_fps(timer);
             self.frame_counter += 1;
         }
