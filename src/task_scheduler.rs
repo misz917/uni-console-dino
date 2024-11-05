@@ -17,6 +17,23 @@ impl PartialOrd for Task {
         self.scheduled_time.partial_cmp(&other.scheduled_time)
     }
 }
+impl Task {
+    pub fn new(
+        function: fn(&mut View),
+        scheduled_time: Duration,
+        repeat_delay: Option<Duration>,
+    ) -> Self {
+        Task {
+            function,
+            scheduled_time: Instant::now() + scheduled_time,
+            repeat_delay,
+        }
+    }
+
+    pub fn execute(view: &mut View) {
+        todo!()
+    }
+}
 
 pub struct TaskScheduler {
     tasks: BinaryHeap<Reverse<Task>>,
