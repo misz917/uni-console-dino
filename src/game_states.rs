@@ -93,45 +93,29 @@ impl States {
 
 pub struct GameStateManager {
     active_state: States,
-    first_run: bool,
 }
 impl GameStateManager {
     pub fn new() -> Self {
         GameStateManager {
             active_state: States::Menu(Box::new(Menu)),
-            first_run: true,
         }
     }
 
     pub fn switch_state(&mut self, view: &mut View, new_state: States) {
         self.active_state.as_state().on_exit(view);
         self.active_state = new_state;
-        self.first_run = true;
         self.active_state.as_state().on_enter(view);
     }
 
     pub fn handle_input(&mut self, view: &mut View, input: char) {
-        todo!()
+        self.active_state.as_state().handle_input(view, input);
     }
 
     fn every_frame(&mut self, view: &mut View) {
-        todo!()
-    }
-
-    fn on_enter(&mut self, view: &mut View) {
-        todo!()
-    }
-
-    fn on_exit(&mut self, view: &mut View) {
-        todo!()
+        self.active_state.as_state().every_frame(view);
     }
 
     pub fn handle_objects(&mut self, view: &mut View) {
-        if self.first_run {
-            self.on_enter(view);
-            self.first_run = false;
-        } else {
-            self.every_frame(view);
-        }
+        self.every_frame(view);
     }
 }
