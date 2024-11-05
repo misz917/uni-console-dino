@@ -11,6 +11,7 @@ pub mod collision_detector;
 pub mod drawable_object;
 pub mod frame_assembler;
 pub mod game_controller;
+pub mod game_state_manager;
 pub mod game_states;
 pub mod movement_functions;
 pub mod task_scheduler;
@@ -19,12 +20,11 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use game_states::GameStateManager;
-
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
     game_controller::GameController,
+    game_state_manager::GameStateManager,
     terminal_screen::{TerminalHelper, TerminalScreen},
     utils::XY,
     view::View,

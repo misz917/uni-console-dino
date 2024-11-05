@@ -8,7 +8,7 @@ use crate::{
     bitmap::Printer,
     bitmap_buffer::BufferManager,
     drawable_object::{DrawableObject, Label},
-    game_states::GameStateManager,
+    game_state_manager::GameStateManager,
     terminal_screen::TerminalScreen,
     utils::XY,
     view::View,
