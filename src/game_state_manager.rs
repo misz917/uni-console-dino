@@ -1,7 +1,4 @@
-use crate::{
-    game_states::{Menu, States},
-    view::View,
-};
+use crate::{game_states::States, view::View};
 
 pub struct GameStateManager {
     active_state: States,

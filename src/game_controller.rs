@@ -12,7 +12,7 @@ use crate::{
     terminal_screen::TerminalScreen,
     utils::XY,
     view::View,
-    FPS_LIMIT,
+    FPS_LIMIT, WINDOW_RESOLUTION,
 };
 
 pub struct GameController<B: BufferManager, P: Printer> {
@@ -43,11 +43,19 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
         loop {
             let timer = SystemTime::now();
 
-            let label =
-                DrawableObject::Label(Label::new(&format!("Frame: {}", self.frame_counter)));
+            let label = DrawableObject::Label(Label::new(&format!("{}", self.frame_counter)));
             self.view.remove_object("frame_count");
-            self.view
-                .insert_object("frame_count", false, label, XY::new(2, 1), None);
+            self.view.insert_object(
+                "frame_count",
+                false,
+                label,
+                XY::new(
+                    (WINDOW_RESOLUTION.x - 1 - (f32::log10(self.frame_counter as f32)) as usize)
+                        as i32,
+                    (WINDOW_RESOLUTION.y - 1) as i32,
+                ),
+                None,
+            );
 
             if let Ok(input) = self.rx.try_recv() {
                 self.game_state_manager.handle_input(&mut self.view, input);
