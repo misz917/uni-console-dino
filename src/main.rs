@@ -19,7 +19,7 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use game_states::{GameStateEnum, Menu};
+use game_states::GameStateEnum;
 
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
@@ -53,7 +53,7 @@ fn main() {
     let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '$'));
     let view = View::new(asset_path, ' ');
     let screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
-    let mut game_controller =
-        GameController::new(view, screen, rx, GameStateEnum::Menu(Box::new(Menu)));
-    game_controller.run();
+    // let mut game_controller =
+    // GameController::new(view, screen, rx, GameStateEnum::Menu(Box::new(Menu)));
+    // game_controller.run();
 }

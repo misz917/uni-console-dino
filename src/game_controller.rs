@@ -9,7 +9,7 @@ use crate::{
     bitmap::Printer,
     bitmap_buffer::BufferManager,
     drawable_object::{DrawableObject, Label},
-    game_states::{GameStateEnum, MainGameLoop, Menu},
+    game_states::GameStateEnum,
     terminal_screen::TerminalScreen,
     utils::XY,
     view::View,
@@ -40,7 +40,6 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     }
 
     pub fn run(&mut self) {
-        self.active_state.as_state().on_enter(&mut self.view);
         loop {
             let timer = SystemTime::now();
 
@@ -73,6 +72,12 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
         }
     }
 
+    fn switch_state(&mut self, new_state: GameStateEnum) {
+        self.active_state.as_state().on_exit(&mut self.view);
+        self.active_state = new_state;
+        self.active_state.as_state().on_enter(&mut self.view);
+    }
+
     fn enforce_fps(timer: SystemTime) {
         let sleep_duration = 1.0 / FPS_LIMIT;
         if let Ok(elapsed) = timer.elapsed() {
@@ -83,6 +88,8 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     }
 }
 
+pub struct Task(fn(&mut View));
+
 pub struct TaskScheduler {
-    tasks: LinkedList<fn(&mut View, todo!())>,
+    tasks: LinkedList<Task>,
 }
