@@ -42,30 +42,34 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
         }
     }
 
+    fn display_frame_counter(&mut self) {
+        let label = DrawableObject::Label(Label::new(&format!("{}", self.frame_counter)));
+        self.view.remove_object("frame_count");
+        self.view.insert_object(
+            "frame_count",
+            false,
+            label,
+            XY::new(
+                (WINDOW_RESOLUTION.x - 1 - (f32::log10(self.frame_counter as f32)) as usize) as i32,
+                (WINDOW_RESOLUTION.y - 1) as i32,
+            ),
+            None,
+        );
+    }
+
     pub fn run(&mut self) {
         loop {
             let timer = SystemTime::now();
-
-            let label = DrawableObject::Label(Label::new(&format!("{}", self.frame_counter)));
-            self.view.remove_object("frame_count");
-            self.view.insert_object(
-                "frame_count",
-                false,
-                label,
-                XY::new(
-                    (WINDOW_RESOLUTION.x - 1 - (f32::log10(self.frame_counter as f32)) as usize)
-                        as i32,
-                    (WINDOW_RESOLUTION.y - 1) as i32,
-                ),
-                None,
-            );
+            self.display_frame_counter();
 
             if let Ok(input) = self.rx.try_recv() {
                 self.active_state
                     .as_state()
                     .handle_input(&mut self.view, input);
             }
-            // self.active_state.as_state().every_frame(&mut self.view);
+            if let Some(task) = self.task_scheduler.get_task() {
+                todo!()
+            }
 
             self.screen.schedule_frame(self.view.compile());
             self.screen.display_frame();
