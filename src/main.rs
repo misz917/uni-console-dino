@@ -11,7 +11,6 @@ pub mod collision_detector;
 pub mod drawable_object;
 pub mod frame_assembler;
 pub mod game_controller;
-pub mod game_state_manager;
 pub mod game_states;
 pub mod movement_functions;
 pub mod task_scheduler;
@@ -20,14 +19,10 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use game_states::Menu;
-
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
     game_controller::GameController,
-    game_state_manager::GameStateManager,
-    game_states::States,
     terminal_screen::{TerminalHelper, TerminalScreen},
     utils::XY,
     view::View,
@@ -56,7 +51,7 @@ fn main() {
     let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '$'));
     let view = View::new(asset_path, ' ');
     let screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
-    let game_state_manager = GameStateManager::new(States::Menu(Box::new(Menu)));
-    let mut game_controller = GameController::new(view, screen, game_state_manager, rx);
-    game_controller.run();
+    // let game_state_manager = GameStateManager::new(States::Menu(Box::new(Menu)));
+    // let mut game_controller = GameController::new(view, screen, game_state_manager, rx);
+    // game_controller.run();
 }

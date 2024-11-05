@@ -6,17 +6,17 @@ use crate::{
     WINDOW_RESOLUTION,
 };
 
-pub enum States {
+pub enum GameStateEnum {
     Menu(Box<Menu>),
     MainGameLoop(Box<MainGameLoop>),
     GameOver(Box<GameOver>),
 }
-impl States {
+impl GameStateEnum {
     pub fn as_state(&mut self) -> &mut dyn GameState {
         match self {
-            States::Menu(state) => state.as_mut(),
-            States::MainGameLoop(state) => state.as_mut(),
-            States::GameOver(state) => state.as_mut(),
+            GameStateEnum::Menu(state) => state.as_mut(),
+            GameStateEnum::MainGameLoop(state) => state.as_mut(),
+            GameStateEnum::GameOver(state) => state.as_mut(),
         }
     }
 }

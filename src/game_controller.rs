@@ -8,7 +8,6 @@ use crate::{
     bitmap::Printer,
     bitmap_buffer::BufferManager,
     drawable_object::{DrawableObject, Label},
-    game_state_manager::GameStateManager,
     terminal_screen::TerminalScreen,
     utils::XY,
     view::View,
@@ -19,27 +18,19 @@ pub struct GameController<B: BufferManager, P: Printer> {
     frame_counter: u64,
     view: View,
     screen: TerminalScreen<B, P>,
-    game_state_manager: GameStateManager,
     rx: Receiver<char>,
 }
 impl<B: BufferManager, P: Printer> GameController<B, P> {
-    pub fn new(
-        view: View,
-        screen: TerminalScreen<B, P>,
-        game_state_manager: GameStateManager,
-        rx: Receiver<char>,
-    ) -> Self {
+    pub fn new(view: View, screen: TerminalScreen<B, P>, rx: Receiver<char>) -> Self {
         GameController {
             frame_counter: 0,
             view,
             screen,
-            game_state_manager,
             rx,
         }
     }
 
     pub fn run(&mut self) {
-        self.game_state_manager.force_enter_run(&mut self.view);
         loop {
             let timer = SystemTime::now();
 
@@ -58,9 +49,9 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             );
 
             if let Ok(input) = self.rx.try_recv() {
-                self.game_state_manager.handle_input(&mut self.view, input);
+                // handle input
             }
-            self.game_state_manager.handle_objects(&mut self.view);
+            // handle objects
 
             self.screen.schedule_frame(self.view.compile());
             self.screen.display_frame();
