@@ -100,7 +100,7 @@ impl GameStateManager {
         self.active_state = new_state;
     }
 
-    pub fn handle_input() {
+    pub fn handle_input(&mut self) {
         todo!()
     }
 

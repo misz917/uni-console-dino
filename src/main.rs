@@ -54,6 +54,6 @@ fn main() {
     let view = View::new(asset_path, ' ');
     let screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
     let game_state_manager = GameStateManager::new();
-    let mut game_controller = GameController::new(view, screen, game_state_manager);
+    let mut game_controller = GameController::new(view, screen, game_state_manager, rx);
     game_controller.run();
 }

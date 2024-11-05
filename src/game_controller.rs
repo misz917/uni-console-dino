@@ -1,4 +1,5 @@
 use std::{
+    sync::mpsc::Receiver,
     thread::sleep,
     time::{Duration, SystemTime},
 };
@@ -19,18 +20,21 @@ pub struct GameController<B: BufferManager, P: Printer> {
     view: View,
     screen: TerminalScreen<B, P>,
     game_state_manager: GameStateManager,
+    rx: Receiver<char>,
 }
 impl<B: BufferManager, P: Printer> GameController<B, P> {
     pub fn new(
         view: View,
         screen: TerminalScreen<B, P>,
         game_state_manager: GameStateManager,
+        rx: Receiver<char>,
     ) -> Self {
         GameController {
             frame_counter: 0,
             view,
             screen,
             game_state_manager,
+            rx,
         }
     }
 
@@ -44,6 +48,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             self.view
                 .insert_object("frame_count", false, label, XY::new(2, 1), None);
 
+            self.game_state_manager.handle_input();
             self.game_state_manager.handle_objects();
 
             self.screen.schedule_frame(self.view.compile());
@@ -59,8 +64,6 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             if Duration::from_secs_f32(sleep_duration) > elapsed {
                 sleep(Duration::from_secs_f32(sleep_duration) - elapsed);
             }
-        } else {
-            return;
         }
     }
 }
