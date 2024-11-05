@@ -19,6 +19,8 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
+use game_states::{GameState, GameStateManager};
+
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
@@ -51,6 +53,7 @@ fn main() {
     let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '$'));
     let view = View::new(asset_path, ' ');
     let screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
-    let mut game_controller = GameController::new(view, screen);
+    let game_state_manager = GameStateManager::new();
+    let mut game_controller = GameController::new(view, screen, game_state_manager);
     game_controller.run();
 }

@@ -72,6 +72,43 @@ impl GameState for GameOver {
     }
 }
 
+pub enum States {
+    Menu,
+    MainGameLoop,
+    GameOver,
+}
+impl States {
+    pub fn default() -> Self {
+        States::Menu
+    }
+}
+
 pub struct GameStateManager {
-    // active_state:
+    active_state: States,
+    first_run: bool,
+}
+impl GameStateManager {
+    pub fn new() -> Self {
+        GameStateManager {
+            active_state: States::default(),
+            first_run: true,
+        }
+    }
+
+    pub fn switch_state(&mut self, new_state: States) {
+        self.first_run = true;
+        self.active_state = new_state;
+    }
+
+    pub fn handle_input() {
+        todo!()
+    }
+
+    pub fn handle_objects_once() {
+        todo!()
+    }
+
+    pub fn handle_objects_loop() {
+        todo!()
+    }
 }
