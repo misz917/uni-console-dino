@@ -29,26 +29,24 @@ impl TaskScheduler {
     }
 
     fn task_available(&self) -> bool {
-        if let Some(task) = self.tasks.peek() {
-            if Instant::now() >= task.0.scheduled_time {
-                return true;
-            }
-        }
-        return false;
+        self.tasks
+            .peek()
+            .map_or(false, |task| Instant::now() >= task.0.scheduled_time)
     }
 
     pub fn get_task(&mut self) -> Option<Task> {
-        if self.task_available() {
-            if let Some(task) = self.tasks.pop() {
-                if task.0.repeat_delay.is_some() {
-                    let mut new_task = task.0.clone();
-                    new_task.scheduled_time = Instant::now() + new_task.repeat_delay.unwrap();
-                    self.schedule(new_task);
-                }
-                return Some(task.0);
-            }
+        if !self.task_available() {
+            return None;
         }
-        return None;
+
+        self.tasks.pop().map(|task| {
+            if let Some(delay) = task.0.repeat_delay {
+                let mut new_task = task.0.clone();
+                new_task.scheduled_time = Instant::now() + delay;
+                self.schedule(new_task);
+            }
+            task.0
+        })
     }
 
     pub fn schedule(&mut self, new_task: Task) {
