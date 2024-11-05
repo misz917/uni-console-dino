@@ -2,6 +2,7 @@ use std::{
     sync::mpsc::{self, Receiver, Sender},
     thread::{self},
 };
+
 pub mod animation;
 pub mod asset_server;
 pub mod bitmap;
@@ -18,21 +19,19 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use game_controller::GameController;
-
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
+    game_controller::GameController,
     terminal_screen::{TerminalHelper, TerminalScreen},
     utils::XY,
     view::View,
     window::{GnomeTerminal, Terminal, WindowCreator},
 };
 
-// create a settings file later
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
-const FPS_LIMIT: f32 = 40.0; // buggy above ~46
+const FPS_LIMIT: f32 = 40.0; // may be buggy above ~46
 
 fn main() {
     let gnome_window = GnomeTerminal::new();
