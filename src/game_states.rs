@@ -41,9 +41,9 @@ pub trait GameState {
         input: char,
         state_changer: &mut Option<GameStateEnum>,
     );
-    // fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>);
     fn on_enter(&mut self, view: &mut View);
     fn on_exit(&mut self, view: &mut View);
+    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>);
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -87,6 +87,10 @@ impl GameState for Menu {
         view.remove_object("title_sign");
         view.remove_object("press_to_play_label");
     }
+
+    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>) {
+        return;
+    }
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -122,7 +126,13 @@ impl GameState for MainGameLoop {
     }
 
     fn on_exit(&mut self, view: &mut View) {
-        view.remove_object("invisible_floor");
+        // view.remove_object("invisible_floor");
+    }
+
+    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>) {
+        if view.check_for_collision("player") {
+            *state_changer = Some(GameStateEnum::GameOver(Box::new(GameOver)));
+        }
     }
 }
 
@@ -135,14 +145,18 @@ impl GameState for GameOver {
         input: char,
         state_changer: &mut Option<GameStateEnum>,
     ) {
-        // nothing
+        return;
     }
 
     fn on_enter(&mut self, view: &mut View) {
-        // nothing
+        return;
     }
 
     fn on_exit(&mut self, view: &mut View) {
-        // nothing
+        return;
+    }
+
+    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>) {
+        return;
     }
 }

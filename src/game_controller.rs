@@ -82,6 +82,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                     &mut state_change_listener,
                 );
             }
+
             if let Some(task) = self.task_scheduler.get_task() {
                 if task.game_state.is_some()
                     && self
@@ -91,6 +92,10 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                     task.execute(&mut self.view, self.frame_counter as i32);
                 }
             }
+
+            self.active_state
+                .as_state()
+                .each_frame(&mut self.view, &mut state_change_listener);
 
             if let Some(ref new_state) = state_change_listener {
                 self.change_state(new_state.clone());
