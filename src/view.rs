@@ -116,15 +116,15 @@ impl View {
 
     // untested, unused
     pub fn remove_object(&mut self, name: &str) {
-        let mut found_index: Option<usize> = None;
+        // let mut found_index: Option<usize> = None;
+        let mut found_object_indexes: Vec<usize> = Vec::new();
         for (index, object) in self.objects.iter().enumerate() {
             if object.name == name {
-                found_index = Some(index);
-                break;
+                found_object_indexes.push(index);
             }
         }
-        if let Some(index) = found_index {
-            self.objects.swap_remove(index);
+        for index in found_object_indexes.iter() {
+            self.objects.swap_remove(*index);
         }
     }
 
