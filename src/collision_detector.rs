@@ -3,8 +3,8 @@ use crate::utils::XY;
 #[derive(Debug)]
 struct HitBox {
     size: XY<usize>,
-    position: XY<i32>,,
-    name: String
+    position: XY<i32>,
+    name: String,
 }
 impl HitBox {
     pub fn new(size: &XY<usize>, position: &XY<i32>, name: &str) -> Self {
@@ -72,25 +72,24 @@ impl CollisionDetector {
     }
 
     pub fn check_for_collision_between(&self, name_a: &str, name_b: &str) -> bool {
-        // let mut object_a: Option<&HitBox> = None;
-        // let mut object_b: Option<&HitBox> = None;
-        // if let Some(object) = self.objects.get(name_a) {
-        //     object_a = Some(object);
-        // } else if let Some(object) = self.special_objects.get(name_a) {
-        //     object_a = Some(object);
-        // }
-        // if let Some(object) = self.objects.get(name_b) {
-        //     object_b = Some(object);
-        // } else if let Some(object) = self.special_objects.get(name_b) {
-        //     object_b = Some(object);
-        // }
+        let mut objects_a: Vec<&HitBox> = Vec::new();
+        let mut objects_b: Vec<&HitBox> = Vec::new();
 
-        // if object_a.is_none() || object_b.is_none() {
-        //     return false;
-        // } else {
-        //     return Self::check_collision(object_a.unwrap(), object_b.unwrap());
-        // }
-        
-        // let objects_a: Vec<
+        for object in self.objects.iter() {
+            if object.name == name_a {
+                objects_a.push(object);
+            } else if object.name == name_b {
+                objects_b.push(object);
+            }
+        }
+
+        for a in objects_a.iter() {
+            for b in objects_b.iter() {
+                if Self::check_collision(a, b) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
