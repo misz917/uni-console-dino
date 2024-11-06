@@ -68,7 +68,13 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                     .handle_input(&mut self.view, input);
             }
             if let Some(task) = self.task_scheduler.get_task() {
-                task.execute(&mut self.view);
+                if task.game_state.is_some()
+                    && self
+                        .active_state
+                        .variant_eq(&task.game_state.clone().unwrap())
+                {
+                    task.execute(&mut self.view);
+                }
             }
 
             self.screen.schedule_frame(self.view.compile());

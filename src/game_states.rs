@@ -6,6 +6,7 @@ use crate::{
     WINDOW_RESOLUTION,
 };
 
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum GameStateEnum {
     Menu(Box<Menu>),
     MainGameLoop(Box<MainGameLoop>),
@@ -19,6 +20,18 @@ impl GameStateEnum {
             GameStateEnum::GameOver(state) => state.as_mut(),
         }
     }
+
+    pub fn variant_eq(&self, other: &Self) -> bool {
+        matches!(
+            (self, other),
+            (GameStateEnum::Menu(_), GameStateEnum::Menu(_))
+                | (
+                    GameStateEnum::MainGameLoop(_),
+                    GameStateEnum::MainGameLoop(_)
+                )
+                | (GameStateEnum::GameOver(_), GameStateEnum::GameOver(_))
+        )
+    }
 }
 
 pub trait GameState {
@@ -27,6 +40,7 @@ pub trait GameState {
     fn on_exit(&mut self, view: &mut View);
 }
 
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct Menu;
 impl GameState for Menu {
     fn handle_input(&mut self, _view: &mut View, _input: char) {
@@ -62,6 +76,7 @@ impl GameState for Menu {
     }
 }
 
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct MainGameLoop;
 impl GameState for MainGameLoop {
     fn handle_input(&mut self, view: &mut View, input: char) {
@@ -93,6 +108,7 @@ impl GameState for MainGameLoop {
     }
 }
 
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct GameOver;
 impl GameState for GameOver {
     fn handle_input(&mut self, view: &mut View, input: char) {

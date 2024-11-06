@@ -4,13 +4,14 @@ use std::{
     time::{Duration, Instant},
 };
 
-use crate::view::View;
+use crate::{game_states::GameStateEnum, view::View};
 
 #[derive(PartialEq, Eq, Ord, Clone)]
 pub struct Task {
     function: fn(&mut View),
     scheduled_time: Instant,
-    repeat_delay: Option<Duration>, // none = no repeat
+    repeat_delay: Option<Duration>,        // none = no repeat
+    pub game_state: Option<GameStateEnum>, // specifies to which game state task belongs to, none = no restraints
 }
 impl PartialOrd for Task {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
@@ -22,11 +23,13 @@ impl Task {
         function: fn(&mut View),
         scheduled_time: Duration,
         repeat_delay: Option<Duration>,
+        game_state: Option<GameStateEnum>,
     ) -> Self {
         Task {
             function,
             scheduled_time: Instant::now() + scheduled_time,
             repeat_delay,
+            game_state,
         }
     }
 
