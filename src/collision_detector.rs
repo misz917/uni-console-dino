@@ -83,6 +83,14 @@ impl CollisionDetector {
             }
         }
 
+        for object in self.special_objects.iter() {
+            if object.name == name_a {
+                objects_a.push(object);
+            } else if object.name == name_b {
+                objects_b.push(object);
+            }
+        }
+
         for a in objects_a.iter() {
             for b in objects_b.iter() {
                 if Self::check_collision(a, b) {
