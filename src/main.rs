@@ -50,7 +50,7 @@ fn main() {
         }
     });
 
-    let asset_path = "/home/firstuser/Codes/githubRepos/uni-console-dino/src/assets/";
+    let asset_path = "/home/user/Codes/githubRepos/uni-console-dino/src/assets/";
     let bitmap_buffer = BitmapBuffer::new(&Bitmap::new(WINDOW_RESOLUTION, '$'));
     let view = View::new(asset_path, ' ');
     let screen = TerminalScreen::new(bitmap_buffer, BitmapPrinter, BORDER_WIDTH);
