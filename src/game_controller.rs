@@ -58,6 +58,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     }
 
     pub fn run(&mut self) {
+        self.active_state.as_state().on_enter(&mut self.view);
         loop {
             let timer = SystemTime::now();
             self.display_frame_counter();
