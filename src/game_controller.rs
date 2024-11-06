@@ -8,11 +8,12 @@ use crate::{
     bitmap::Printer,
     bitmap_buffer::BufferManager,
     drawable_object::{DrawableObject, Label},
-    game_states::GameStateEnum,
-    task_scheduler::TaskScheduler,
+    game_states::{GameStateEnum, MainGameLoop},
+    movement_functions,
+    task_scheduler::{Task, TaskScheduler},
     terminal_screen::TerminalScreen,
     utils::XY,
-    view::View,
+    view::{MovementFunction, View},
     FPS_LIMIT, WINDOW_RESOLUTION,
 };
 
@@ -60,6 +61,16 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     pub fn run(&mut self) {
         let mut state_change_listener: Option<GameStateEnum> = None;
         self.active_state.as_state().on_enter(&mut self.view);
+
+        let new_task = Task::new(
+            spawn_vase,
+            Duration::from_secs(1),
+            Some(Duration::from_secs(2)),
+            Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+            self.frame_counter as i32,
+        );
+        self.task_scheduler.schedule(new_task);
+
         loop {
             let timer = SystemTime::now();
             self.display_frame_counter();
@@ -77,7 +88,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                         .active_state
                         .variant_eq(&task.game_state.clone().unwrap())
                 {
-                    task.execute(&mut self.view);
+                    task.execute(&mut self.view, self.frame_counter as i32);
                 }
             }
 
@@ -108,4 +119,14 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             }
         }
     }
+}
+
+pub fn spawn_vase(view: &mut View, param: i32) {
+    view.insert_asset(
+        &format!("vase{}", param),
+        true,
+        "vase.txt",
+        XY::new(150, 33),
+        Some(MovementFunction::new(movement_functions::move_left)),
+    );
 }
