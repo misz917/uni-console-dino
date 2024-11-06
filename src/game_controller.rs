@@ -68,7 +68,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                     .handle_input(&mut self.view, input);
             }
             if let Some(task) = self.task_scheduler.get_task() {
-                todo!()
+                task.execute(&mut self.view);
             }
 
             self.screen.schedule_frame(self.view.compile());

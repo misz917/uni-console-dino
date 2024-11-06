@@ -9,7 +9,7 @@ use crate::view::View;
 #[derive(PartialEq, Eq, Ord, Clone)]
 pub struct Task {
     function: fn(&mut View),
-    pub scheduled_time: Instant,
+    scheduled_time: Instant,
     repeat_delay: Option<Duration>, // none = no repeat
 }
 impl PartialOrd for Task {
@@ -30,8 +30,8 @@ impl Task {
         }
     }
 
-    pub fn execute(view: &mut View) {
-        todo!()
+    pub fn execute(&self, view: &mut View) {
+        (self.function)(view)
     }
 }
 
