@@ -126,7 +126,7 @@ impl GameState for MainGameLoop {
     }
 
     fn on_exit(&mut self, view: &mut View) {
-        // view.remove_object("invisible_floor");
+        view.remove_object("invisible_floor");
     }
 
     fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>) {

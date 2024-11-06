@@ -128,7 +128,8 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
 
 pub fn spawn_vase(view: &mut View, param: i32) {
     view.insert_asset(
-        &format!("vase{}", param),
+        // &format!("vase{}", param),
+        "vase",
         true,
         "vase.txt",
         XY::new(150, 33),
