@@ -160,10 +160,7 @@ impl View {
     }
 
     pub fn check_for_collision(&self, name: &str) -> bool {
-        if let Some(b) = self.collision_detector.check_for_collisions(name) {
-            return b;
-        }
-        return false;
+        self.collision_detector.check_for_collisions(name)
     }
 
     pub fn check_for_collision_between(&self, name_a: &str, name_b: &str) -> bool {

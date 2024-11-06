@@ -42,19 +42,25 @@ impl CollisionDetector {
         self.special_objects.push(new_object);
     }
 
-    pub fn check_for_collisions(&self, name: &str) -> Option<bool> {
-        if let Some(compared_object) = self.objects.get(name) {
-            for (object_name, object_hitbox) in &self.objects {
-                if object_name == name {
-                    continue;
-                } else if Self::check_collision(compared_object, object_hitbox) {
-                    return Some(true);
+    pub fn check_for_collisions(&self, name: &str) -> bool {
+        let mut named_objects: Vec<&HitBox> = Vec::new();
+
+        for object in self.objects.iter() {
+            if object.name == name {
+                named_objects.push(object);
+            }
+        }
+
+        for object in self.objects.iter() {
+            for named_object in named_objects.iter() {
+                if object.name != name {
+                    if Self::check_collision(object, named_object) {
+                        return true;
+                    }
                 }
             }
-            return Some(false);
-        } else {
-            return None;
         }
+        return false;
     }
 
     fn check_collision(object_a: &HitBox, object_b: &HitBox) -> bool {
