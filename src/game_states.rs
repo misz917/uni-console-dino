@@ -35,7 +35,13 @@ impl GameStateEnum {
 }
 
 pub trait GameState {
-    fn handle_input(&mut self, view: &mut View, input: char);
+    fn handle_input(
+        &mut self,
+        view: &mut View,
+        input: char,
+        state_changer: &mut Option<GameStateEnum>,
+    );
+    // fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>);
     fn on_enter(&mut self, view: &mut View);
     fn on_exit(&mut self, view: &mut View);
 }
@@ -43,8 +49,15 @@ pub trait GameState {
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct Menu;
 impl GameState for Menu {
-    fn handle_input(&mut self, _view: &mut View, _input: char) {
-        // do nothing
+    fn handle_input(
+        &mut self,
+        view: &mut View,
+        input: char,
+        state_changer: &mut Option<GameStateEnum>,
+    ) {
+        match input {
+            _ => *state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+        }
     }
 
     fn on_enter(&mut self, view: &mut View) {
@@ -79,7 +92,12 @@ impl GameState for Menu {
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct MainGameLoop;
 impl GameState for MainGameLoop {
-    fn handle_input(&mut self, view: &mut View, input: char) {
+    fn handle_input(
+        &mut self,
+        view: &mut View,
+        input: char,
+        state_changer: &mut Option<GameStateEnum>,
+    ) {
         match input {
             _ => {
                 if view.check_for_collision_between("player", "invisible_floor") {
@@ -111,7 +129,12 @@ impl GameState for MainGameLoop {
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct GameOver;
 impl GameState for GameOver {
-    fn handle_input(&mut self, view: &mut View, input: char) {
+    fn handle_input(
+        &mut self,
+        view: &mut View,
+        input: char,
+        state_changer: &mut Option<GameStateEnum>,
+    ) {
         // nothing
     }
 

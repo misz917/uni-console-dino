@@ -58,15 +58,18 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     }
 
     pub fn run(&mut self) {
+        let mut state_change_listener: Option<GameStateEnum> = None;
         self.active_state.as_state().on_enter(&mut self.view);
         loop {
             let timer = SystemTime::now();
             self.display_frame_counter();
 
             if let Ok(input) = self.rx.try_recv() {
-                self.active_state
-                    .as_state()
-                    .handle_input(&mut self.view, input);
+                self.active_state.as_state().handle_input(
+                    &mut self.view,
+                    input,
+                    &mut state_change_listener,
+                );
             }
             if let Some(task) = self.task_scheduler.get_task() {
                 if task.game_state.is_some()
@@ -76,6 +79,11 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                 {
                     task.execute(&mut self.view);
                 }
+            }
+
+            if let Some(ref new_state) = state_change_listener {
+                self.change_state(new_state.clone());
+                state_change_listener = None;
             }
 
             self.screen.schedule_frame(self.view.compile());
