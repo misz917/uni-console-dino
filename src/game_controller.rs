@@ -18,7 +18,7 @@ use crate::{
 };
 
 pub struct GameController<B: BufferManager, P: Printer> {
-    frame_counter: u64,
+    frame_counter: u32,
     view: View,
     screen: TerminalScreen<B, P>,
     rx: Receiver<char>,
@@ -128,7 +128,6 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
 
 pub fn spawn_vase(view: &mut View, param: i32) {
     view.insert_asset(
-        // &format!("vase{}", param),
         "vase",
         true,
         "vase.txt",
