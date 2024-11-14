@@ -126,7 +126,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     }
 }
 
-pub fn spawn_vase(view: &mut View, param: i32) {
+pub fn spawn_vase(view: &mut View, _param: i32) {
     view.insert_asset(
         "vase",
         true,

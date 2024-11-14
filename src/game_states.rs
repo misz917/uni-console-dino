@@ -51,7 +51,7 @@ pub struct Menu;
 impl GameState for Menu {
     fn handle_input(
         &mut self,
-        view: &mut View,
+        _view: &mut View,
         input: char,
         state_changer: &mut Option<GameStateEnum>,
     ) {
@@ -88,7 +88,7 @@ impl GameState for Menu {
         view.remove_object("press_to_play_label");
     }
 
-    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>) {
+    fn each_frame(&mut self, _view: &mut View, _state_changer: &mut Option<GameStateEnum>) {
         return;
     }
 }
@@ -100,10 +100,10 @@ impl GameState for MainGameLoop {
         &mut self,
         view: &mut View,
         input: char,
-        state_changer: &mut Option<GameStateEnum>,
+        _state_changer: &mut Option<GameStateEnum>,
     ) {
         match input {
-            _ => {
+            'w' => {
                 if view.check_for_collision_between("player", "invisible_floor") {
                     view.replace_movement_function(
                         "player",
@@ -111,6 +111,7 @@ impl GameState for MainGameLoop {
                     );
                 }
             }
+            _ => ()
         }
     }
 
@@ -141,22 +142,22 @@ pub struct GameOver;
 impl GameState for GameOver {
     fn handle_input(
         &mut self,
-        view: &mut View,
-        input: char,
-        state_changer: &mut Option<GameStateEnum>,
+        _view: &mut View,
+        _input: char,
+        _state_changer: &mut Option<GameStateEnum>,
     ) {
         return;
     }
 
-    fn on_enter(&mut self, view: &mut View) {
+    fn on_enter(&mut self, _view: &mut View) {
         return;
     }
 
-    fn on_exit(&mut self, view: &mut View) {
+    fn on_exit(&mut self, _view: &mut View) {
         return;
     }
 
-    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>) {
+    fn each_frame(&mut self, _view: &mut View, _state_changer: &mut Option<GameStateEnum>) {
         return;
     }
 }
