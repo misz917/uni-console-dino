@@ -13,20 +13,19 @@ pub mod frame_assembler;
 pub mod game_controller;
 pub mod game_states;
 pub mod movement_functions;
+pub mod task_functions;
 pub mod task_scheduler;
 pub mod terminal_screen;
 pub mod utils;
 pub mod view;
 pub mod window;
-pub mod task_functions;
-
-use game_states::{GameStateEnum, Menu};
-use task_scheduler::TaskScheduler;
 
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
     game_controller::GameController,
+    game_states::{GameStateEnum, Menu},
+    task_scheduler::TaskScheduler,
     terminal_screen::{TerminalHelper, TerminalScreen},
     utils::XY,
     view::View,

@@ -1,9 +1,9 @@
+use crate::{game_states::GameStateEnum, view::View};
 use std::{
     cmp::Reverse,
     collections::BinaryHeap,
     time::{Duration, Instant},
 };
-use crate::{game_states::GameStateEnum, view::View};
 
 #[derive(PartialEq, Eq, Ord, Clone)]
 pub struct Task {

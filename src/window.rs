@@ -1,5 +1,10 @@
-use std::{env, io::Read, os::fd::AsRawFd, process::{exit, Command}};
 use crate::utils::XY;
+use std::{
+    env,
+    io::Read,
+    os::fd::AsRawFd,
+    process::{exit, Command},
+};
 
 pub trait Terminal {
     fn open(&self, resolution: XY<usize>, border_width: XY<usize>);
@@ -96,15 +101,15 @@ impl TerminalResultHandler {
 
 pub struct WindowCreator;
 impl WindowCreator {
-    fn open_new_window<T: Terminal>(
-        terminal: &T,
-        resolution: XY<usize>,
-        border_width: XY<usize>,
-    ) {
+    fn open_new_window<T: Terminal>(terminal: &T, resolution: XY<usize>, border_width: XY<usize>) {
         terminal.open(resolution, border_width);
     }
 
-    pub fn create_separate_window<T: Terminal>(window_resolution: XY<usize>, border_width: XY<usize>, terminal: &T) {
+    pub fn create_separate_window<T: Terminal>(
+        window_resolution: XY<usize>,
+        border_width: XY<usize>,
+        terminal: &T,
+    ) {
         let args: Vec<String> = env::args().collect();
         let mut ready: bool = false;
         for arg in &args {
@@ -113,11 +118,7 @@ impl WindowCreator {
             }
         }
         if !ready {
-            Self::open_new_window(
-                terminal,
-                window_resolution,
-                border_width,
-            );
+            Self::open_new_window(terminal, window_resolution, border_width);
             exit(0); // this exit is not an error
         }
     }

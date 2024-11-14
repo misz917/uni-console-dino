@@ -1,13 +1,12 @@
-use std::time::Duration;
 use crate::{
     drawable_object::{DrawableObject, Label, Rectangle},
-    movement_functions,
-    task_functions,
+    movement_functions, task_functions,
     task_scheduler::{Task, TaskScheduler},
     utils::XY,
     view::{MovementFunction, View},
-    WINDOW_RESOLUTION
+    WINDOW_RESOLUTION,
 };
+use std::time::Duration;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum GameStateEnum {
@@ -47,7 +46,12 @@ pub trait GameState {
     );
     fn on_enter(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler);
     fn on_exit(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler);
-    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>, task_scheduler: &mut TaskScheduler);
+    fn each_frame(
+        &mut self,
+        view: &mut View,
+        state_changer: &mut Option<GameStateEnum>,
+        task_scheduler: &mut TaskScheduler,
+    );
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -93,7 +97,12 @@ impl GameState for Menu {
         view.remove_object("press_to_play_label");
     }
 
-    fn each_frame(&mut self, _view: &mut View, _state_changer: &mut Option<GameStateEnum>, _task_scheduler: &mut TaskScheduler) {
+    fn each_frame(
+        &mut self,
+        _view: &mut View,
+        _state_changer: &mut Option<GameStateEnum>,
+        _task_scheduler: &mut TaskScheduler,
+    ) {
         return;
     }
 }
@@ -109,7 +118,8 @@ impl GameState for MainGameLoop {
         _task_scheduler: &mut TaskScheduler,
     ) {
         match input {
-            'w' => { // jump
+            'w' => {
+                // jump
                 if view.check_for_collision_between("player", "invisible_floor") {
                     view.replace_movement_function(
                         "player",
@@ -117,10 +127,11 @@ impl GameState for MainGameLoop {
                     );
                 }
             }
-            's' => { // teleport to floor
+            's' => {
+                // teleport to floor
                 view.replace_movement_function("player", None);
             }
-            _ => ()
+            _ => (),
         }
     }
 
@@ -128,7 +139,9 @@ impl GameState for MainGameLoop {
         let task = Task::new(
             task_functions::spawn_vase,
             Duration::from_secs(1),
-            Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))), 0);
+            Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+            0,
+        );
         task_scheduler.schedule(task);
 
         view.insert_object(
@@ -145,7 +158,12 @@ impl GameState for MainGameLoop {
         view.remove_object("invisible_floor");
     }
 
-    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>, _task_scheduler: &mut TaskScheduler) {
+    fn each_frame(
+        &mut self,
+        view: &mut View,
+        state_changer: &mut Option<GameStateEnum>,
+        _task_scheduler: &mut TaskScheduler,
+    ) {
         if view.check_for_collision("player") {
             *state_changer = Some(GameStateEnum::GameOver(Box::new(GameOver)));
         }
@@ -173,7 +191,12 @@ impl GameState for GameOver {
         return;
     }
 
-    fn each_frame(&mut self, _view: &mut View, _state_changer: &mut Option<GameStateEnum>, _task_scheduler: &mut TaskScheduler) {
+    fn each_frame(
+        &mut self,
+        _view: &mut View,
+        _state_changer: &mut Option<GameStateEnum>,
+        _task_scheduler: &mut TaskScheduler,
+    ) {
         return;
     }
 }

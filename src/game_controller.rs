@@ -59,8 +59,10 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
 
     pub fn run(&mut self) {
         let mut state_change_listener: Option<GameStateEnum> = None;
-        self.active_state.as_state().on_enter(&mut self.view, &mut self.task_scheduler);
-        
+        self.active_state
+            .as_state()
+            .on_enter(&mut self.view, &mut self.task_scheduler);
+
         loop {
             let timer = SystemTime::now();
             self.display_frame_counter();
@@ -70,7 +72,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                     &mut self.view,
                     input,
                     &mut state_change_listener,
-                    &mut self.task_scheduler
+                    &mut self.task_scheduler,
                 );
             }
 
@@ -87,9 +89,11 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                 }
             }
 
-            self.active_state
-                .as_state()
-                .each_frame(&mut self.view, &mut state_change_listener, &mut self.task_scheduler);
+            self.active_state.as_state().each_frame(
+                &mut self.view,
+                &mut state_change_listener,
+                &mut self.task_scheduler,
+            );
 
             if let Some(ref new_state) = state_change_listener {
                 self.change_state(new_state.clone());
@@ -105,9 +109,13 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     }
 
     fn change_state(&mut self, new_state: GameStateEnum) {
-        self.active_state.as_state().on_exit(&mut self.view, &mut self.task_scheduler);
+        self.active_state
+            .as_state()
+            .on_exit(&mut self.view, &mut self.task_scheduler);
         self.active_state = new_state;
-        self.active_state.as_state().on_enter(&mut self.view, &mut self.task_scheduler);
+        self.active_state
+            .as_state()
+            .on_enter(&mut self.view, &mut self.task_scheduler);
     }
 
     fn enforce_fps(timer: SystemTime) {

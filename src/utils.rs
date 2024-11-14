@@ -1,5 +1,5 @@
-use std::{ops::Add, thread::sleep, time::Duration};
 use crate::terminal_screen::TerminalHelper;
+use std::{ops::Add, thread::sleep, time::Duration};
 
 pub const ESC: &str = "\x1B";
 
