@@ -1,9 +1,7 @@
+use std::time::Duration;
+
 use crate::{
-    drawable_object::{DrawableObject, Label, Rectangle},
-    movement_functions,
-    utils::XY,
-    view::{MovementFunction, View},
-    WINDOW_RESOLUTION,
+    drawable_object::{DrawableObject, Label, Rectangle}, movement_functions, task_scheduler::{self, Task, TaskScheduler}, utils::XY, view::{MovementFunction, View}, WINDOW_RESOLUTION
 };
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -40,10 +38,11 @@ pub trait GameState {
         view: &mut View,
         input: char,
         state_changer: &mut Option<GameStateEnum>,
+        task_scheduler: &mut TaskScheduler,
     );
-    fn on_enter(&mut self, view: &mut View);
-    fn on_exit(&mut self, view: &mut View);
-    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>);
+    fn on_enter(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler);
+    fn on_exit(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler);
+    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>, task_scheduler: &mut TaskScheduler);
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -54,13 +53,14 @@ impl GameState for Menu {
         _view: &mut View,
         input: char,
         state_changer: &mut Option<GameStateEnum>,
+        task_scheduler: &mut TaskScheduler,
     ) {
         match input {
             _ => *state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
         }
     }
 
-    fn on_enter(&mut self, view: &mut View) {
+    fn on_enter(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler,) {
         view.insert_object(
             "press_to_play_label",
             false,
@@ -83,12 +83,12 @@ impl GameState for Menu {
         );
     }
 
-    fn on_exit(&mut self, view: &mut View) {
+    fn on_exit(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler,) {
         view.remove_object("title_sign");
         view.remove_object("press_to_play_label");
     }
 
-    fn each_frame(&mut self, _view: &mut View, _state_changer: &mut Option<GameStateEnum>) {
+    fn each_frame(&mut self, _view: &mut View, _state_changer: &mut Option<GameStateEnum>, task_scheduler: &mut TaskScheduler,) {
         return;
     }
 }
@@ -101,6 +101,7 @@ impl GameState for MainGameLoop {
         view: &mut View,
         input: char,
         _state_changer: &mut Option<GameStateEnum>,
+        task_scheduler: &mut TaskScheduler,
     ) {
         match input {
             'w' => { // jump
@@ -118,7 +119,13 @@ impl GameState for MainGameLoop {
         }
     }
 
-    fn on_enter(&mut self, view: &mut View) {
+    fn on_enter(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler) {
+        let task = Task::new(
+            spawn_vase,
+            Duration::from_secs(1),
+            Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))), 0);
+        task_scheduler.schedule(task);
+
         view.insert_object(
             "invisible_floor",
             false,
@@ -129,11 +136,11 @@ impl GameState for MainGameLoop {
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
     }
 
-    fn on_exit(&mut self, view: &mut View) {
+    fn on_exit(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler,) {
         view.remove_object("invisible_floor");
     }
 
-    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>) {
+    fn each_frame(&mut self, view: &mut View, state_changer: &mut Option<GameStateEnum>, task_scheduler: &mut TaskScheduler,) {
         if view.check_for_collision("player") {
             *state_changer = Some(GameStateEnum::GameOver(Box::new(GameOver)));
         }
@@ -148,19 +155,36 @@ impl GameState for GameOver {
         _view: &mut View,
         _input: char,
         _state_changer: &mut Option<GameStateEnum>,
+        task_scheduler: &mut TaskScheduler,
     ) {
         return;
     }
 
-    fn on_enter(&mut self, _view: &mut View) {
+    fn on_enter(&mut self, _view: &mut View, task_scheduler: &mut TaskScheduler,) {
         return;
     }
 
-    fn on_exit(&mut self, _view: &mut View) {
+    fn on_exit(&mut self, _view: &mut View, task_scheduler: &mut TaskScheduler,) {
         return;
     }
 
-    fn each_frame(&mut self, _view: &mut View, _state_changer: &mut Option<GameStateEnum>) {
+    fn each_frame(&mut self, _view: &mut View, _state_changer: &mut Option<GameStateEnum>, task_scheduler: &mut TaskScheduler,) {
         return;
     }
+}
+
+pub fn spawn_vase(view: &mut View, _param: i32) -> Option<Task> {
+    view.insert_asset(
+        "vase",
+        true,
+        "vase.txt",
+        XY::new(150, 33),
+        Some(MovementFunction::new(movement_functions::move_left)),
+    );
+    
+    let follow_up_task = Task::new(
+        spawn_vase,
+        Duration::from_secs(1),
+        Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))), _param);
+    return Some(follow_up_task);
 }
