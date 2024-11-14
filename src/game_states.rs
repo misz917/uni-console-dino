@@ -103,13 +103,16 @@ impl GameState for MainGameLoop {
         _state_changer: &mut Option<GameStateEnum>,
     ) {
         match input {
-            'w' => {
+            'w' => { // jump
                 if view.check_for_collision_between("player", "invisible_floor") {
                     view.replace_movement_function(
                         "player",
                         Some(MovementFunction::new(movement_functions::jump)),
                     );
                 }
+            }
+            's' => { // teleport to floor
+                view.replace_movement_function("player", None);
             }
             _ => ()
         }
