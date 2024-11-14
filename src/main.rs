@@ -18,6 +18,7 @@ pub mod terminal_screen;
 pub mod utils;
 pub mod view;
 pub mod window;
+pub mod task_functions;
 
 use game_states::{GameStateEnum, Menu};
 use task_scheduler::TaskScheduler;

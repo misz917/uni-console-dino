@@ -8,12 +8,11 @@ use crate::{
     bitmap::Printer,
     bitmap_buffer::BufferManager,
     drawable_object::{DrawableObject, Label},
-    game_states::{GameStateEnum, MainGameLoop},
-    movement_functions,
-    task_scheduler::{Task, TaskScheduler},
+    game_states::GameStateEnum,
+    task_scheduler::TaskScheduler,
     terminal_screen::TerminalScreen,
     utils::XY,
-    view::{MovementFunction, View},
+    view::View,
     FPS_LIMIT, WINDOW_RESOLUTION,
 };
 
