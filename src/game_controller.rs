@@ -61,16 +61,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     pub fn run(&mut self) {
         let mut state_change_listener: Option<GameStateEnum> = None;
         self.active_state.as_state().on_enter(&mut self.view);
-
-        let new_task = Task::new(
-            spawn_vase,
-            Duration::from_secs(1),
-            Some(Duration::from_secs(2)),
-            Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
-            self.frame_counter as i32,
-        );
-        self.task_scheduler.schedule(new_task);
-
+        
         loop {
             let timer = SystemTime::now();
             self.display_frame_counter();
@@ -89,7 +80,10 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                         .active_state
                         .variant_eq(&task.game_state.clone().unwrap())
                 {
-                    task.execute(&mut self.view, self.frame_counter as i32);
+                    let follow_up_task = task.execute(&mut self.view, self.frame_counter as i32);
+                    if let Some(new_task) = follow_up_task {
+                        self.task_scheduler.schedule(new_task);
+                    }
                 }
             }
 
@@ -126,7 +120,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     }
 }
 
-pub fn spawn_vase(view: &mut View, _param: i32) {
+pub fn spawn_vase(view: &mut View, _param: i32) -> Option<Task> {
     view.insert_asset(
         "vase",
         true,
@@ -134,4 +128,10 @@ pub fn spawn_vase(view: &mut View, _param: i32) {
         XY::new(150, 33),
         Some(MovementFunction::new(movement_functions::move_left)),
     );
+    
+    let follow_up_task = Task::new(
+        spawn_vase,
+        Duration::from_secs(1),
+        Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))), _param);
+    return Some(follow_up_task);
 }
