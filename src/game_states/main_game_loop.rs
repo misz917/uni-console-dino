@@ -4,15 +4,18 @@ use super::{
 };
 use crate::{
     drawable_object::{DrawableObject, Rectangle},
-    game_controller::Value,
     movement_functions,
     task_scheduler::{Task, TaskScheduler},
+    utils::Value,
     utils::XY,
     view::{MovementFunction, View},
     WINDOW_RESOLUTION,
 };
 use rand::Rng;
-use std::{collections::HashMap, time::Duration};
+use std::{
+    collections::HashMap,
+    time::{Duration, Instant},
+};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct MainGameLoop;
@@ -72,6 +75,7 @@ impl GameState for MainGameLoop {
             None,
         );
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
+        _resources.insert("start_time".to_owned(), Value::Instant(Instant::now()));
     }
 
     fn on_exit(
@@ -84,6 +88,7 @@ impl GameState for MainGameLoop {
         view.remove_object("player");
         view.remove_object("vase");
         view.remove_object("bird");
+        _resources.remove_entry("start_time");
     }
 
     fn each_frame(

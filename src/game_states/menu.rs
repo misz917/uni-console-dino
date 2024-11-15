@@ -4,8 +4,8 @@ use super::{
 };
 use crate::{
     drawable_object::{DrawableObject, Label},
-    game_controller::Value,
     task_scheduler::TaskScheduler,
+    utils::Value,
     utils::XY,
     view::View,
     WINDOW_RESOLUTION,

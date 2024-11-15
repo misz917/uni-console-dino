@@ -12,17 +12,10 @@ use crate::{
     game_states::game_state::GameStateEnum,
     task_scheduler::TaskScheduler,
     terminal_screen::TerminalScreen,
-    utils::XY,
+    utils::{Value, XY},
     view::View,
     FPS_LIMIT, WINDOW_RESOLUTION,
 };
-
-pub enum Value {
-    I32(i32),
-    F32(f32),
-    Bool(bool),
-    Str(String),
-}
 
 pub struct GameController<B: BufferManager, P: Printer> {
     frame_counter: u32,

@@ -1,5 +1,9 @@
 use crate::terminal_screen::TerminalHelper;
-use std::{ops::Add, thread::sleep, time::Duration};
+use std::{
+    ops::Add,
+    thread::sleep,
+    time::{Duration, Instant},
+};
 
 pub const ESC: &str = "\x1B";
 
@@ -34,4 +38,13 @@ impl ErrorDisplayer {
             sleep(Duration::from_secs(1));
         }
     }
+}
+
+pub enum Value {
+    I32(i32),
+    F32(f32),
+    Bool(bool),
+    Str(String),
+    Duration(Duration),
+    Instant(Instant),
 }

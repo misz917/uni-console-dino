@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use super::{game_over::GameOver, main_game_loop::MainGameLoop, menu::Menu};
-use crate::{game_controller::Value, task_scheduler::TaskScheduler, view::View};
+use crate::{task_scheduler::TaskScheduler, utils::Value, view::View};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum GameStateEnum {

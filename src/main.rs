@@ -1,4 +1,18 @@
+use utils::Value;
+
+use crate::{
+    bitmap::{Bitmap, BitmapPrinter},
+    bitmap_buffer::BitmapBuffer,
+    game_controller::GameController,
+    game_states::{game_state::GameStateEnum, menu::Menu},
+    task_scheduler::TaskScheduler,
+    terminal_screen::{TerminalHelper, TerminalScreen},
+    utils::XY,
+    view::View,
+    window::{GnomeTerminal, Terminal, WindowCreator},
+};
 use std::{
+    collections::HashMap,
     sync::mpsc::{self, Receiver, Sender},
     thread::{self},
 };
@@ -19,17 +33,13 @@ pub mod utils;
 pub mod view;
 pub mod window;
 
-use crate::{
-    bitmap::{Bitmap, BitmapPrinter},
-    bitmap_buffer::BitmapBuffer,
-    game_controller::GameController,
-    game_states::{game_state::GameStateEnum, menu::Menu},
-    task_scheduler::TaskScheduler,
-    terminal_screen::{TerminalHelper, TerminalScreen},
-    utils::XY,
-    view::View,
-    window::{GnomeTerminal, Terminal, WindowCreator},
-};
+lazy_static::lazy_static! {
+    static ref GLOBAL_RESOURCES: HashMap<String, Value> = {
+        let mut m = HashMap::new();
+        m.insert("speed".to_owned(), Value::F32(1.0));
+        m
+    };
+}
 
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
