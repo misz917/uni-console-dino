@@ -66,6 +66,7 @@ impl GameState for MainGameLoop {
 
         task_scheduler.schedule(spawn_obstacle(view, 0).unwrap());
         task_scheduler.schedule(spawn_tree(view, 0).unwrap());
+        task_scheduler.schedule(spawn_sun(view, 0).unwrap());
 
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
         view.insert_object(
@@ -97,6 +98,7 @@ impl GameState for MainGameLoop {
         view.remove_object("bird");
         view.remove_object("ground");
         view.remove_object("tree");
+        view.remove_object("sun");
     }
 
     fn each_frame(
@@ -147,7 +149,7 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
     return Some(follow_up_task);
 }
 
-pub fn obstacle_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
+fn obstacle_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
     let speed = SPEED.lock().unwrap();
     let new_x = original_position.x - (*speed * 30.0 * time) as i32;
     let new_y = original_position.y;
@@ -155,7 +157,7 @@ pub fn obstacle_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
     return XY::new(new_x, new_y);
 }
 
-pub fn player_jump(original_position: XY<i32>, time: f32) -> XY<i32> {
+fn player_jump(original_position: XY<i32>, time: f32) -> XY<i32> {
     let func = |x: f32| -(x / 2.0 - 3.18).powf(2.0) + 10.0;
     let mut difference = func(time * 8.0) as i32;
     if difference < 0 {
@@ -163,13 +165,6 @@ pub fn player_jump(original_position: XY<i32>, time: f32) -> XY<i32> {
     }
     let new_x = original_position.x;
     let new_y = original_position.y - difference;
-
-    return XY::new(new_x, new_y);
-}
-
-pub fn tree_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let new_x = original_position.x - (13.0 * time) as i32;
-    let new_y = original_position.y;
 
     return XY::new(new_x, new_y);
 }
@@ -187,17 +182,45 @@ fn spawn_tree(view: &mut View, _param: i32) -> Option<Task> {
         XY::new(175, 25),
         Some(MovementFunction::new(tree_move_left)),
     );
+    let delay = rand::thread_rng().gen_range(10..30);
     let follow_up_task = Task::new(
         spawn_tree,
-        Duration::from_secs(23),
+        Duration::from_secs(delay),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
         0,
     );
     return Some(follow_up_task);
 }
 
+fn tree_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
+    let new_x = original_position.x - (13.0 * time) as i32;
+    let new_y = original_position.y;
+
+    return XY::new(new_x, new_y);
+}
+
 fn spawn_sun(view: &mut View, _param: i32) -> Option<Task> {
-    return None;
+    view.insert_asset(
+        "sun",
+        false,
+        "sun.txt",
+        XY::new(165, 2),
+        Some(MovementFunction::new(sun_move_left)),
+    );
+    let follow_up_task = Task::new(
+        spawn_tree,
+        Duration::from_secs(60),
+        Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+        0,
+    );
+    return Some(follow_up_task);
+}
+
+fn sun_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
+    let new_x = original_position.x - (2.0 * time) as i32;
+    let new_y = original_position.y;
+
+    return XY::new(new_x, new_y);
 }
 
 fn spawn_clouds(view: &mut View, _param: i32) -> Option<Task> {
