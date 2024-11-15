@@ -32,12 +32,43 @@ impl GameState for GameOver {
         _task_scheduler: &mut TaskScheduler,
         _resources: &mut HashMap<String, Value>,
     ) {
+        let text = "Game over";
         _view.insert_object(
             "game_over_label",
             false,
-            DrawableObject::Label(Label::new("Game over, press any button to restart")),
+            DrawableObject::Label(Label::new(text)),
             XY::new(
-                WINDOW_RESOLUTION.x as i32 / 2 - 20,
+                (WINDOW_RESOLUTION.x - text.len()) as i32 / 2,
+                WINDOW_RESOLUTION.y as i32 / 2 - 4,
+            ),
+            None,
+        );
+
+        let start_time = _resources.get("start_time").unwrap();
+        let elapsed_time = match start_time {
+            Value::Instant(instant) => instant.elapsed(),
+            _ => panic!(), // will never happen anyway
+        };
+        let score = elapsed_time.as_secs_f32();
+        let text = format!("Your score: {}", (score * 100.0).round() / 10.0);
+        _view.insert_object(
+            "score_label",
+            false,
+            DrawableObject::Label(Label::new(&text)),
+            XY::new(
+                (WINDOW_RESOLUTION.x - text.len()) as i32 / 2,
+                WINDOW_RESOLUTION.y as i32 / 2 - 2,
+            ),
+            None,
+        );
+
+        let text = "Press any button to restart";
+        _view.insert_object(
+            "press_button_label",
+            false,
+            DrawableObject::Label(Label::new(text)),
+            XY::new(
+                (WINDOW_RESOLUTION.x - text.len()) as i32 / 2,
                 WINDOW_RESOLUTION.y as i32 / 2,
             ),
             None,
@@ -51,6 +82,8 @@ impl GameState for GameOver {
         _resources: &mut HashMap<String, Value>,
     ) {
         _view.remove_object("game_over_label");
+        _view.remove_object("score_label");
+        _view.remove_object("press_button_label");
     }
 
     fn each_frame(

@@ -78,6 +78,7 @@ impl GameState for MainGameLoop {
             None,
         );
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
+        _resources.remove_entry("start_time");
         _resources.insert("start_time".to_owned(), Value::Instant(Instant::now()));
     }
 
@@ -91,7 +92,6 @@ impl GameState for MainGameLoop {
         view.remove_object("player");
         view.remove_object("vase");
         view.remove_object("bird");
-        _resources.remove_entry("start_time");
     }
 
     fn each_frame(
