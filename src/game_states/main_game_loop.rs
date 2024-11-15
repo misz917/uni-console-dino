@@ -64,13 +64,7 @@ impl GameState for MainGameLoop {
             *speed = 1.0;
         }
 
-        let obstacle_spawner = Task::new(
-            spawn_obstacle,
-            Duration::from_secs(1),
-            Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
-            0,
-        );
-        task_scheduler.schedule(obstacle_spawner);
+        task_scheduler.schedule(spawn_obstacle(view, 0).unwrap());
         task_scheduler.schedule(spawn_tree(view, 0).unwrap());
 
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
@@ -127,7 +121,7 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
             "vase",
             true,
             "vase.txt",
-            XY::new(150, 33),
+            XY::new(170, 33),
             Some(MovementFunction::new(obstacle_move_left)),
         );
     } else {
@@ -136,7 +130,7 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
             "bird",
             true,
             "bird_flying.txt",
-            XY::new(150, 26 + altitude),
+            XY::new(170, 26 + altitude),
             Some(MovementFunction::new(obstacle_move_left)),
         );
     }
