@@ -99,6 +99,7 @@ impl GameState for MainGameLoop {
         view.remove_object("ground");
         view.remove_object("tree");
         view.remove_object("sun");
+        view.remove_object("smoke");
     }
 
     fn each_frame(
@@ -139,7 +140,7 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
     }
 
     let speed = SPEED.lock().unwrap();
-    let cooldown = rng.gen_range(1.2..3.0) / *speed;
+    let cooldown = rng.gen_range(1.5..3.5) / *speed;
     let follow_up_task = Task::new(
         spawn_obstacle,
         Duration::from_secs_f32(cooldown),
@@ -209,7 +210,7 @@ fn spawn_sun(view: &mut View, _param: i32) -> Option<Task> {
     );
     let follow_up_task = Task::new(
         spawn_tree,
-        Duration::from_secs(60),
+        Duration::from_secs(170),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
         0,
     );
@@ -217,7 +218,7 @@ fn spawn_sun(view: &mut View, _param: i32) -> Option<Task> {
 }
 
 fn sun_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let new_x = original_position.x - (2.0 * time) as i32;
+    let new_x = original_position.x - time as i32;
     let new_y = original_position.y;
 
     return XY::new(new_x, new_y);
