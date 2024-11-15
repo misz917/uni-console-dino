@@ -18,7 +18,7 @@ pub fn spawn_vase(view: &mut View, _param: i32) -> Option<Task> {
 
     let follow_up_task = Task::new(
         spawn_vase,
-        Duration::from_secs(1),
+        Duration::from_secs(2),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
         _param,
     );
