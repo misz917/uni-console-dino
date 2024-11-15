@@ -1,5 +1,5 @@
 use crate::{
-    game_states::{GameStateEnum, MainGameLoop},
+    game_state::{GameStateEnum, MainGameLoop},
     movement_functions,
     task_scheduler::Task,
     utils::XY,

@@ -1,4 +1,4 @@
-use crate::{game_states::GameStateEnum, view::View};
+use crate::{game_state::GameStateEnum, view::View};
 use std::{
     cmp::Reverse,
     collections::BinaryHeap,
