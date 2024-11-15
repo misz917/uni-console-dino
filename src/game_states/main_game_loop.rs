@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     drawable_object::{DrawableObject, Rectangle},
-    movement_functions,
+    movement_functions::{self},
     task_scheduler::{Task, TaskScheduler},
     utils::{Value, XY},
     view::{MovementFunction, View},
@@ -64,6 +64,7 @@ impl GameState for MainGameLoop {
             let mut speed = SPEED.lock().unwrap();
             *speed = 1.0;
         }
+
         let obstacle_spawner = Task::new(
             spawn_obstacle,
             Duration::from_secs(1),
@@ -71,7 +72,9 @@ impl GameState for MainGameLoop {
             0,
         );
         task_scheduler.schedule(obstacle_spawner);
+        task_scheduler.schedule(spawn_tree(view, 0).unwrap());
 
+        view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
         view.insert_object(
             "invisible_floor",
             false,
@@ -79,7 +82,6 @@ impl GameState for MainGameLoop {
             XY::new(0, (WINDOW_RESOLUTION.y - 4) as i32),
             None,
         );
-        view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
         view.insert_asset(
             "ground",
             false,
@@ -100,6 +102,7 @@ impl GameState for MainGameLoop {
         view.remove_object("vase");
         view.remove_object("bird");
         view.remove_object("ground");
+        view.remove_object("tree");
     }
 
     fn each_frame(
@@ -126,7 +129,9 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
             true,
             "vase.txt",
             XY::new(150, 33),
-            Some(MovementFunction::new(movement_functions::move_left)),
+            Some(MovementFunction::new(
+                movement_functions::obstacle_move_left,
+            )),
         );
     } else {
         let altitude = rng.gen_range(-1..=1) * 5;
@@ -135,7 +140,9 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
             true,
             "bird_flying.txt",
             XY::new(150, 26 + altitude),
-            Some(MovementFunction::new(movement_functions::move_left)),
+            Some(MovementFunction::new(
+                movement_functions::obstacle_move_left,
+            )),
         );
     }
 
@@ -152,5 +159,34 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
 
 fn remove_smoke(view: &mut View, _param: i32) -> Option<Task> {
     view.remove_object("smoke");
+    return None;
+}
+
+fn spawn_tree(view: &mut View, _param: i32) -> Option<Task> {
+    view.insert_asset(
+        "tree",
+        false,
+        "tree.txt",
+        XY::new(175, 25),
+        Some(MovementFunction::new(movement_functions::tree_move_left)),
+    );
+    let follow_up_task = Task::new(
+        spawn_tree,
+        Duration::from_secs(23),
+        Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+        0,
+    );
+    return Some(follow_up_task);
+}
+
+fn spawn_sun(view: &mut View, _param: i32) -> Option<Task> {
+    return None;
+}
+
+fn spawn_clouds(view: &mut View, _param: i32) -> Option<Task> {
+    return None;
+}
+
+fn spawn_grass(view: &mut View, _param: i32) -> Option<Task> {
     return None;
 }
