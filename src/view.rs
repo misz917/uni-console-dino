@@ -72,7 +72,11 @@ impl View {
         start_position: XY<i32>,
         movement_function: Option<MovementFunction>,
     ) {
-        let drawable_object = self.asset_server.load(asset_path);
+        let mut drawable_object = self.asset_server.load(asset_path);
+        match *drawable_object {
+            DrawableObject::Animation(ref mut animation) => animation.reset_time(),
+            _ => (),
+        }
         let moving_object = MovingObject::new(
             name,
             can_collide,

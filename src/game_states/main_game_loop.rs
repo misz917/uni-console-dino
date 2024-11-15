@@ -3,6 +3,7 @@ use super::{
     game_state::{GameState, GameStateEnum},
 };
 use crate::{
+    asset_server,
     drawable_object::{DrawableObject, Rectangle},
     movement_functions, task_functions,
     task_scheduler::{Task, TaskScheduler},
@@ -10,7 +11,7 @@ use crate::{
     view::{MovementFunction, View},
     WINDOW_RESOLUTION,
 };
-use std::time::Duration;
+use std::{panic::AssertUnwindSafe, time::Duration};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct MainGameLoop;
@@ -38,7 +39,7 @@ impl GameState for MainGameLoop {
                 view.insert_asset("smoke", false, "landing_smoke.txt", XY::new(0, 36), None);
                 task_scheduler.schedule(Task::new(
                     task_functions::remove_smoke,
-                    Duration::from_secs_f32(0.42),
+                    Duration::from_secs_f32(0.50),
                     None,
                     0,
                 ));

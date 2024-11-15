@@ -21,6 +21,10 @@ impl Animation {
             (self.time.elapsed().unwrap().as_secs_f32() / self.fps) as usize % self.frames.len();
         &self.frames[current_frame_num]
     }
+
+    pub fn reset_time(&mut self) {
+        self.time = SystemTime::now();
+    }
 }
 impl Drawable for Animation {
     fn get_bitmap(&self) -> &Bitmap<char> {
