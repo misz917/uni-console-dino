@@ -64,4 +64,8 @@ impl TaskScheduler {
     pub fn schedule(&mut self, new_task: Task) {
         self.tasks.push(Reverse(new_task));
     }
+
+    pub fn clear(&mut self) {
+        self.tasks.clear();
+    }
 }

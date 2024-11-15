@@ -90,6 +90,7 @@ impl GameState for MainGameLoop {
         _task_scheduler: &mut TaskScheduler,
         _resources: &mut HashMap<String, Value>,
     ) {
+        _task_scheduler.clear();
         view.remove_object("invisible_floor");
         view.remove_object("player");
         view.remove_object("vase");
