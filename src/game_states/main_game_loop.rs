@@ -1,5 +1,3 @@
-use rand::Rng;
-
 use super::{
     game_over::GameOver,
     game_state::{GameState, GameStateEnum},
@@ -13,6 +11,7 @@ use crate::{
     view::{MovementFunction, View},
     WINDOW_RESOLUTION,
 };
+use rand::Rng;
 use std::{collections::HashMap, time::Duration};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -24,7 +23,7 @@ impl GameState for MainGameLoop {
         input: char,
         _state_changer: &mut Option<GameStateEnum>,
         task_scheduler: &mut TaskScheduler,
-        resources: &mut HashMap<String, Value>,
+        _resources: &mut HashMap<String, Value>,
     ) {
         match input {
             'w' => {
@@ -55,7 +54,7 @@ impl GameState for MainGameLoop {
         &mut self,
         view: &mut View,
         task_scheduler: &mut TaskScheduler,
-        resources: &mut HashMap<String, Value>,
+        _resources: &mut HashMap<String, Value>,
     ) {
         let task = Task::new(
             spawn_obstacle,
@@ -79,7 +78,7 @@ impl GameState for MainGameLoop {
         &mut self,
         view: &mut View,
         _task_scheduler: &mut TaskScheduler,
-        resources: &mut HashMap<String, Value>,
+        _resources: &mut HashMap<String, Value>,
     ) {
         view.remove_object("invisible_floor");
         view.remove_object("player");
@@ -92,7 +91,7 @@ impl GameState for MainGameLoop {
         view: &mut View,
         state_changer: &mut Option<GameStateEnum>,
         _task_scheduler: &mut TaskScheduler,
-        resources: &mut HashMap<String, Value>,
+        _resources: &mut HashMap<String, Value>,
     ) {
         if view.check_for_collision("player") {
             *state_changer = Some(GameStateEnum::GameOver(Box::new(GameOver)));

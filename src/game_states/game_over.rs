@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::{
     game_state::{GameState, GameStateEnum},
     main_game_loop::MainGameLoop,
@@ -12,6 +10,7 @@ use crate::{
     view::View,
     WINDOW_RESOLUTION,
 };
+use std::collections::HashMap;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct GameOver;
@@ -22,7 +21,7 @@ impl GameState for GameOver {
         _input: char,
         _state_changer: &mut Option<GameStateEnum>,
         _task_scheduler: &mut TaskScheduler,
-        resources: &mut HashMap<String, Value>,
+        _resources: &mut HashMap<String, Value>,
     ) {
         *_state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop)));
     }
@@ -31,7 +30,7 @@ impl GameState for GameOver {
         &mut self,
         _view: &mut View,
         _task_scheduler: &mut TaskScheduler,
-        resources: &mut HashMap<String, Value>,
+        _resources: &mut HashMap<String, Value>,
     ) {
         _view.insert_object(
             "game_over_label",
@@ -49,7 +48,7 @@ impl GameState for GameOver {
         &mut self,
         _view: &mut View,
         _task_scheduler: &mut TaskScheduler,
-        resources: &mut HashMap<String, Value>,
+        _resources: &mut HashMap<String, Value>,
     ) {
         _view.remove_object("game_over_label");
     }
@@ -59,7 +58,7 @@ impl GameState for GameOver {
         _view: &mut View,
         _state_changer: &mut Option<GameStateEnum>,
         _task_scheduler: &mut TaskScheduler,
-        resources: &mut HashMap<String, Value>,
+        _resources: &mut HashMap<String, Value>,
     ) {
         return;
     }
