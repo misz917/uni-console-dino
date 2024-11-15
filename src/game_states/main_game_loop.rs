@@ -69,6 +69,7 @@ impl GameState for MainGameLoop {
         task_scheduler.schedule(spawn_tree(view, 0).unwrap());
         task_scheduler.schedule(spawn_sun(view, 0).unwrap());
         task_scheduler.schedule(spawn_clouds(view, 0).unwrap());
+        task_scheduler.schedule(spawn_grass(view, 0).unwrap());
 
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
         view.insert_object(
@@ -103,6 +104,7 @@ impl GameState for MainGameLoop {
         view.remove_object("sun");
         view.remove_object("smoke");
         view.remove_object("cloud");
+        view.remove_object("grass");
     }
 
     fn each_frame(
@@ -286,5 +288,28 @@ fn cloud_fast_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
 }
 
 fn spawn_grass(view: &mut View, _param: i32) -> Option<Task> {
-    return None;
+    view.insert_asset(
+        "grass",
+        false,
+        "swaying_grass.txt",
+        XY::new(163, WINDOW_RESOLUTION.y as i32 - 4),
+        Some(MovementFunction::new(grass_move_left)),
+    );
+
+    let mut rng = rand::thread_rng();
+    let delay = rng.gen_range(0.1..2.0);
+    let follow_up_task = Task::new(
+        spawn_grass,
+        Duration::from_secs_f32(delay),
+        Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+        0,
+    );
+    return Some(follow_up_task);
+}
+
+fn grass_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
+    let new_x = original_position.x - (15.0 * time) as i32;
+    let new_y = original_position.y;
+
+    return XY::new(new_x, new_y);
 }
