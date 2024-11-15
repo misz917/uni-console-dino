@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     drawable_object::{DrawableObject, Rectangle},
-    movement_functions, task_functions,
+    movement_functions,
     task_scheduler::{Task, TaskScheduler},
     utils::XY,
     view::{MovementFunction, View},
@@ -37,7 +37,7 @@ impl GameState for MainGameLoop {
                 view.replace_movement_function("player", None);
                 view.insert_asset("smoke", false, "landing_smoke.txt", XY::new(0, 36), None);
                 task_scheduler.schedule(Task::new(
-                    task_functions::remove_smoke,
+                    remove_smoke,
                     Duration::from_secs_f32(0.50),
                     None,
                     0,
@@ -49,7 +49,7 @@ impl GameState for MainGameLoop {
 
     fn on_enter(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler) {
         let task = Task::new(
-            task_functions::spawn_vase,
+            spawn_obstacle,
             Duration::from_secs(1),
             Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
             0,
@@ -82,4 +82,27 @@ impl GameState for MainGameLoop {
             *state_changer = Some(GameStateEnum::GameOver(Box::new(GameOver)));
         }
     }
+}
+
+pub fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
+    view.insert_asset(
+        "vase",
+        true,
+        "vase.txt",
+        XY::new(150, 33),
+        Some(MovementFunction::new(movement_functions::move_left)),
+    );
+
+    let follow_up_task = Task::new(
+        spawn_obstacle,
+        Duration::from_secs(2),
+        Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+        _param,
+    );
+    return Some(follow_up_task);
+}
+
+pub fn remove_smoke(view: &mut View, _param: i32) -> Option<Task> {
+    view.remove_object("smoke");
+    return None;
 }

@@ -13,7 +13,6 @@ pub mod frame_assembler;
 pub mod game_controller;
 pub mod game_states;
 pub mod movement_functions;
-pub mod task_functions;
 pub mod task_scheduler;
 pub mod terminal_screen;
 pub mod utils;
