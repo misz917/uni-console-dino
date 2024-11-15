@@ -4,7 +4,6 @@ use super::{
 };
 use crate::{
     drawable_object::{DrawableObject, Rectangle},
-    movement_functions::{self},
     task_scheduler::{Task, TaskScheduler},
     utils::{Value, XY},
     view::{MovementFunction, View},
@@ -33,7 +32,7 @@ impl GameState for MainGameLoop {
                 if view.check_for_collision_between("player", "invisible_floor") {
                     view.replace_movement_function(
                         "player",
-                        Some(MovementFunction::new(movement_functions::jump)),
+                        Some(MovementFunction::new(player_jump)),
                     );
                 }
             }
@@ -129,9 +128,7 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
             true,
             "vase.txt",
             XY::new(150, 33),
-            Some(MovementFunction::new(
-                movement_functions::obstacle_move_left,
-            )),
+            Some(MovementFunction::new(obstacle_move_left)),
         );
     } else {
         let altitude = rng.gen_range(-1..=1) * 5;
@@ -140,9 +137,7 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
             true,
             "bird_flying.txt",
             XY::new(150, 26 + altitude),
-            Some(MovementFunction::new(
-                movement_functions::obstacle_move_left,
-            )),
+            Some(MovementFunction::new(obstacle_move_left)),
         );
     }
 
@@ -157,6 +152,33 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
     return Some(follow_up_task);
 }
 
+pub fn obstacle_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
+    let speed = SPEED.lock().unwrap();
+    let new_x = original_position.x - (*speed * 30.0 * time) as i32;
+    let new_y = original_position.y;
+
+    return XY::new(new_x, new_y);
+}
+
+pub fn player_jump(original_position: XY<i32>, time: f32) -> XY<i32> {
+    let func = |x: f32| -(x / 2.0 - 3.18).powf(2.0) + 10.0;
+    let mut difference = func(time * 8.0) as i32;
+    if difference < 0 {
+        difference = 0;
+    }
+    let new_x = original_position.x;
+    let new_y = original_position.y - difference;
+
+    return XY::new(new_x, new_y);
+}
+
+pub fn tree_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
+    let new_x = original_position.x - (13.0 * time) as i32;
+    let new_y = original_position.y;
+
+    return XY::new(new_x, new_y);
+}
+
 fn remove_smoke(view: &mut View, _param: i32) -> Option<Task> {
     view.remove_object("smoke");
     return None;
@@ -168,7 +190,7 @@ fn spawn_tree(view: &mut View, _param: i32) -> Option<Task> {
         false,
         "tree.txt",
         XY::new(175, 25),
-        Some(MovementFunction::new(movement_functions::tree_move_left)),
+        Some(MovementFunction::new(tree_move_left)),
     );
     let follow_up_task = Task::new(
         spawn_tree,
