@@ -10,6 +10,7 @@ use crate::{
     SPEED, SPEEDUP_RATE, WINDOW_RESOLUTION,
 };
 use rand::Rng;
+use rand_distr::{Distribution, Normal};
 use std::{
     collections::HashMap,
     time::{Duration, Instant},
@@ -67,6 +68,7 @@ impl GameState for MainGameLoop {
         task_scheduler.schedule(spawn_obstacle(view, 0).unwrap());
         task_scheduler.schedule(spawn_tree(view, 0).unwrap());
         task_scheduler.schedule(spawn_sun(view, 0).unwrap());
+        task_scheduler.schedule(spawn_clouds(view, 0).unwrap());
 
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
         view.insert_object(
@@ -100,6 +102,7 @@ impl GameState for MainGameLoop {
         view.remove_object("tree");
         view.remove_object("sun");
         view.remove_object("smoke");
+        view.remove_object("cloud");
     }
 
     fn each_frame(
@@ -209,7 +212,7 @@ fn spawn_sun(view: &mut View, _param: i32) -> Option<Task> {
         Some(MovementFunction::new(sun_move_left)),
     );
     let follow_up_task = Task::new(
-        spawn_tree,
+        spawn_sun,
         Duration::from_secs(170),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
         0,
@@ -225,7 +228,61 @@ fn sun_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
 }
 
 fn spawn_clouds(view: &mut View, _param: i32) -> Option<Task> {
-    return None;
+    let mut rng = rand::thread_rng();
+    let normal = Normal::new(10.0, 2.3).unwrap();
+
+    let movement_function: MovementFunction;
+    if rng.gen_bool(0.7) {
+        movement_function = MovementFunction::new(cloud_slow_move_left);
+    } else {
+        movement_function = MovementFunction::new(cloud_fast_move_left);
+    }
+
+    let number_of_clouds = rng.gen_range(1..=3);
+    for _ in 0..number_of_clouds {
+        let random_y = normal.sample(&mut rng) as i32;
+        let x_deviation = rng.gen_range(-2..=2);
+        if rng.gen_bool(0.5) {
+            view.insert_asset(
+                "cloud",
+                false,
+                "smaller_cloud.txt",
+                XY::new(165 + x_deviation, random_y),
+                Some(movement_function.clone()),
+            );
+        } else {
+            view.insert_asset(
+                "cloud",
+                false,
+                "larger_cloud.txt",
+                XY::new(165 + x_deviation, random_y),
+                Some(movement_function.clone()),
+            );
+        }
+    }
+
+    let delay = rng.gen_range(0.5..3.5);
+    let follow_up_task = Task::new(
+        spawn_clouds,
+        Duration::from_secs_f32(delay),
+        Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+        0,
+    );
+    return Some(follow_up_task);
+}
+
+fn cloud_slow_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
+    let new_x = original_position.x - (4.0 * time) as i32;
+    let new_y = original_position.y;
+
+    return XY::new(new_x, new_y);
+}
+
+fn cloud_fast_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
+    let new_x = original_position.x - (5.0 * time) as i32;
+    let new_y = original_position.y;
+
+    return XY::new(new_x, new_y);
 }
 
 fn spawn_grass(view: &mut View, _param: i32) -> Option<Task> {
