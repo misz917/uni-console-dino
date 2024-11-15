@@ -58,6 +58,8 @@ impl GameState for MainGameLoop {
         task_scheduler: &mut TaskScheduler,
         _resources: &mut HashMap<String, Value>,
     ) {
+        _resources.remove_entry("start_time");
+        _resources.insert("start_time".to_owned(), Value::Instant(Instant::now()));
         {
             let mut speed = SPEED.lock().unwrap();
             *speed = 1.0;
@@ -78,8 +80,13 @@ impl GameState for MainGameLoop {
             None,
         );
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
-        _resources.remove_entry("start_time");
-        _resources.insert("start_time".to_owned(), Value::Instant(Instant::now()));
+        view.insert_asset(
+            "ground",
+            false,
+            "ground.txt",
+            XY::new(0, WINDOW_RESOLUTION.y as i32 - 3),
+            None,
+        );
     }
 
     fn on_exit(
@@ -92,6 +99,7 @@ impl GameState for MainGameLoop {
         view.remove_object("player");
         view.remove_object("vase");
         view.remove_object("bird");
+        view.remove_object("ground");
     }
 
     fn each_frame(
