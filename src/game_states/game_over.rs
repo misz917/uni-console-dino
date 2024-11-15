@@ -50,7 +50,7 @@ impl GameState for GameOver {
             _ => panic!(), // will never happen anyway
         };
         let score = elapsed_time.as_secs_f32();
-        let text = format!("Your score: {}", (score * 100.0).round() / 10.0);
+        let text = format!("Your score: {}", (score * 100.0).round());
         _view.insert_object(
             "score_label",
             false,
