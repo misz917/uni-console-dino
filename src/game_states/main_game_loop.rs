@@ -3,7 +3,6 @@ use super::{
     game_state::{GameState, GameStateEnum},
 };
 use crate::{
-    asset_server,
     drawable_object::{DrawableObject, Rectangle},
     movement_functions, task_functions,
     task_scheduler::{Task, TaskScheduler},
@@ -11,7 +10,7 @@ use crate::{
     view::{MovementFunction, View},
     WINDOW_RESOLUTION,
 };
-use std::{panic::AssertUnwindSafe, time::Duration};
+use std::time::Duration;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct MainGameLoop;
