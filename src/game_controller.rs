@@ -1,4 +1,5 @@
 use std::{
+    collections::HashMap,
     sync::mpsc::Receiver,
     thread::sleep,
     time::{Duration, SystemTime},
@@ -16,6 +17,13 @@ use crate::{
     FPS_LIMIT, WINDOW_RESOLUTION,
 };
 
+pub enum Value {
+    I32(i32),
+    F32(f32),
+    Bool(bool),
+    Str(String),
+}
+
 pub struct GameController<B: BufferManager, P: Printer> {
     frame_counter: u32,
     view: View,
@@ -23,6 +31,7 @@ pub struct GameController<B: BufferManager, P: Printer> {
     rx: Receiver<char>,
     active_state: GameStateEnum,
     task_scheduler: TaskScheduler,
+    resources: HashMap<String, Value>,
 }
 impl<B: BufferManager, P: Printer> GameController<B, P> {
     pub fn new(
@@ -39,6 +48,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             rx,
             active_state: default_game_state,
             task_scheduler,
+            resources: HashMap::new(),
         }
     }
 
@@ -59,9 +69,11 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
 
     pub fn run(&mut self) {
         let mut state_change_listener: Option<GameStateEnum> = None;
-        self.active_state
-            .as_state()
-            .on_enter(&mut self.view, &mut self.task_scheduler);
+        self.active_state.as_state().on_enter(
+            &mut self.view,
+            &mut self.task_scheduler,
+            &mut self.resources,
+        );
 
         loop {
             let timer = SystemTime::now();
@@ -73,6 +85,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                     input,
                     &mut state_change_listener,
                     &mut self.task_scheduler,
+                    &mut self.resources,
                 );
             }
 
@@ -94,6 +107,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
                 &mut self.view,
                 &mut state_change_listener,
                 &mut self.task_scheduler,
+                &mut self.resources,
             );
 
             if let Some(ref new_state) = state_change_listener {
@@ -110,13 +124,17 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
     }
 
     fn change_state(&mut self, new_state: GameStateEnum) {
-        self.active_state
-            .as_state()
-            .on_exit(&mut self.view, &mut self.task_scheduler);
+        self.active_state.as_state().on_exit(
+            &mut self.view,
+            &mut self.task_scheduler,
+            &mut self.resources,
+        );
         self.active_state = new_state;
-        self.active_state
-            .as_state()
-            .on_enter(&mut self.view, &mut self.task_scheduler);
+        self.active_state.as_state().on_enter(
+            &mut self.view,
+            &mut self.task_scheduler,
+            &mut self.resources,
+        );
     }
 
     fn enforce_fps(timer: SystemTime) {

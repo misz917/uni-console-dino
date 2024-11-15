@@ -6,13 +6,14 @@ use super::{
 };
 use crate::{
     drawable_object::{DrawableObject, Rectangle},
+    game_controller::Value,
     movement_functions,
     task_scheduler::{Task, TaskScheduler},
     utils::XY,
     view::{MovementFunction, View},
     WINDOW_RESOLUTION,
 };
-use std::time::Duration;
+use std::{collections::HashMap, time::Duration};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct MainGameLoop;
@@ -23,6 +24,7 @@ impl GameState for MainGameLoop {
         input: char,
         _state_changer: &mut Option<GameStateEnum>,
         task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
     ) {
         match input {
             'w' => {
@@ -49,7 +51,12 @@ impl GameState for MainGameLoop {
         }
     }
 
-    fn on_enter(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler) {
+    fn on_enter(
+        &mut self,
+        view: &mut View,
+        task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
+    ) {
         let task = Task::new(
             spawn_obstacle,
             Duration::from_secs(1),
@@ -68,7 +75,12 @@ impl GameState for MainGameLoop {
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
     }
 
-    fn on_exit(&mut self, view: &mut View, _task_scheduler: &mut TaskScheduler) {
+    fn on_exit(
+        &mut self,
+        view: &mut View,
+        _task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
+    ) {
         view.remove_object("invisible_floor");
         view.remove_object("player");
         view.remove_object("vase");
@@ -80,6 +92,7 @@ impl GameState for MainGameLoop {
         view: &mut View,
         state_changer: &mut Option<GameStateEnum>,
         _task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
     ) {
         if view.check_for_collision("player") {
             *state_changer = Some(GameStateEnum::GameOver(Box::new(GameOver)));

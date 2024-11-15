@@ -1,5 +1,7 @@
+use std::collections::HashMap;
+
 use super::{game_over::GameOver, main_game_loop::MainGameLoop, menu::Menu};
-use crate::{task_scheduler::TaskScheduler, view::View};
+use crate::{game_controller::Value, task_scheduler::TaskScheduler, view::View};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum GameStateEnum {
@@ -36,13 +38,25 @@ pub trait GameState {
         input: char,
         state_changer: &mut Option<GameStateEnum>,
         task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
     );
-    fn on_enter(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler);
-    fn on_exit(&mut self, view: &mut View, task_scheduler: &mut TaskScheduler);
+    fn on_enter(
+        &mut self,
+        view: &mut View,
+        task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
+    );
+    fn on_exit(
+        &mut self,
+        view: &mut View,
+        task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
+    );
     fn each_frame(
         &mut self,
         view: &mut View,
         state_changer: &mut Option<GameStateEnum>,
         task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
     );
 }

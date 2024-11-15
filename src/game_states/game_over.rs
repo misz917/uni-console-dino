@@ -1,9 +1,12 @@
+use std::collections::HashMap;
+
 use super::{
     game_state::{GameState, GameStateEnum},
     main_game_loop::MainGameLoop,
 };
 use crate::{
     drawable_object::{DrawableObject, Label},
+    game_controller::Value,
     task_scheduler::TaskScheduler,
     utils::XY,
     view::View,
@@ -19,11 +22,17 @@ impl GameState for GameOver {
         _input: char,
         _state_changer: &mut Option<GameStateEnum>,
         _task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
     ) {
         *_state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop)));
     }
 
-    fn on_enter(&mut self, _view: &mut View, _task_scheduler: &mut TaskScheduler) {
+    fn on_enter(
+        &mut self,
+        _view: &mut View,
+        _task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
+    ) {
         _view.insert_object(
             "game_over_label",
             false,
@@ -36,7 +45,12 @@ impl GameState for GameOver {
         );
     }
 
-    fn on_exit(&mut self, _view: &mut View, _task_scheduler: &mut TaskScheduler) {
+    fn on_exit(
+        &mut self,
+        _view: &mut View,
+        _task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
+    ) {
         _view.remove_object("game_over_label");
     }
 
@@ -45,6 +59,7 @@ impl GameState for GameOver {
         _view: &mut View,
         _state_changer: &mut Option<GameStateEnum>,
         _task_scheduler: &mut TaskScheduler,
+        resources: &mut HashMap<String, Value>,
     ) {
         return;
     }
