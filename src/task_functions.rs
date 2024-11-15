@@ -24,3 +24,8 @@ pub fn spawn_vase(view: &mut View, _param: i32) -> Option<Task> {
     );
     return Some(follow_up_task);
 }
+
+pub fn remove_smoke(view: &mut View, _param: i32) -> Option<Task> {
+    view.remove_object("smoke");
+    return None;
+}

@@ -77,10 +77,11 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
             }
 
             if let Some(task) = self.task_scheduler.get_task() {
-                if task.game_state.is_some()
-                    && self
-                        .active_state
-                        .variant_eq(&task.game_state.clone().unwrap())
+                if task.game_state.is_none()
+                    || task.game_state.is_some()
+                        && self
+                            .active_state
+                            .variant_eq(&task.game_state.clone().unwrap())
                 {
                     let follow_up_task = task.execute(&mut self.view, self.frame_counter as i32);
                     if let Some(new_task) = follow_up_task {

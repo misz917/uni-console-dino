@@ -20,7 +20,7 @@ impl GameState for MainGameLoop {
         view: &mut View,
         input: char,
         _state_changer: &mut Option<GameStateEnum>,
-        _task_scheduler: &mut TaskScheduler,
+        task_scheduler: &mut TaskScheduler,
     ) {
         match input {
             'w' => {
@@ -35,6 +35,13 @@ impl GameState for MainGameLoop {
             's' => {
                 // teleport to floor
                 view.replace_movement_function("player", None);
+                view.insert_asset("smoke", false, "landing_smoke.txt", XY::new(0, 36), None);
+                task_scheduler.schedule(Task::new(
+                    task_functions::remove_smoke,
+                    Duration::from_secs_f32(0.42),
+                    None,
+                    0,
+                ));
             }
             _ => (),
         }
