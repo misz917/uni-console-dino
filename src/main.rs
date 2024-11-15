@@ -11,7 +11,7 @@ pub mod collision_detector;
 pub mod drawable_object;
 pub mod frame_assembler;
 pub mod game_controller;
-pub mod game_state;
+pub mod game_states;
 pub mod movement_functions;
 pub mod task_functions;
 pub mod task_scheduler;
@@ -24,7 +24,7 @@ use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
     game_controller::GameController,
-    game_state::{GameStateEnum, Menu},
+    game_states::{game_state::GameStateEnum, menu::Menu},
     task_scheduler::TaskScheduler,
     terminal_screen::{TerminalHelper, TerminalScreen},
     utils::XY,
