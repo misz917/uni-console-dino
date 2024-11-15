@@ -68,6 +68,8 @@ impl GameState for MainGameLoop {
 
     fn on_exit(&mut self, view: &mut View, _task_scheduler: &mut TaskScheduler) {
         view.remove_object("invisible_floor");
+        view.remove_object("player");
+        view.remove_object("vase");
     }
 
     fn each_frame(
