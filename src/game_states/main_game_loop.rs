@@ -6,10 +6,9 @@ use crate::{
     drawable_object::{DrawableObject, Rectangle},
     movement_functions,
     task_scheduler::{Task, TaskScheduler},
-    utils::Value,
-    utils::XY,
+    utils::{Value, XY},
     view::{MovementFunction, View},
-    WINDOW_RESOLUTION,
+    SPEED, SPEEDUP_RATE, WINDOW_RESOLUTION,
 };
 use rand::Rng;
 use std::{
@@ -59,13 +58,17 @@ impl GameState for MainGameLoop {
         task_scheduler: &mut TaskScheduler,
         _resources: &mut HashMap<String, Value>,
     ) {
-        let task = Task::new(
+        {
+            let mut speed = SPEED.lock().unwrap();
+            *speed = 1.0;
+        }
+        let obstacle_spawner = Task::new(
             spawn_obstacle,
             Duration::from_secs(1),
             Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
             0,
         );
-        task_scheduler.schedule(task);
+        task_scheduler.schedule(obstacle_spawner);
 
         view.insert_object(
             "invisible_floor",
@@ -101,10 +104,12 @@ impl GameState for MainGameLoop {
         if view.check_for_collision("player") {
             *state_changer = Some(GameStateEnum::GameOver(Box::new(GameOver)));
         }
+        let mut speed = SPEED.lock().unwrap();
+        *speed *= SPEEDUP_RATE;
     }
 }
 
-pub fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
+fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
     let mut rng = rand::thread_rng();
 
     if rng.gen_bool(0.7) {
@@ -126,7 +131,8 @@ pub fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
         );
     }
 
-    let cooldown = rng.gen_range(1.2..3.0);
+    let speed = SPEED.lock().unwrap();
+    let cooldown = rng.gen_range(1.2..3.0) / *speed;
     let follow_up_task = Task::new(
         spawn_obstacle,
         Duration::from_secs_f32(cooldown),
@@ -136,7 +142,7 @@ pub fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
     return Some(follow_up_task);
 }
 
-pub fn remove_smoke(view: &mut View, _param: i32) -> Option<Task> {
+fn remove_smoke(view: &mut View, _param: i32) -> Option<Task> {
     view.remove_object("smoke");
     return None;
 }

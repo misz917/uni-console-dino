@@ -1,5 +1,3 @@
-use utils::Value;
-
 use crate::{
     bitmap::{Bitmap, BitmapPrinter},
     bitmap_buffer::BitmapBuffer,
@@ -12,8 +10,10 @@ use crate::{
     window::{GnomeTerminal, Terminal, WindowCreator},
 };
 use std::{
-    collections::HashMap,
-    sync::mpsc::{self, Receiver, Sender},
+    sync::{
+        mpsc::{self, Receiver, Sender},
+        Mutex,
+    },
     thread::{self},
 };
 
@@ -34,16 +34,13 @@ pub mod view;
 pub mod window;
 
 lazy_static::lazy_static! {
-    static ref GLOBAL_RESOURCES: HashMap<String, Value> = {
-        let mut m = HashMap::new();
-        m.insert("speed".to_owned(), Value::F32(1.0));
-        m
-    };
+    static ref SPEED: Mutex<f32> = Mutex::new(1.0);
 }
 
 const BORDER_WIDTH: XY<usize> = XY::new(2, 1);
 const WINDOW_RESOLUTION: XY<usize> = XY::new(160, 40);
 const FPS_LIMIT: f32 = 40.0; // may be buggy above ~46
+const SPEEDUP_RATE: f32 = 1.0003;
 
 fn main() {
     let gnome_window = GnomeTerminal::new();
