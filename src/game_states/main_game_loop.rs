@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use super::{
     game_over::GameOver,
     game_state::{GameState, GameStateEnum},
@@ -70,6 +72,7 @@ impl GameState for MainGameLoop {
         view.remove_object("invisible_floor");
         view.remove_object("player");
         view.remove_object("vase");
+        view.remove_object("bird");
     }
 
     fn each_frame(
@@ -85,17 +88,31 @@ impl GameState for MainGameLoop {
 }
 
 pub fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
-    view.insert_asset(
-        "vase",
-        true,
-        "vase.txt",
-        XY::new(150, 33),
-        Some(MovementFunction::new(movement_functions::move_left)),
-    );
+    let mut rng = rand::thread_rng();
 
+    if rng.gen_bool(0.7) {
+        view.insert_asset(
+            "vase",
+            true,
+            "vase.txt",
+            XY::new(150, 33),
+            Some(MovementFunction::new(movement_functions::move_left)),
+        );
+    } else {
+        let altitude = rng.gen_range(-1..=1) * 5;
+        view.insert_asset(
+            "bird",
+            true,
+            "bird_flying.txt",
+            XY::new(150, 26 + altitude),
+            Some(MovementFunction::new(movement_functions::move_left)),
+        );
+    }
+
+    let cooldown = rng.gen_range(1.2..3.0);
     let follow_up_task = Task::new(
         spawn_obstacle,
-        Duration::from_secs(2),
+        Duration::from_secs_f32(cooldown),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
         _param,
     );
