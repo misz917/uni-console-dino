@@ -1,20 +1,24 @@
-use std::collections::HashMap;
-
-use super::{game_over::GameOver, main_game_loop::MainGameLoop, menu::Menu};
+use super::{
+    game_over_pause::GameOverPause, game_over_screen::GameOverScreen, main_game_loop::MainGameLoop,
+    menu::Menu,
+};
 use crate::{task_scheduler::TaskScheduler, utils::Value, view::View};
+use std::collections::HashMap;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum GameStateEnum {
     Menu(Box<Menu>),
     MainGameLoop(Box<MainGameLoop>),
-    GameOver(Box<GameOver>),
+    GameOverScreen(Box<GameOverScreen>),
+    GameOverPause(Box<GameOverPause>),
 }
 impl GameStateEnum {
     pub fn as_state(&mut self) -> &mut dyn GameState {
         match self {
             GameStateEnum::Menu(state) => state.as_mut(),
             GameStateEnum::MainGameLoop(state) => state.as_mut(),
-            GameStateEnum::GameOver(state) => state.as_mut(),
+            GameStateEnum::GameOverScreen(state) => state.as_mut(),
+            GameStateEnum::GameOverPause(state) => state.as_mut(),
         }
     }
 
@@ -26,7 +30,14 @@ impl GameStateEnum {
                     GameStateEnum::MainGameLoop(_),
                     GameStateEnum::MainGameLoop(_)
                 )
-                | (GameStateEnum::GameOver(_), GameStateEnum::GameOver(_))
+                | (
+                    GameStateEnum::GameOverScreen(_),
+                    GameStateEnum::GameOverScreen(_)
+                )
+                | (
+                    GameStateEnum::GameOverPause(_),
+                    GameStateEnum::GameOverPause(_)
+                )
         )
     }
 }

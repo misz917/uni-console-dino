@@ -13,8 +13,8 @@ use crate::{
 use std::collections::HashMap;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
-pub struct GameOver;
-impl GameState for GameOver {
+pub struct GameOverScreen;
+impl GameState for GameOverScreen {
     fn handle_input(
         &mut self,
         _view: &mut View,

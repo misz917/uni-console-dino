@@ -1,5 +1,5 @@
 use super::{
-    game_over::GameOver,
+    game_over_screen::GameOverScreen,
     game_state::{GameState, GameStateEnum},
     layers::*,
 };
@@ -122,7 +122,7 @@ impl GameState for MainGameLoop {
         _resources: &mut HashMap<String, Value>,
     ) {
         if view.check_for_collision("player") {
-            *state_changer = Some(GameStateEnum::GameOver(Box::new(GameOver)));
+            *state_changer = Some(GameStateEnum::GameOverScreen(Box::new(GameOverScreen)));
         }
         let mut speed = SPEED.lock().unwrap();
         *speed *= SPEEDUP_RATE;
