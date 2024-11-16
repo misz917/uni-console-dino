@@ -10,14 +10,23 @@ use crate::{
 use std::time::SystemTime;
 
 #[derive(Clone)]
-pub struct MovementFunction(fn(XY<i32>, f32) -> XY<i32>);
+pub struct MovementFunction {
+    function: fn(XY<i32>, f32, Option<f32>) -> XY<i32>,
+    optional_param: Option<f32>,
+}
 impl MovementFunction {
-    pub fn new(function: fn(XY<i32>, f32) -> XY<i32>) -> Self {
-        MovementFunction(function)
+    pub fn new(
+        function: fn(XY<i32>, f32, Option<f32>) -> XY<i32>,
+        optional_param: Option<f32>,
+    ) -> Self {
+        MovementFunction {
+            function,
+            optional_param,
+        }
     }
 
     pub fn run_logic(&self, original_position: XY<i32>, time: f32) -> XY<i32> {
-        (self.0)(original_position, time) // let the function delete the object, make it work first and only later make it elegant
+        (self.function)(original_position, time, self.optional_param)
     }
 }
 
