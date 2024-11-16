@@ -127,9 +127,22 @@ impl View {
         name: &str,
         movement_function: Option<MovementFunction>,
     ) {
+        let mut ignore_name = false;
+        if name == "*" {
+            ignore_name = true;
+        }
+        self.replace_movement_function_logic(name, movement_function, ignore_name);
+    }
+
+    fn replace_movement_function_logic(
+        &mut self,
+        name: &str,
+        movement_function: Option<MovementFunction>,
+        ignore_name: bool,
+    ) {
         for (_key, values) in self.objects.iter_mut() {
             for object in values {
-                if object.name == name {
+                if ignore_name || object.name == name {
                     object.mov_function = movement_function.clone();
                     object.clock = SystemTime::now();
                 }

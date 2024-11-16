@@ -1,4 +1,3 @@
-pub mod game_over_pause;
 pub mod game_over_screen;
 pub mod game_state;
 pub mod layers;
