@@ -1,6 +1,7 @@
 use super::{
     game_over::GameOver,
     game_state::{GameState, GameStateEnum},
+    layers::*,
 };
 use crate::{
     drawable_object::{DrawableObject, Rectangle},
@@ -40,7 +41,14 @@ impl GameState for MainGameLoop {
             's' => {
                 // teleport to floor
                 view.replace_movement_function("player", None);
-                view.insert_asset("smoke", false, "landing_smoke.txt", XY::new(0, 36), None);
+                view.insert_asset(
+                    "smoke",
+                    LAYER_SMOKE,
+                    false,
+                    "landing_smoke.txt",
+                    XY::new(0, 36),
+                    None,
+                );
                 task_scheduler.schedule(Task::new(
                     remove_smoke,
                     Duration::from_secs_f32(0.50),
@@ -70,9 +78,17 @@ impl GameState for MainGameLoop {
         task_scheduler.schedule(spawn_clouds(view).unwrap());
         task_scheduler.schedule(spawn_grass(view).unwrap());
 
-        view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
+        view.insert_asset(
+            "player",
+            LAYER_PLAYER,
+            true,
+            "dino_running.txt",
+            XY::new(4, 32),
+            None,
+        );
         view.insert_object(
             "invisible_floor",
+            0,
             false,
             DrawableObject::Rectangle(Rectangle::new(XY::new(WINDOW_RESOLUTION.x, 1), '$')),
             XY::new(0, (WINDOW_RESOLUTION.y - 4) as i32),
@@ -80,6 +96,7 @@ impl GameState for MainGameLoop {
         );
         view.insert_asset(
             "ground",
+            LAYER_GROUND,
             false,
             "ground.txt",
             XY::new(0, WINDOW_RESOLUTION.y as i32 - 3),
@@ -137,6 +154,7 @@ fn spawn_obstacle(view: &mut View) -> Option<Task> {
     if rng.gen_bool(0.7) {
         view.insert_asset(
             "vase",
+            LAYER_VASE,
             true,
             "vase.txt",
             XY::new(170, 33),
@@ -146,6 +164,7 @@ fn spawn_obstacle(view: &mut View) -> Option<Task> {
         let altitude = rng.gen_range(-1..=1) * 5;
         view.insert_asset(
             "bird",
+            LAYER_BIRD,
             true,
             "bird_flying.txt",
             XY::new(170, 26 + altitude),
@@ -183,6 +202,7 @@ fn remove_smoke(view: &mut View) -> Option<Task> {
 fn spawn_tree(view: &mut View) -> Option<Task> {
     view.insert_asset(
         "tree",
+        LAYER_TREE,
         false,
         "tree.txt",
         XY::new(175, 25),
@@ -200,6 +220,7 @@ fn spawn_tree(view: &mut View) -> Option<Task> {
 fn spawn_sun(view: &mut View) -> Option<Task> {
     view.insert_asset(
         "sun",
+        LAYER_SUN,
         false,
         "sun.txt",
         XY::new(165, 2),
@@ -232,6 +253,7 @@ fn spawn_clouds(view: &mut View) -> Option<Task> {
         if rng.gen_bool(0.5) {
             view.insert_asset(
                 "cloud",
+                LAYER_CLOUD,
                 false,
                 "smaller_cloud.txt",
                 XY::new(165 + x_deviation, random_y),
@@ -240,6 +262,7 @@ fn spawn_clouds(view: &mut View) -> Option<Task> {
         } else {
             view.insert_asset(
                 "cloud",
+                LAYER_CLOUD,
                 false,
                 "larger_cloud.txt",
                 XY::new(165 + x_deviation, random_y),
@@ -260,6 +283,7 @@ fn spawn_clouds(view: &mut View) -> Option<Task> {
 fn spawn_grass(view: &mut View) -> Option<Task> {
     view.insert_asset(
         "grass",
+        LAYER_GRASS,
         false,
         "swaying_grass.txt",
         XY::new(163, WINDOW_RESOLUTION.y as i32 - 4),
