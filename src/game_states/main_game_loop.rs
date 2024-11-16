@@ -33,7 +33,7 @@ impl GameState for MainGameLoop {
                 if view.check_for_collision_between("player", "invisible_floor") {
                     view.replace_movement_function(
                         "player",
-                        Some(MovementFunction::new(player_jump)),
+                        Some(MovementFunction::new(player_jump, None)),
                     );
                 }
             }
@@ -121,8 +121,18 @@ impl GameState for MainGameLoop {
     }
 }
 
+fn move_left(original_position: XY<i32>, time: f32, speed: Option<f32>) -> XY<i32> {
+    let new_x = original_position.x - (speed.unwrap() * time) as i32;
+    let new_y = original_position.y;
+
+    return XY::new(new_x, new_y);
+}
+
 fn spawn_obstacle(view: &mut View) -> Option<Task> {
     let mut rng = rand::thread_rng();
+
+    let speed = *SPEED.lock().unwrap() * 30.0;
+    let movement_function = MovementFunction::new(move_left, Some(speed));
 
     if rng.gen_bool(0.7) {
         view.insert_asset(
@@ -130,7 +140,7 @@ fn spawn_obstacle(view: &mut View) -> Option<Task> {
             true,
             "vase.txt",
             XY::new(170, 33),
-            Some(MovementFunction::new(obstacle_move_left)),
+            Some(movement_function),
         );
     } else {
         let altitude = rng.gen_range(-1..=1) * 5;
@@ -139,7 +149,7 @@ fn spawn_obstacle(view: &mut View) -> Option<Task> {
             true,
             "bird_flying.txt",
             XY::new(170, 26 + altitude),
-            Some(MovementFunction::new(obstacle_move_left)),
+            Some(movement_function),
         );
     }
 
@@ -153,15 +163,7 @@ fn spawn_obstacle(view: &mut View) -> Option<Task> {
     return Some(follow_up_task);
 }
 
-fn obstacle_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let speed = SPEED.lock().unwrap();
-    let new_x = original_position.x - (*speed * 30.0 * time) as i32;
-    let new_y = original_position.y;
-
-    return XY::new(new_x, new_y);
-}
-
-fn player_jump(original_position: XY<i32>, time: f32) -> XY<i32> {
+fn player_jump(original_position: XY<i32>, time: f32, _param: Option<f32>) -> XY<i32> {
     let func = |x: f32| -(x / 2.0 - 3.18).powf(2.0) + 10.0;
     let mut difference = func(time * 8.0) as i32;
     if difference < 0 {
@@ -184,7 +186,7 @@ fn spawn_tree(view: &mut View) -> Option<Task> {
         false,
         "tree.txt",
         XY::new(175, 25),
-        Some(MovementFunction::new(tree_move_left)),
+        Some(MovementFunction::new(move_left, Some(13.0))),
     );
     let delay = rand::thread_rng().gen_range(10..30);
     let follow_up_task = Task::new(
@@ -195,20 +197,13 @@ fn spawn_tree(view: &mut View) -> Option<Task> {
     return Some(follow_up_task);
 }
 
-fn tree_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let new_x = original_position.x - (13.0 * time) as i32;
-    let new_y = original_position.y;
-
-    return XY::new(new_x, new_y);
-}
-
 fn spawn_sun(view: &mut View) -> Option<Task> {
     view.insert_asset(
         "sun",
         false,
         "sun.txt",
         XY::new(165, 2),
-        Some(MovementFunction::new(sun_move_left)),
+        Some(MovementFunction::new(move_left, Some(1.0))),
     );
     let follow_up_task = Task::new(
         spawn_sun,
@@ -218,23 +213,17 @@ fn spawn_sun(view: &mut View) -> Option<Task> {
     return Some(follow_up_task);
 }
 
-fn sun_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let new_x = original_position.x - time as i32;
-    let new_y = original_position.y;
-
-    return XY::new(new_x, new_y);
-}
-
 fn spawn_clouds(view: &mut View) -> Option<Task> {
     let mut rng = rand::thread_rng();
     let normal = Normal::new(10.0, 2.3).unwrap();
 
-    let movement_function: MovementFunction;
+    let speed: f32;
     if rng.gen_bool(0.7) {
-        movement_function = MovementFunction::new(cloud_slow_move_left);
+        speed = 4.0;
     } else {
-        movement_function = MovementFunction::new(cloud_fast_move_left);
+        speed = 5.0;
     }
+    let movement_function = MovementFunction::new(move_left, Some(speed));
 
     let number_of_clouds = rng.gen_range(1..=3);
     for _ in 0..number_of_clouds {
@@ -268,27 +257,13 @@ fn spawn_clouds(view: &mut View) -> Option<Task> {
     return Some(follow_up_task);
 }
 
-fn cloud_slow_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let new_x = original_position.x - (4.0 * time) as i32;
-    let new_y = original_position.y;
-
-    return XY::new(new_x, new_y);
-}
-
-fn cloud_fast_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let new_x = original_position.x - (5.0 * time) as i32;
-    let new_y = original_position.y;
-
-    return XY::new(new_x, new_y);
-}
-
 fn spawn_grass(view: &mut View) -> Option<Task> {
     view.insert_asset(
         "grass",
         false,
         "swaying_grass.txt",
         XY::new(163, WINDOW_RESOLUTION.y as i32 - 4),
-        Some(MovementFunction::new(grass_move_left)),
+        Some(MovementFunction::new(move_left, Some(16.0))),
     );
 
     let mut rng = rand::thread_rng();
@@ -299,11 +274,4 @@ fn spawn_grass(view: &mut View) -> Option<Task> {
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
     );
     return Some(follow_up_task);
-}
-
-fn grass_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
-    let new_x = original_position.x - (15.0 * time) as i32;
-    let new_y = original_position.y;
-
-    return XY::new(new_x, new_y);
 }
