@@ -7,7 +7,7 @@ use crate::{
     utils::XY,
     WINDOW_RESOLUTION,
 };
-use std::time::SystemTime;
+use std::{collections::BTreeMap, time::SystemTime};
 
 #[derive(Clone)]
 pub struct MovementFunction {
@@ -58,7 +58,7 @@ impl MovingObject {
 }
 
 pub struct View {
-    objects: Vec<MovingObject>,
+    objects: BTreeMap<i16, Vec<MovingObject>>,
     asset_server: AssetServer,
     default_background: char,
     collision_detector: CollisionDetector,
@@ -66,7 +66,7 @@ pub struct View {
 impl View {
     pub fn new(asset_directory: &str, default_background: char) -> Self {
         View {
-            objects: Vec::new(),
+            objects: BTreeMap::new(),
             asset_server: AssetServer::new(asset_directory),
             default_background,
             collision_detector: CollisionDetector::new(),
@@ -76,6 +76,7 @@ impl View {
     pub fn insert_asset(
         &mut self,
         name: &str,
+        layer: i16,
         can_collide: bool,
         asset_path: &str,
         start_position: XY<i32>,
@@ -93,12 +94,16 @@ impl View {
             start_position,
             movement_function,
         );
-        self.objects.push(moving_object);
+        self.objects
+            .entry(layer)
+            .or_insert_with(Vec::new)
+            .push(moving_object);
     }
 
     pub fn insert_object(
         &mut self,
         name: &str,
+        layer: i16,
         can_collide: bool,
         drawable_object: DrawableObject,
         start_position: XY<i32>,
@@ -111,7 +116,10 @@ impl View {
             start_position,
             movement_function,
         );
-        self.objects.push(moving_object);
+        self.objects
+            .entry(layer)
+            .or_insert_with(Vec::new)
+            .push(moving_object);
     }
 
     pub fn replace_movement_function(
@@ -119,24 +127,28 @@ impl View {
         name: &str,
         movement_function: Option<MovementFunction>,
     ) {
-        for object in self.objects.iter_mut() {
-            if object.name == name {
-                object.mov_function = movement_function.clone();
-                object.clock = SystemTime::now();
+        for (_key, values) in self.objects.iter_mut() {
+            for object in values {
+                if object.name == name {
+                    object.mov_function = movement_function.clone();
+                    object.clock = SystemTime::now();
+                }
             }
         }
     }
 
     pub fn remove_object(&mut self, name: &str) {
-        let mut i = self.objects.len() - 1;
-        loop {
-            if self.objects[i].name == name {
-                self.objects.swap_remove(i);
+        for (_key, values) in self.objects.iter_mut() {
+            let mut i = values.len() - 1;
+            loop {
+                if values[i].name == name {
+                    values.swap_remove(i);
+                }
+                if i == 0 {
+                    break;
+                }
+                i -= 1;
             }
-            if i == 0 {
-                break;
-            }
-            i -= 1;
         }
     }
 
