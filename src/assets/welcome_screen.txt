@@ -1,11 +1,7 @@
-9
-0
-###################################################################
-#                                                                 #
-#  TTTTT EEE RRR  MM MM I N   N  AAA  L       DDD  I N   N OOOOO  #
-#    T   E   R  R M M M I NN  N A   A L       D  D I NN  N O   O  #
-#    T   EEE RRR  M   M I N N N A   A L       D  D I N N N O   O  #
-#    T   E   R R  M   M I N  NN AAAAA L       D  D I N  NN O   O  #
-#    T   EEE R  R M   M I N   N A   A LLLLL   DDD  I N   N OOOOO  #
-#                                                                 #
-###################################################################
+5
+0                                     
+TTTTT  EEE  RRR   MM MM  I  N   N   AAA   L         DDD   I  N   N  OOOOO
+  T    E    R  R  M M M  I  NN  N  A   A  L         D  D  I  NN  N  O   O
+  T    EEE  RRR   M   M  I  N N N  A   A  L         D  D  I  N N N  O   O
+  T    E    R R   M   M  I  N  NN  AAAAA  L         D  D  I  N  NN  O   O
+  T    EEE  R  R  M   M  I  N   N  A   A  LLLLL     DDD   I  N   N  OOOOO

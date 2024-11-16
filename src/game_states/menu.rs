@@ -40,8 +40,8 @@ impl GameState for Menu {
             false,
             "welcome_screen.txt",
             XY::new(
-                (WINDOW_RESOLUTION.x / 2 - 34) as i32,
-                (WINDOW_RESOLUTION.y / 2 - 12) as i32,
+                ((WINDOW_RESOLUTION.x - 73) / 2) as i32,
+                (WINDOW_RESOLUTION.y / 2 - 8) as i32,
             ),
             None,
         );
