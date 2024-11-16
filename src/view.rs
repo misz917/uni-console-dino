@@ -156,28 +156,30 @@ impl View {
         let mut frame_assembler = FrameAssembler::new(WINDOW_RESOLUTION, self.default_background);
         self.collision_detector.empty();
 
-        for object in self.objects.iter_mut() {
-            let mut modified_position = object.start_position;
-            if let Some(movement_function) = &object.mov_function {
-                modified_position = movement_function.run_logic(
-                    object.start_position,
-                    object.clock.elapsed().unwrap().as_secs_f32(),
-                );
+        for (_key, values) in self.objects.iter_mut() {
+            for object in values {
+                let mut modified_position = object.start_position;
+                if let Some(movement_function) = &object.mov_function {
+                    modified_position = movement_function.run_logic(
+                        object.start_position,
+                        object.clock.elapsed().unwrap().as_secs_f32(),
+                    );
+                }
+                if object.can_collide {
+                    self.collision_detector.insert(
+                        &object.drawable_object.get_bitmap().resolution,
+                        &modified_position,
+                        &object.name,
+                    );
+                } else {
+                    self.collision_detector.special_insert(
+                        &object.drawable_object.get_bitmap().resolution,
+                        &modified_position,
+                        &object.name,
+                    );
+                }
+                frame_assembler.insert(&mut object.drawable_object, &modified_position);
             }
-            if object.can_collide {
-                self.collision_detector.insert(
-                    &object.drawable_object.get_bitmap().resolution,
-                    &modified_position,
-                    &object.name,
-                );
-            } else {
-                self.collision_detector.special_insert(
-                    &object.drawable_object.get_bitmap().resolution,
-                    &modified_position,
-                    &object.name,
-                );
-            }
-            frame_assembler.insert(&mut object.drawable_object, &modified_position);
         }
 
         return frame_assembler.get_frame();
