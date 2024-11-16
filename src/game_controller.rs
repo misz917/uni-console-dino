@@ -50,6 +50,7 @@ impl<B: BufferManager, P: Printer> GameController<B, P> {
         self.view.remove_object("frame_count");
         self.view.insert_object(
             "frame_count",
+            i16::max_value(),
             false,
             label,
             XY::new(

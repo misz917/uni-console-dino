@@ -36,6 +36,7 @@ impl GameState for Menu {
     ) {
         view.insert_asset(
             "title_sign",
+            1,
             false,
             "welcome_screen.txt",
             XY::new(
@@ -47,6 +48,7 @@ impl GameState for Menu {
         let text = "Press any button to start";
         view.insert_object(
             "press_to_play_label",
+            2,
             false,
             DrawableObject::Label(Label::new(text)),
             XY::new(

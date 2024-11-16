@@ -35,6 +35,7 @@ impl GameState for GameOver {
         let text = "Game over";
         _view.insert_object(
             "game_over_label",
+            1,
             false,
             DrawableObject::Label(Label::new(text)),
             XY::new(
@@ -53,6 +54,7 @@ impl GameState for GameOver {
         let text = format!("Your score: {}", (score * 100.0).round());
         _view.insert_object(
             "score_label",
+            1,
             false,
             DrawableObject::Label(Label::new(&text)),
             XY::new(
@@ -65,6 +67,7 @@ impl GameState for GameOver {
         let text = "Press any button to restart";
         _view.insert_object(
             "press_button_label",
+            1,
             false,
             DrawableObject::Label(Label::new(text)),
             XY::new(
