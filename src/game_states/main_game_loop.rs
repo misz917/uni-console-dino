@@ -111,16 +111,7 @@ impl GameState for MainGameLoop {
         _resources: &mut HashMap<String, Value>,
     ) {
         _task_scheduler.clear();
-        view.remove_object("invisible_floor");
-        view.remove_object("player");
-        view.remove_object("vase");
-        view.remove_object("bird");
-        view.remove_object("ground");
-        view.remove_object("tree");
-        view.remove_object("sun");
-        view.remove_object("smoke");
-        view.remove_object("cloud");
-        view.remove_object("grass");
+        view.remove_object("*");
     }
 
     fn each_frame(

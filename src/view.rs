@@ -138,6 +138,14 @@ impl View {
     }
 
     pub fn remove_object(&mut self, name: &str) {
+        if name == "*" {
+            self.objects.clear();
+        } else {
+            self.remove_object_logic(name);
+        }
+    }
+
+    fn remove_object_logic(&mut self, name: &str) {
         for (_key, values) in self.objects.iter_mut() {
             let mut i = values.len();
             if i == 0 {
