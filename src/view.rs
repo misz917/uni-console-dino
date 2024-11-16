@@ -139,7 +139,11 @@ impl View {
 
     pub fn remove_object(&mut self, name: &str) {
         for (_key, values) in self.objects.iter_mut() {
-            let mut i = values.len() - 1;
+            let mut i = values.len();
+            if i == 0 {
+                continue;
+            }
+            i -= 1;
             loop {
                 if values[i].name == name {
                     values.swap_remove(i);
