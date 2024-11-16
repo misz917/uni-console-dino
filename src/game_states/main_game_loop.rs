@@ -45,7 +45,6 @@ impl GameState for MainGameLoop {
                     remove_smoke,
                     Duration::from_secs_f32(0.50),
                     None,
-                    0,
                 ));
             }
             _ => (),
@@ -65,11 +64,11 @@ impl GameState for MainGameLoop {
             *speed = 1.0;
         }
 
-        task_scheduler.schedule(spawn_obstacle(view, 0).unwrap());
-        task_scheduler.schedule(spawn_tree(view, 0).unwrap());
-        task_scheduler.schedule(spawn_sun(view, 0).unwrap());
-        task_scheduler.schedule(spawn_clouds(view, 0).unwrap());
-        task_scheduler.schedule(spawn_grass(view, 0).unwrap());
+        task_scheduler.schedule(spawn_obstacle(view).unwrap());
+        task_scheduler.schedule(spawn_tree(view).unwrap());
+        task_scheduler.schedule(spawn_sun(view).unwrap());
+        task_scheduler.schedule(spawn_clouds(view).unwrap());
+        task_scheduler.schedule(spawn_grass(view).unwrap());
 
         view.insert_asset("player", true, "dino_running.txt", XY::new(4, 32), None);
         view.insert_object(
@@ -122,7 +121,7 @@ impl GameState for MainGameLoop {
     }
 }
 
-fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
+fn spawn_obstacle(view: &mut View) -> Option<Task> {
     let mut rng = rand::thread_rng();
 
     if rng.gen_bool(0.7) {
@@ -150,7 +149,6 @@ fn spawn_obstacle(view: &mut View, _param: i32) -> Option<Task> {
         spawn_obstacle,
         Duration::from_secs_f32(cooldown),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
-        _param,
     );
     return Some(follow_up_task);
 }
@@ -175,12 +173,12 @@ fn player_jump(original_position: XY<i32>, time: f32) -> XY<i32> {
     return XY::new(new_x, new_y);
 }
 
-fn remove_smoke(view: &mut View, _param: i32) -> Option<Task> {
+fn remove_smoke(view: &mut View) -> Option<Task> {
     view.remove_object("smoke");
     return None;
 }
 
-fn spawn_tree(view: &mut View, _param: i32) -> Option<Task> {
+fn spawn_tree(view: &mut View) -> Option<Task> {
     view.insert_asset(
         "tree",
         false,
@@ -193,7 +191,6 @@ fn spawn_tree(view: &mut View, _param: i32) -> Option<Task> {
         spawn_tree,
         Duration::from_secs(delay),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
-        0,
     );
     return Some(follow_up_task);
 }
@@ -205,7 +202,7 @@ fn tree_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
     return XY::new(new_x, new_y);
 }
 
-fn spawn_sun(view: &mut View, _param: i32) -> Option<Task> {
+fn spawn_sun(view: &mut View) -> Option<Task> {
     view.insert_asset(
         "sun",
         false,
@@ -217,7 +214,6 @@ fn spawn_sun(view: &mut View, _param: i32) -> Option<Task> {
         spawn_sun,
         Duration::from_secs(170),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
-        0,
     );
     return Some(follow_up_task);
 }
@@ -229,7 +225,7 @@ fn sun_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
     return XY::new(new_x, new_y);
 }
 
-fn spawn_clouds(view: &mut View, _param: i32) -> Option<Task> {
+fn spawn_clouds(view: &mut View) -> Option<Task> {
     let mut rng = rand::thread_rng();
     let normal = Normal::new(10.0, 2.3).unwrap();
 
@@ -268,7 +264,6 @@ fn spawn_clouds(view: &mut View, _param: i32) -> Option<Task> {
         spawn_clouds,
         Duration::from_secs_f32(delay),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
-        0,
     );
     return Some(follow_up_task);
 }
@@ -287,7 +282,7 @@ fn cloud_fast_move_left(original_position: XY<i32>, time: f32) -> XY<i32> {
     return XY::new(new_x, new_y);
 }
 
-fn spawn_grass(view: &mut View, _param: i32) -> Option<Task> {
+fn spawn_grass(view: &mut View) -> Option<Task> {
     view.insert_asset(
         "grass",
         false,
@@ -302,7 +297,6 @@ fn spawn_grass(view: &mut View, _param: i32) -> Option<Task> {
         spawn_grass,
         Duration::from_secs_f32(delay),
         Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
-        0,
     );
     return Some(follow_up_task);
 }

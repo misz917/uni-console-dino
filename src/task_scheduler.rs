@@ -7,10 +7,9 @@ use std::{
 
 #[derive(PartialEq, Eq, Ord, Clone)]
 pub struct Task {
-    function: fn(&mut View, i32) -> Option<Task>, // task may return a follow-up task
+    function: fn(&mut View) -> Option<Task>, // task may return a follow-up task
     scheduled_time: Instant,
     pub game_state: Option<GameStateEnum>, // specifies to which game state task belongs to, none = no restraints
-    param: i32,                            // parameter for anything
 }
 impl PartialOrd for Task {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
@@ -19,21 +18,19 @@ impl PartialOrd for Task {
 }
 impl Task {
     pub fn new(
-        function: fn(&mut View, i32) -> Option<Task>,
+        function: fn(&mut View) -> Option<Task>,
         scheduled_time: Duration,
         game_state: Option<GameStateEnum>,
-        param: i32,
     ) -> Self {
         Task {
             function,
             scheduled_time: Instant::now() + scheduled_time,
             game_state,
-            param,
         }
     }
 
-    pub fn execute(&self, view: &mut View, param: i32) -> Option<Task> {
-        (self.function)(view, param)
+    pub fn execute(&self, view: &mut View) -> Option<Task> {
+        (self.function)(view)
     }
 }
 
