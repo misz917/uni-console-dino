@@ -10,9 +10,9 @@ use crate::{
     drawable_object::{DrawableObject, Label},
     game_states::game_state::GameStateEnum,
     task_scheduler::TaskScheduler,
-    terminal_screen::TerminalScreen,
     utils::{Value, XY},
     view::View,
+    window_setup::terminal_screen::TerminalScreen,
     FPS_LIMIT, WINDOW_RESOLUTION,
 };
 

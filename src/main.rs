@@ -2,10 +2,8 @@ use crate::{
     game_controller::GameController,
     game_states::{game_state::GameStateEnum, menu::Menu},
     task_scheduler::TaskScheduler,
-    terminal_screen::{TerminalHelper, TerminalScreen},
     utils::XY,
     view::View,
-    window::{GnomeTerminal, Terminal, WindowCreator},
 };
 use bitmap_utils::{bitmap::Bitmap, bitmap_buffer::BitmapBuffer, bitmap_printer::BitmapPrinter};
 use std::{
@@ -14,6 +12,10 @@ use std::{
         Mutex,
     },
     thread::{self},
+};
+use window_setup::{
+    terminal_screen::{TerminalHelper, TerminalScreen},
+    window::{GnomeTerminal, Terminal, WindowCreator},
 };
 
 pub mod animation;
@@ -24,10 +26,9 @@ pub mod drawable_object;
 pub mod game_controller;
 pub mod game_states;
 pub mod task_scheduler;
-pub mod terminal_screen;
 pub mod utils;
 pub mod view;
-pub mod window;
+pub mod window_setup;
 
 lazy_static::lazy_static! {
     static ref SPEED: Mutex<f32> = Mutex::new(1.0);

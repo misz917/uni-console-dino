@@ -1,4 +1,4 @@
-use crate::terminal_screen::TerminalHelper;
+use crate::window_setup::terminal_screen::TerminalHelper;
 use std::{
     ops::Add,
     thread::sleep,
