@@ -1,9 +1,10 @@
 use crate::{
     asset_server::TRANSPARENT_CHAR,
-    bitmap::Bitmap,
     drawable_object::{Drawable, DrawableObject, Label},
     utils::XY,
 };
+
+use super::bitmap::Bitmap;
 
 pub struct FrameAssembler {
     frame: Bitmap<char>,

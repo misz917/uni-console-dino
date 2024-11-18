@@ -1,9 +1,8 @@
 use crate::{
     asset_server::AssetServer,
-    bitmap::Bitmap,
+    bitmap_utils::{bitmap::Bitmap, frame_assembler::FrameAssembler},
     collision_detector::CollisionDetector,
     drawable_object::{Drawable, DrawableObject},
-    frame_assembler::FrameAssembler,
     utils::XY,
     WINDOW_RESOLUTION,
 };

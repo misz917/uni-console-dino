@@ -1,4 +1,4 @@
-use crate::{bitmap::Bitmap, drawable_object::Drawable};
+use crate::{bitmap_utils::bitmap::Bitmap, drawable_object::Drawable};
 use std::time::SystemTime;
 
 #[derive(Clone, Debug)]

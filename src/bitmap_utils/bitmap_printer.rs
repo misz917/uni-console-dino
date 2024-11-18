@@ -1,8 +1,9 @@
 use crate::{
     asset_server::TRANSPARENT_CHAR,
-    bitmap::Bitmap,
     utils::{ESC, XY},
 };
+
+use super::bitmap::Bitmap;
 
 pub trait Printer {
     fn print(&self, bitmap: &Bitmap<char>, border_width: &XY<usize>);

@@ -1,6 +1,6 @@
 use crate::{
     animation::Animation,
-    bitmap::Bitmap,
+    bitmap_utils::bitmap::Bitmap,
     drawable_object::{DrawableObject, Sprite},
     utils::{self, XY},
 };

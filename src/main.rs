@@ -1,8 +1,4 @@
-use bitmap_printer::BitmapPrinter;
-
 use crate::{
-    bitmap::Bitmap,
-    bitmap_buffer::BitmapBuffer,
     game_controller::GameController,
     game_states::{game_state::GameStateEnum, menu::Menu},
     task_scheduler::TaskScheduler,
@@ -11,6 +7,7 @@ use crate::{
     view::View,
     window::{GnomeTerminal, Terminal, WindowCreator},
 };
+use bitmap_utils::{bitmap::Bitmap, bitmap_buffer::BitmapBuffer, bitmap_printer::BitmapPrinter};
 use std::{
     sync::{
         mpsc::{self, Receiver, Sender},
@@ -21,12 +18,9 @@ use std::{
 
 pub mod animation;
 pub mod asset_server;
-pub mod bitmap;
-pub mod bitmap_buffer;
-pub mod bitmap_printer;
+pub mod bitmap_utils;
 pub mod collision_detector;
 pub mod drawable_object;
-pub mod frame_assembler;
 pub mod game_controller;
 pub mod game_states;
 pub mod task_scheduler;
