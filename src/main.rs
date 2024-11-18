@@ -1,5 +1,7 @@
+use bitmap_printer::BitmapPrinter;
+
 use crate::{
-    bitmap::{Bitmap, BitmapPrinter},
+    bitmap::Bitmap,
     bitmap_buffer::BitmapBuffer,
     game_controller::GameController,
     game_states::{game_state::GameStateEnum, menu::Menu},
@@ -21,6 +23,7 @@ pub mod animation;
 pub mod asset_server;
 pub mod bitmap;
 pub mod bitmap_buffer;
+pub mod bitmap_printer;
 pub mod collision_detector;
 pub mod drawable_object;
 pub mod frame_assembler;

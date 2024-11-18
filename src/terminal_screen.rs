@@ -1,6 +1,7 @@
 use crate::{
-    bitmap::{Bitmap, Printer},
+    bitmap::Bitmap,
     bitmap_buffer::BufferManager,
+    bitmap_printer::Printer,
     utils::{ESC, XY},
 };
 use std::io::{self, Write};

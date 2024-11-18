@@ -6,8 +6,8 @@ use std::{
 };
 
 use crate::{
-    bitmap::Printer,
     bitmap_buffer::BufferManager,
+    bitmap_printer::Printer,
     drawable_object::{DrawableObject, Label},
     game_states::game_state::GameStateEnum,
     task_scheduler::TaskScheduler,
