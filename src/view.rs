@@ -2,7 +2,7 @@ use crate::{
     asset_server::AssetServer,
     bitmap_utils::{bitmap::Bitmap, frame_assembler::FrameAssembler},
     collision_detector::CollisionDetector,
-    drawable_object::{Drawable, DrawableObject},
+    drawable_objects::drawable_object::{Drawable, DrawableObject},
     utils::XY,
     WINDOW_RESOLUTION,
 };

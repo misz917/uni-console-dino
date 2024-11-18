@@ -18,11 +18,10 @@ use window_setup::{
     window::{GnomeTerminal, Terminal, WindowCreator},
 };
 
-pub mod animation;
 pub mod asset_server;
 pub mod bitmap_utils;
 pub mod collision_detector;
-pub mod drawable_object;
+pub mod drawable_objects;
 pub mod game_controller;
 pub mod game_states;
 pub mod task_scheduler;

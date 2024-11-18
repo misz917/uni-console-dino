@@ -3,10 +3,9 @@ use super::{
     main_game_loop::MainGameLoop,
 };
 use crate::{
-    drawable_object::{DrawableObject, Label},
+    drawable_objects::drawable_object::{DrawableObject, Label},
     task_scheduler::TaskScheduler,
-    utils::Value,
-    utils::XY,
+    utils::{Value, XY},
     view::View,
     WINDOW_RESOLUTION,
 };

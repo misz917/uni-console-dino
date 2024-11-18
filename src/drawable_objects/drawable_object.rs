@@ -1,4 +1,6 @@
-use crate::{animation::Animation, bitmap_utils::bitmap::Bitmap, utils::XY};
+use crate::{bitmap_utils::bitmap::Bitmap, utils::XY};
+
+use super::animation::Animation;
 
 pub trait Drawable {
     fn get_bitmap(&self) -> &Bitmap<char>;

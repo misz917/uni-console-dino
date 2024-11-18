@@ -1,5 +1,7 @@
-use crate::{bitmap_utils::bitmap::Bitmap, drawable_object::Drawable};
+use crate::bitmap_utils::bitmap::Bitmap;
 use std::time::SystemTime;
+
+use super::drawable_object::Drawable;
 
 #[derive(Clone, Debug)]
 pub struct Animation {
