@@ -4,7 +4,7 @@ use super::{
     layers::*,
 };
 use crate::{
-    drawable_objects::drawable_object::{DrawableObject, Rectangle},
+    drawable_objects::{drawable_object::DrawableObject, rectangle::Rectangle},
     task_scheduler::{Task, TaskScheduler},
     utils::{Value, XY},
     view::{MovementFunction, View},

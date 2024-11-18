@@ -1,6 +1,9 @@
 use crate::{
     asset_server::TRANSPARENT_CHAR,
-    drawable_objects::drawable_object::{Drawable, DrawableObject, Label},
+    drawable_objects::{
+        drawable_object::{Drawable, DrawableObject},
+        label::Label,
+    },
     utils::XY,
 };
 

@@ -3,7 +3,7 @@ use super::{
     main_game_loop::MainGameLoop,
 };
 use crate::{
-    drawable_objects::drawable_object::{DrawableObject, Label},
+    drawable_objects::{drawable_object::DrawableObject, label::Label},
     task_scheduler::TaskScheduler,
     utils::{Value, XY},
     view::View,

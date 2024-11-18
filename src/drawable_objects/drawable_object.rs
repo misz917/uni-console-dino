@@ -1,52 +1,8 @@
-use crate::{bitmap_utils::bitmap::Bitmap, utils::XY};
-
-use super::animation::Animation;
+use super::{animation::Animation, label::Label, rectangle::Rectangle, sprite::Sprite};
+use crate::bitmap_utils::bitmap::Bitmap;
 
 pub trait Drawable {
     fn get_bitmap(&self) -> &Bitmap<char>;
-}
-
-#[derive(Clone, Debug)]
-pub struct Sprite(Bitmap<char>);
-impl Sprite {
-    pub fn new(bitmap: &Bitmap<char>) -> Self {
-        Sprite(bitmap.clone())
-    }
-}
-impl Drawable for Sprite {
-    fn get_bitmap(&self) -> &Bitmap<char> {
-        &self.0
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct Label(Bitmap<char>);
-impl Label {
-    pub fn new(text: &str) -> Self {
-        let matrix: Vec<Vec<char>> = vec![text.chars().collect()];
-        Label(Bitmap {
-            resolution: XY::new(text.len(), 1),
-            matrix,
-        })
-    }
-}
-impl Drawable for Label {
-    fn get_bitmap(&self) -> &Bitmap<char> {
-        &self.0
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct Rectangle(Bitmap<char>);
-impl Rectangle {
-    pub fn new(dimensions: XY<usize>, filling: char) -> Self {
-        Rectangle(Bitmap::new(dimensions, filling))
-    }
-}
-impl Drawable for Rectangle {
-    fn get_bitmap(&self) -> &Bitmap<char> {
-        &self.0
-    }
 }
 
 #[derive(Clone, Debug)]
