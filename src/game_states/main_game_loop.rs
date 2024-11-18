@@ -139,7 +139,7 @@ fn move_left(original_position: XY<i32>, time: f32, speed: Option<f32>) -> XY<i3
 fn spawn_obstacle(view: &mut View) -> Option<Task> {
     let mut rng = rand::thread_rng();
 
-    let speed = *SPEED.lock().unwrap() * 30.0;
+    let speed = *SPEED.lock().unwrap() * 35.0;
     let movement_function = MovementFunction::new(move_left, Some(speed));
 
     if rng.gen_bool(0.7) {
@@ -164,7 +164,7 @@ fn spawn_obstacle(view: &mut View) -> Option<Task> {
     }
 
     let speed = SPEED.lock().unwrap();
-    let cooldown = rng.gen_range(1.5..3.5) / *speed;
+    let cooldown = rng.gen_range(2.0..3.5) / *speed;
     let follow_up_task = Task::new(
         spawn_obstacle,
         Duration::from_secs_f32(cooldown),
@@ -174,7 +174,7 @@ fn spawn_obstacle(view: &mut View) -> Option<Task> {
 }
 
 fn player_jump(original_position: XY<i32>, time: f32, _param: Option<f32>) -> XY<i32> {
-    let func = |x: f32| -(x / 2.0 - 3.18).powf(2.0) + 10.0;
+    let func = |x: f32| -(x / 2.5 - 3.24).powf(2.0) + 10.5;
     let mut difference = func(time * 8.0) as i32;
     if difference < 0 {
         difference = 0;
