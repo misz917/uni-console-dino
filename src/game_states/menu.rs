@@ -9,7 +9,7 @@ use crate::{
     view::View,
     WINDOW_RESOLUTION,
 };
-use std::collections::HashMap;
+use std::{collections::HashMap, process::exit};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct Menu;
@@ -22,20 +22,41 @@ impl GameState for Menu {
         _task_scheduler: &mut TaskScheduler,
         _resources: &mut HashMap<String, Value>,
     ) {
-        match input {
-            'w' => {
-                let option = _resources.get_mut("selected_option");
-                if let Some(selected_option) = option {
-                    match selected_option {
-                        Value::I32(value) => *value += 1,
-                        _ => panic!(),
-                    }
+        let y;
+        match _resources.get_mut("selected_option").unwrap() {
+            Value::I32(value) => {
+                match input {
+                    'w' => *value += 2,
+                    's' => *value += 1,
+                    'a' => match *value {
+                        0 => {
+                            *state_changer =
+                                Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop)))
+                        }
+                        1 => {}
+                        2 => exit(0),
+                        _ => (),
+                    },
+                    _ => (),
                 }
+                *value = *value % 3;
+                y = *value;
             }
-            's' => {}
-            'a' => {}
-            _ => *state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+            _ => panic!(),
         }
+
+        _view.remove_object("pointer");
+        _view.insert_object(
+            "pointer",
+            -1,
+            false,
+            DrawableObject::Label(Label::new(">---------------------<")),
+            XY::new(
+                (WINDOW_RESOLUTION.x - 24) as i32 / 2,
+                (WINDOW_RESOLUTION.y - (14 - y * 2) as usize) as i32,
+            ),
+            None,
+        );
     }
 
     fn on_enter(
@@ -45,6 +66,18 @@ impl GameState for Menu {
         _resources: &mut HashMap<String, Value>,
     ) {
         _resources.insert("selected_option".to_owned(), Value::I32(0));
+
+        view.insert_object(
+            "pointer",
+            -1,
+            false,
+            DrawableObject::Label(Label::new(">---------------------<")),
+            XY::new(
+                (WINDOW_RESOLUTION.x - 24) as i32 / 2,
+                (WINDOW_RESOLUTION.y - 14) as i32,
+            ),
+            None,
+        );
 
         view.insert_asset(
             "title_sign",
@@ -57,6 +90,7 @@ impl GameState for Menu {
             ),
             None,
         );
+
         let text = "Start game";
         view.insert_object(
             "start_game_label",
@@ -112,13 +146,12 @@ impl GameState for Menu {
 
     fn on_exit(
         &mut self,
-        view: &mut View,
+        _view: &mut View,
         _task_scheduler: &mut TaskScheduler,
         _resources: &mut HashMap<String, Value>,
     ) {
-        view.remove_object("title_sign");
-        view.remove_object("press_to_play_label");
         _resources.remove("selected_option");
+        _view.remove_object("*");
     }
 
     fn each_frame(
