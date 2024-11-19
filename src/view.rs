@@ -218,3 +218,184 @@ impl View {
             .check_for_collision_between(name_a, name_b)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::drawable_objects::sprite::Sprite;
+
+    use super::*;
+
+    fn dummy_movement_fn(position: XY<i32>, time: f32, _optional_param: Option<f32>) -> XY<i32> {
+        XY {
+            x: position.x + (time * 5.0) as i32,
+            y: position.y,
+        }
+    }
+
+    #[test]
+    fn test_movement_function_run_logic() {
+        let movement_function = MovementFunction::new(dummy_movement_fn, None);
+        let original_position = XY { x: 10, y: 20 };
+        let time = 2.0;
+        let new_position = movement_function.run_logic(original_position, time);
+
+        assert_eq!(new_position.x, 20);
+        assert_eq!(new_position.y, 20);
+    }
+
+    #[test]
+    fn test_movement_function_with_optional_param() {
+        let movement_function = MovementFunction::new(dummy_movement_fn, Some(2.0));
+        let original_position = XY { x: 10, y: 20 };
+        let time = 2.0;
+        let new_position = movement_function.run_logic(original_position, time);
+
+        assert_eq!(new_position.x, 20);
+        assert_eq!(new_position.y, 20);
+    }
+
+    #[test]
+    fn test_moving_object_creation() {
+        let drawable_object = DrawableObject::Sprite(Sprite::new(&Bitmap::new(XY::new(5, 5), 'A')));
+        let start_position = XY { x: 100, y: 150 };
+        let movement_function = Some(MovementFunction::new(dummy_movement_fn, None));
+
+        let moving_object = MovingObject::new(
+            "Test Object",
+            true,
+            drawable_object,
+            start_position,
+            movement_function,
+        );
+
+        assert_eq!(moving_object.name, "Test Object");
+        assert!(moving_object.can_collide);
+        assert_eq!(moving_object.start_position.x, 100);
+        assert_eq!(moving_object.start_position.y, 150);
+    }
+
+    #[test]
+    fn test_moving_object_without_movement_function() {
+        let drawable_object = DrawableObject::Sprite(Sprite::new(&Bitmap::new(XY::new(5, 5), 'A')));
+        let start_position = XY { x: 100, y: 150 };
+
+        let moving_object = MovingObject::new(
+            "Test Object",
+            true,
+            drawable_object,
+            start_position,
+            None, // No movement function
+        );
+
+        assert_eq!(moving_object.name, "Test Object");
+        assert!(moving_object.can_collide);
+        assert_eq!(moving_object.start_position.x, 100);
+        assert_eq!(moving_object.start_position.y, 150);
+    }
+
+    fn create_test_drawable() -> DrawableObject {
+        DrawableObject::Sprite(Sprite::new(&Bitmap::new(XY::new(5, 5), 'A')))
+    }
+
+    #[test]
+    fn test_insert_object() {
+        let mut view = View::new("assets", '.');
+        let name = "TestObject";
+        let layer = 1;
+        let start_position = XY { x: 10, y: 20 };
+        let drawable_object = create_test_drawable();
+        let movement_function = Some(MovementFunction::new(dummy_movement_fn, None));
+
+        view.insert_object(
+            name,
+            layer,
+            true,
+            drawable_object,
+            start_position,
+            movement_function,
+        );
+
+        let objects = view.objects.get(&layer).unwrap();
+        assert_eq!(objects.len(), 1);
+        assert_eq!(objects[0].name, name);
+        assert_eq!(objects[0].start_position, start_position);
+    }
+
+    #[test]
+    fn test_replace_movement_function() {
+        let mut view = View::new("assets", '.');
+        let name = "TestObject";
+        let layer = 1;
+        let start_position = XY { x: 10, y: 20 };
+        let drawable_object = create_test_drawable();
+        let initial_movement_function = Some(MovementFunction::new(dummy_movement_fn, None));
+
+        view.insert_object(
+            name,
+            layer,
+            true,
+            drawable_object,
+            start_position,
+            initial_movement_function,
+        );
+
+        let new_movement_function = Some(MovementFunction::new(
+            |position, time, _| XY {
+                x: position.x + (time * 3.0) as i32,
+                y: position.y,
+            },
+            None,
+        ));
+
+        view.replace_movement_function(name, new_movement_function);
+
+        let objects = view.objects.get(&layer).unwrap();
+        let moving_object = &objects[0];
+
+        assert_eq!(moving_object.mov_function.is_some(), true);
+    }
+
+    #[test]
+    fn test_remove_object() {
+        let mut view = View::new("assets", '.');
+        let name = "TestObject";
+        let layer = 1;
+        let start_position = XY { x: 10, y: 20 };
+        let drawable_object = create_test_drawable();
+        let movement_function = Some(MovementFunction::new(dummy_movement_fn, None));
+
+        view.insert_object(
+            name,
+            layer,
+            true,
+            drawable_object,
+            start_position,
+            movement_function,
+        );
+        view.remove_object(name);
+
+        let objects = view.objects.get(&layer).unwrap();
+        assert!(objects.is_empty());
+    }
+
+    #[test]
+    fn test_check_for_collision() {
+        let mut view = View::new("assets", '.');
+        let name = "TestObject";
+        let layer = 1;
+        let start_position = XY { x: 10, y: 20 };
+        let drawable_object = create_test_drawable();
+        let movement_function = Some(MovementFunction::new(dummy_movement_fn, None));
+
+        view.insert_object(
+            name,
+            layer,
+            true,
+            drawable_object,
+            start_position,
+            movement_function,
+        );
+
+        assert_eq!(view.check_for_collision(name), false);
+    }
+}
