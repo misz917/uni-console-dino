@@ -48,3 +48,14 @@ pub enum Value {
     Duration(Duration),
     Instant(Instant),
 }
+
+pub struct RGB {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+}
+impl RGB {
+    pub const fn new(r: u8, g: u8, b: u8) -> Self {
+        RGB { r, g, b }
+    }
+}

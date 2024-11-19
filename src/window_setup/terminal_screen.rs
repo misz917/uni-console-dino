@@ -1,14 +1,14 @@
 use crate::{
     bitmap_utils::{bitmap::Bitmap, bitmap_buffer::BufferManager, bitmap_printer::Printer},
-    utils::{ESC, XY},
+    utils::{ESC, RGB, XY},
 };
 use std::io::{self, Write};
 
 pub struct TerminalHelper;
 impl TerminalHelper {
     pub fn prepare_terminal() {
-        Self::set_character_color(255, 255, 255);
-        Self::set_background_color(10, 50, 150);
+        Self::set_character_color(RGB::new(10, 50, 150));
+        Self::set_background_color(RGB::new(10, 50, 150));
         Self::disable_cursor_visibility();
         Self::enable_bold_mode();
         Self::move_cursor_home();
@@ -22,12 +22,12 @@ impl TerminalHelper {
         print!("{}[H", ESC);
     }
 
-    fn set_background_color(r: u8, g: u8, b: u8) {
-        print!("{}[48;2;{};{};{}m", ESC, r, g, b);
+    pub fn set_background_color(rgb: RGB) {
+        print!("{}[48;2;{};{};{}m", ESC, rgb.r, rgb.g, rgb.b);
     }
 
-    fn set_character_color(r: u8, g: u8, b: u8) {
-        print!("{}[38;2;{};{};{}m", ESC, r, g, b);
+    pub fn set_character_color(rgb: RGB) {
+        print!("{}[38;2;{};{};{}m", ESC, rgb.r, rgb.g, rgb.b);
     }
 
     fn disable_cursor_visibility() {

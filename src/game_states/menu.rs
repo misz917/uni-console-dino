@@ -5,11 +5,19 @@ use super::{
 use crate::{
     drawable_objects::{drawable_object::DrawableObject, label::Label},
     task_scheduler::TaskScheduler,
-    utils::{Value, XY},
+    utils::{Value, RGB, XY},
     view::View,
+    window_setup::terminal_screen::TerminalHelper,
     WINDOW_RESOLUTION,
 };
 use std::{collections::HashMap, process::exit};
+
+const WHITE: RGB = RGB::new(255, 255, 255);
+const BLUE: RGB = RGB::new(10, 50, 150);
+const RED: RGB = RGB::new(255, 0, 0);
+const YELLOW: RGB = RGB::new(255, 255, 0);
+const GREEN: RGB = RGB::new(0, 255, 0);
+const PURPLE: RGB = RGB::new(255, 0, 255);
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct Menu;
@@ -33,9 +41,13 @@ impl GameState for Menu {
                             *state_changer =
                                 Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop)))
                         }
-                        1 => {
-                            todo!()
-                        }
+                        1 => match _resources.get_mut("active_color_scheme").unwrap() {
+                            Value::I32(color) => {
+                                *color = (*color + 1) % 2;
+                                set_color_scheme(*color);
+                            }
+                            _ => (),
+                        },
                         2 => exit(0),
                         _ => (),
                     },
@@ -68,6 +80,7 @@ impl GameState for Menu {
         _resources: &mut HashMap<String, Value>,
     ) {
         _resources.insert("selected_option".to_owned(), Value::I32(0));
+        _resources.insert("active_color_scheme".to_owned(), Value::I32(0));
 
         view.insert_object(
             "pointer",
@@ -153,6 +166,7 @@ impl GameState for Menu {
         _resources: &mut HashMap<String, Value>,
     ) {
         _resources.remove("selected_option");
+        _resources.remove("active_color_scheme");
         _view.remove_object("*");
     }
 
@@ -164,5 +178,23 @@ impl GameState for Menu {
         _resources: &mut HashMap<String, Value>,
     ) {
         return;
+    }
+}
+
+fn set_color_scheme(num: i32) {
+    match num {
+        0 => {
+            TerminalHelper::set_character_color(WHITE);
+            TerminalHelper::set_character_color(BLUE);
+        }
+        1 => {
+            TerminalHelper::set_character_color(RED);
+            TerminalHelper::set_character_color(YELLOW);
+        }
+        2 => {
+            TerminalHelper::set_character_color(GREEN);
+            TerminalHelper::set_character_color(PURPLE);
+        }
+        _ => (),
     }
 }
