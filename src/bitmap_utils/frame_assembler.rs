@@ -22,7 +22,6 @@ impl FrameAssembler {
         Self::new(frame_resolution, TRANSPARENT_CHAR)
     }
 
-    // places a sprite on a bitmap by upper left corner of the sprite
     pub fn insert(&mut self, drawable_object: &mut DrawableObject, position: &XY<i32>) {
         let bitmap: &Bitmap<char> = drawable_object.get_bitmap();
         for row in 0..bitmap.resolution.x {
