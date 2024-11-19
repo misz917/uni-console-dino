@@ -7,7 +7,7 @@ use std::io::{self, Write};
 pub struct TerminalHelper;
 impl TerminalHelper {
     pub fn prepare_terminal() {
-        Self::set_character_color(RGB::new(10, 50, 150));
+        Self::set_character_color(RGB::new(255, 255, 255));
         Self::set_background_color(RGB::new(10, 50, 150));
         Self::disable_cursor_visibility();
         Self::enable_bold_mode();

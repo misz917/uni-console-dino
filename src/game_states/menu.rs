@@ -3,14 +3,14 @@ use super::{
     main_game_loop::MainGameLoop,
 };
 use crate::{
-    drawable_objects::{drawable_object::DrawableObject, label::Label},
-    task_scheduler::TaskScheduler,
+    drawable_objects::{drawable_object::DrawableObject, label::Label, rectangle::Rectangle},
+    task_scheduler::{Task, TaskScheduler},
     utils::{Value, RGB, XY},
     view::View,
     window_setup::terminal_screen::TerminalHelper,
-    WINDOW_RESOLUTION,
+    FPS_LIMIT, WINDOW_RESOLUTION,
 };
-use std::{collections::HashMap, process::exit};
+use std::{collections::HashMap, process::exit, time::Duration};
 
 const WHITE: RGB = RGB::new(255, 255, 255);
 const BLUE: RGB = RGB::new(10, 50, 150);
@@ -31,32 +31,44 @@ impl GameState for Menu {
         _resources: &mut HashMap<String, Value>,
     ) {
         let y;
-        match _resources.get_mut("selected_option").unwrap() {
-            Value::I32(value) => {
-                match input {
-                    'w' => *value += 2,
-                    's' => *value += 1,
-                    'd' => match *value {
-                        0 => {
-                            *state_changer =
-                                Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop)))
-                        }
-                        1 => match _resources.get_mut("active_color_scheme").unwrap() {
-                            Value::I32(color) => {
-                                *color = (*color + 1) % 2;
-                                set_color_scheme(*color);
-                            }
-                            _ => (),
-                        },
-                        2 => exit(0),
-                        _ => (),
-                    },
+        let mut change_colorscheme = false;
+        if let Some(Value::I32(value)) = _resources.get_mut("selected_option") {
+            match input {
+                'w' => *value += 2,
+                's' => *value += 1,
+                'd' => match *value {
+                    0 => *state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+                    1 => change_colorscheme = true,
+                    2 => exit(0),
                     _ => (),
-                }
-                *value = *value % 3;
-                y = *value;
+                },
+                _ => (),
             }
-            _ => panic!(),
+            *value = *value % 3;
+            y = *value;
+        } else {
+            panic!("Expected `selected_option` to be an I32 value.");
+        }
+
+        if change_colorscheme {
+            if let Some(Value::I32(color)) = _resources.get_mut("active_color_scheme") {
+                *color = (*color + 1) % 3;
+                set_color_scheme(*color);
+            }
+            _view.insert_object(
+                "rectangle",
+                100,
+                false,
+                DrawableObject::Rectangle(Rectangle::new(WINDOW_RESOLUTION, '.')),
+                XY::new(0, 0),
+                None,
+            );
+
+            _task_scheduler.schedule(Task::new(
+                forced_screen_redraw,
+                Duration::from_secs_f32(2.0 / FPS_LIMIT),
+                None,
+            ));
         }
 
         _view.remove_object("pointer");
@@ -185,16 +197,21 @@ fn set_color_scheme(num: i32) {
     match num {
         0 => {
             TerminalHelper::set_character_color(WHITE);
-            TerminalHelper::set_character_color(BLUE);
+            TerminalHelper::set_background_color(BLUE);
         }
         1 => {
             TerminalHelper::set_character_color(RED);
-            TerminalHelper::set_character_color(YELLOW);
+            TerminalHelper::set_background_color(YELLOW);
         }
         2 => {
-            TerminalHelper::set_character_color(GREEN);
             TerminalHelper::set_character_color(PURPLE);
+            TerminalHelper::set_background_color(GREEN);
         }
         _ => (),
     }
+}
+
+fn forced_screen_redraw(view: &mut View) -> Option<Task> {
+    view.remove_object("rectangle");
+    return None;
 }

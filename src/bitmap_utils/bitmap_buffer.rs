@@ -1,8 +1,5 @@
 use super::bitmap::Bitmap;
-use crate::{
-    asset_server::TRANSPARENT_CHAR,
-    utils::{ErrorDisplayer, XY},
-};
+use crate::{asset_server::TRANSPARENT_CHAR, utils::XY};
 
 #[derive(Clone)]
 pub struct BitmapBuffer {
@@ -28,7 +25,7 @@ pub trait BufferManager {
 impl BufferManager for BitmapBuffer {
     fn insert_frame(&mut self, new_frame: Box<Bitmap<char>>) {
         if new_frame.resolution != self.resolution {
-            ErrorDisplayer::error("New frame has incorrect resolution");
+            panic!()
         }
 
         if let Some(bitmap) = self.following_frame.take() {
