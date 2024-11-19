@@ -1,21 +1,21 @@
 use crate::{
+    bitmap_utils::{bitmap::Bitmap, bitmap_buffer::BitmapBuffer, bitmap_printer::BitmapPrinter},
     game_controller::GameController,
     game_states::{game_state::GameStateEnum, menu::Menu},
     task_scheduler::TaskScheduler,
     utils::XY,
     view::View,
+    window_setup::{
+        terminal_screen::{TerminalHelper, TerminalScreen},
+        window::{GnomeTerminal, Terminal, WindowCreator},
+    },
 };
-use bitmap_utils::{bitmap::Bitmap, bitmap_buffer::BitmapBuffer, bitmap_printer::BitmapPrinter};
 use std::{
     sync::{
         mpsc::{self, Receiver, Sender},
         Mutex,
     },
     thread::{self},
-};
-use window_setup::{
-    terminal_screen::{TerminalHelper, TerminalScreen},
-    window::{GnomeTerminal, Terminal, WindowCreator},
 };
 
 pub mod asset_server;
