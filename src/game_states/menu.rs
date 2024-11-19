@@ -28,12 +28,14 @@ impl GameState for Menu {
                 match input {
                     'w' => *value += 2,
                     's' => *value += 1,
-                    'a' => match *value {
+                    'd' => match *value {
                         0 => {
                             *state_changer =
                                 Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop)))
                         }
-                        1 => {}
+                        1 => {
+                            todo!()
+                        }
                         2 => exit(0),
                         _ => (),
                     },
@@ -130,7 +132,7 @@ impl GameState for Menu {
             None,
         );
 
-        let text = "W = up, S = down, A = confirm";
+        let text = "W = up, S = down, D = select";
         view.insert_object(
             "exit_game_label",
             2,

@@ -1,6 +1,6 @@
 use super::{
     game_state::{GameState, GameStateEnum},
-    main_game_loop::MainGameLoop,
+    menu::Menu,
 };
 use crate::{
     drawable_objects::{drawable_object::DrawableObject, label::Label},
@@ -23,7 +23,7 @@ impl GameState for GameOverScreen {
         _resources: &mut HashMap<String, Value>,
     ) {
         match _input {
-            'a' => *_state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+            'd' => *_state_changer = Some(GameStateEnum::Menu(Box::new(Menu))),
             _ => (),
         }
     }
@@ -66,7 +66,7 @@ impl GameState for GameOverScreen {
             None,
         );
 
-        let text = "Press A to restart";
+        let text = "Press D to go to menu";
         _view.insert_object(
             "press_button_label",
             1,
