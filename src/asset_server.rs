@@ -106,3 +106,35 @@ impl SpriteFileReader {
             .collect();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_find_line_length() {
+        let lines = vec!["####$", "$###", "#####"];
+        let max_length = SpriteFileReader::find_line_length(&lines);
+        assert_eq!(max_length, 5); // longest line has 5 characters
+    }
+
+    #[test]
+    fn test_split_into_groups() {
+        let lines = vec!["####$", "$###", "#####", "##$$#", "$$###"];
+        let grouped = SpriteFileReader::split_into_groups(lines, 2);
+
+        assert_eq!(grouped.len(), 3); // 5 lines, split into groups of 2
+        assert_eq!(grouped[0], vec!["####$", "$###"]);
+        assert_eq!(grouped[1], vec!["#####", "##$$#"]);
+        assert_eq!(grouped[2], vec!["$$###"]);
+    }
+
+    #[test]
+    fn test_format_group() {
+        let group = vec!["####$", "$###"];
+        let formatted = SpriteFileReader::format_group(&group, 5);
+
+        assert_eq!(formatted[0], vec!['#', '#', '#', '#', '$']);
+        assert_eq!(formatted[1], vec!['$', '#', '#', '#', '$']);
+    }
+}

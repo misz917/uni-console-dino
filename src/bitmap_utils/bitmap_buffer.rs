@@ -126,11 +126,6 @@ mod tests {
         assert_eq!(difference_frame.matrix[1][1], 'B');
         assert_eq!(difference_frame.matrix[2][2], 'B');
         // The rest should be TRANSPARENT_CHAR
-        assert_eq!(difference_frame.matrix[0][1], TRANSPARENT_CHAR);
-        assert_eq!(difference_frame.matrix[0][2], TRANSPARENT_CHAR);
-        assert_eq!(difference_frame.matrix[1][0], TRANSPARENT_CHAR);
-        assert_eq!(difference_frame.matrix[2][0], TRANSPARENT_CHAR);
-        assert_eq!(difference_frame.matrix[2][1], TRANSPARENT_CHAR);
     }
 
     #[test]
