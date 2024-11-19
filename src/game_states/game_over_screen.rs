@@ -22,7 +22,10 @@ impl GameState for GameOverScreen {
         _task_scheduler: &mut TaskScheduler,
         _resources: &mut HashMap<String, Value>,
     ) {
-        *_state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop)));
+        match _input {
+            'a' => *_state_changer = Some(GameStateEnum::MainGameLoop(Box::new(MainGameLoop))),
+            _ => (),
+        }
     }
 
     fn on_enter(
@@ -63,7 +66,7 @@ impl GameState for GameOverScreen {
             None,
         );
 
-        let text = "Press any button to restart";
+        let text = "Press A to restart";
         _view.insert_object(
             "press_button_label",
             1,
