@@ -11,7 +11,7 @@ use crate::{
 };
 use std::collections::HashMap;
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
 pub struct GameOverScreen;
 impl GameState for GameOverScreen {
     fn handle_input(

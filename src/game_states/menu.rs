@@ -19,7 +19,7 @@ const YELLOW: RGB = RGB::new(255, 255, 0);
 const GREEN: RGB = RGB::new(0, 255, 0);
 const PURPLE: RGB = RGB::new(255, 0, 255);
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
 pub struct Menu;
 impl GameState for Menu {
     fn handle_input(

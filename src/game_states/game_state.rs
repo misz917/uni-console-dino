@@ -2,7 +2,7 @@ use super::{game_over_screen::GameOverScreen, main_game_loop::MainGameLoop, menu
 use crate::{task_scheduler::TaskScheduler, utils::Value, view::View};
 use std::collections::HashMap;
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
 pub enum GameStateEnum {
     Menu(Box<Menu>),
     MainGameLoop(Box<MainGameLoop>),

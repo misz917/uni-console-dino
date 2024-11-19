@@ -17,7 +17,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
 pub struct MainGameLoop;
 impl GameState for MainGameLoop {
     fn handle_input(
